@@ -1,5 +1,12 @@
 # anforcom
 
+# install bun
+
+1. Arch Linux
+```bash
+sudo pacman -S bun
+```
+
 To install dependencies:
 
 ```bash
