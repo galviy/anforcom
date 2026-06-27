@@ -1,2 +1,16 @@
 2026-06-25T08:33:07.716Z - undefined is not an object (evaluating 'rutercoy.get(url).handler')
 2026-06-25T08:35:48.668Z - undefined is not an object (evaluating 'rutercoy.get(url).handler')
+2026-06-27 - 09:28:25 : Unexpected end of JSON input
+2026-06-27 - 09:29:39 : Unexpected end of JSON input
+2026-06-27 - 09:31:45 : Unexpected end of JSON input
+2026-06-27 - 09:43:45 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-27 - 09:44:17 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-27 - 09:56:33 : Password verification failed with error "UnsupportedAlgorithm"
+2026-06-27 - 10:09:31 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-27 - 10:10:50 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-27 - 10:12:21 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)

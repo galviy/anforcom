@@ -1,13 +1,14 @@
 import { Logger } from './logger'
 import { StaticHandler } from './handlers/staticHandler'
 import { router } from './handlers/router'
-import { Connect } from './DB/connect'
+import { db } from './DB/connect'
 
 
 export class Server {
   private logger = new Logger()
   private static_ = new StaticHandler()
   private router = new router();
+  // private db = new Connect("127.0.0.1", 3306, "anforcom_dummy") 
   
   
  private port = Number(Bun.env.Backend_PORT) 
@@ -37,10 +38,10 @@ export class Server {
 
     console.log(`Running at http://localhost:${this.port}`)
   }
-  async connectDB(){
-    const db = new Connect("127.0.0.1",3306,"bank");
-    console.log("Connecting to mariadb")
+  //async connectDB(){
+    //const db = new Connect("127.0.0.1",3306,"bank");
+   // console.log("Connecting to mariadb")
     // / constructor(ip:string,port:number,db:string){
-    await db.connect();
-  }
+   // await this.db.connect();
+  //}
 }

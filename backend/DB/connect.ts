@@ -33,9 +33,14 @@ export class Connect {
         try {
             this.conn = await this.pool.getConnection()
             console.log(`Connected to MariaDB\nThread ID: ${this.conn.threadId}`);
+            this.conn.release()
         } catch (e){
             console.error(e)
         }
     }
+    public async query(sql:string,params?: any[]){
+        return await this.pool.query(sql,params);
+    }
     
 }
+export const db = new Connect('localhost', 3306, 'anforcom_dummy')
