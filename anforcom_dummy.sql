@@ -73,6 +73,35 @@ COMMIT;
 SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 
 --
+-- Table structure for table `role`
+--
+
+DROP TABLE IF EXISTS `role`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `role_name` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `role`
+--
+
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
+LOCK TABLES `role` WRITE;
+/*!40000 ALTER TABLE `role` DISABLE KEYS */;
+INSERT INTO `role` VALUES
+(1,'normal user'),
+(2,'Administrator');
+/*!40000 ALTER TABLE `role` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
+
+--
 -- Table structure for table `tim`
 --
 
@@ -113,7 +142,7 @@ CREATE TABLE `tingkat_pendidikan` (
   `tingkat` varchar(100) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -123,6 +152,8 @@ CREATE TABLE `tingkat_pendidikan` (
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `tingkat_pendidikan` WRITE;
 /*!40000 ALTER TABLE `tingkat_pendidikan` DISABLE KEYS */;
+INSERT INTO `tingkat_pendidikan` VALUES
+('Sarjana',1);
 /*!40000 ALTER TABLE `tingkat_pendidikan` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -142,12 +173,15 @@ CREATE TABLE `user` (
   `email` varchar(100) NOT NULL,
   `no_tlp` varchar(100) NOT NULL,
   `tingkat_pendidikan_id` int(11) NOT NULL,
+  `role_user` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user_unique` (`username`),
   UNIQUE KEY `user_unique_1` (`no_tlp`),
   KEY `user_tingkat_pendidikan_FK` (`tingkat_pendidikan_id`),
+  KEY `user_role_FK` (`role_user`),
+  CONSTRAINT `user_role_FK` FOREIGN KEY (`role_user`) REFERENCES `role` (`id`),
   CONSTRAINT `user_tingkat_pendidikan_FK` FOREIGN KEY (`tingkat_pendidikan_id`) REFERENCES `tingkat_pendidikan` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -157,6 +191,8 @@ CREATE TABLE `user` (
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
+INSERT INTO `user` VALUES
+(5,'galvin2','$2b$10$iwAOWztRVpVRZwNZPGUVPO4XycOXyWbgU07kx2b.1VsJs9lMibGom','galvinchan0997@gmail.com','08589',1,1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -200,4 +236,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-06-26 22:25:19
+-- Dump completed on 2026-06-27 18:26:06

@@ -24,7 +24,7 @@ export async function handler(req: Request): Promise<Response> {
   const rows2 = await authRepo.findEmail(email);
   const user2 = rows2[0];
   if (user2 != null){
-     return Response.json({success:false, error: `email ${username} already exist!`},{status:400})
+     return Response.json({success:false, error: `email ${email} already exist!`},{status:400})
   }
   const rows3 = await authRepo.findPhoneNumber(no_tlp);
   const user3 = rows3[0];
@@ -37,9 +37,10 @@ export async function handler(req: Request): Promise<Response> {
     try {
         const rows4 = await authRepo.create_account(username,password,email,no_tlp,tingkat_pendidikan);
         const user4 = rows4[0];
-        console.log(user4);
-        return Response.json({success:true,message: `Successfully created ${user4.username} please relogin to get session_id`},{status:200})
+       
+        return Response.json({success:true,message: `Successfully created ${username} please relogin to get session_id`},{status:200})
     } catch(e){
+      console.error(e)
       return Response.json({success:false, error: `internal server error`},{status:500}) 
     }
    
