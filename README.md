@@ -80,7 +80,7 @@ This project was created using `bun init` in bun v1.3.11. [Bun](https://bun.com)
         ├── hash.ts
         ├── random.ts
         └── mail.ts
-
+```
 
 ## Create account
 ```
