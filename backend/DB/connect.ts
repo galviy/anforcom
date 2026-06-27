@@ -25,8 +25,8 @@ export class Connect {
             database: this.db,
             connectionLimit: 10
         })
-        console.log(this.username)
-        console.log(this.password)
+        //console.log(this.username)
+        //console.log(this.password)
    }
 
     public async connect(){
