@@ -80,13 +80,21 @@ This project was created using `bun init` in bun v1.3.11. [Bun](https://bun.com)
         ├── hash.ts
         ├── random.ts
         └── mail.ts
+
+
+## Create account
 ```
+curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
+  -X POST http://127.0.0.1:1337/api/auth/create_account \
+  -H "Content-Type: application/json" \
+  -d '{"username": "galvin", "password": "galvin123", "email": "galvindoser@gmail.com", "no_telp": "085892297874", "tingkat_pendidikan": 1}'
+```
+  
 
 ## Login
-```curl
-curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
+```
+  curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
   -X POST http://127.0.0.1:1337/api/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"username": "galvin", "password": "galvin123"}'
-
+  -d '{"username": "galvin2", "password": "galvin123"}'
 ```
