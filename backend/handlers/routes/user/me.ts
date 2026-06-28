@@ -18,18 +18,18 @@ export async function handler(req: Request): Promise<Response> {
   }
 
   let decrypted = await decryptCookie(raw)
-  console.log(decrypted)
+  //console.log(decrypted)
   if (!decrypted) {
     return Response.json({ success: false, error: "Session tidak valid" }, { status: 401 })
   }
 
   let json = JSON.parse(decrypted);
   if (Math.floor(Date.now() / 10000) > json.valid_until) return Response.json({ success: false, error: "inactived session" }, { status: 401 })
-  console.log(json.valid_until)
+  //console.log(json)
 
 
   //const {username } = JSON.parse(decrypted)
 
-  return Response.json({ username: json.username})
+  return Response.json({ username: json.username,email:json.email,no_tlp:json.no_tlp,pendidikan_id:json.tingkat_pendidikan})
 }
 

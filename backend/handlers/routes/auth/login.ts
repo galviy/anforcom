@@ -26,7 +26,8 @@ export async function handler(req: Request): Promise<Response> {
       return Response.json({ success: false, error: "email atau password salah" }, { status: 401 })
     }
 
-    const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,valid_until:Math.floor(Date.now() / 10000) + 30 })
+    const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,no_tlp:user.no_tlp,tingkat_pendidikan:user.tingkat_pendidikan_id,valid_until:Math.floor(Date.now() / 10000) + 30 })
+
     const signedCookie = signCookie(payload)
     const encrypted = await encryptCookie(payload)
 
@@ -39,6 +40,7 @@ export async function handler(req: Request): Promise<Response> {
   } else {
     const rows = await authRepo.findByUsername(username)
     const user = rows[0]
+    
 
     if (!user) {
       return Response.json({ success: false, error: "invalid username or password??" }, { status: 401 })
@@ -49,8 +51,9 @@ export async function handler(req: Request): Promise<Response> {
     }
 
     const sessionId = crypto.randomUUID()
-    const payload = JSON.stringify({ userId: user.id, username: user.username })
-    const signedCookie = signCookie(payload)
+     const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,no_tlp:user.no_tlp,tingkat_pendidikan:user.tingkat_pendidikan_id,valid_until:Math.floor(Date.now() / 10000) + 30 })
+
+     const signedCookie = signCookie(payload)
      const encrypted = await encryptCookie(payload)
 
      return Response.json({ success: true }, {
