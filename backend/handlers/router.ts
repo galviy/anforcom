@@ -2,13 +2,13 @@ import path from 'path'
 
 const ROOT = path.join(import.meta.dir)
 import * as login from './routes/auth/login'
-import * as user from './routes/user/'
+import * as user from './routes/user/me'
 import * as c_acc from './routes/auth/create_account'
 
 const rutercoy = new Map([
     ['/auth/login', login],
     ['/auth/create_account',c_acc],
-    ['/user', user]
+    ['/user/me', user]
 ])
 
 export class router {

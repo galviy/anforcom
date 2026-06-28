@@ -1,4 +1,6 @@
 import {UserRepository} from '../../../DB/repositories'
+import {unsignCookie,signCookie,encryptCookie} from '../../cookies'
+
 const authRepo = new UserRepository()
 
 export async function handler(req: Request): Promise<Response> {
@@ -13,26 +15,51 @@ export async function handler(req: Request): Promise<Response> {
   if (!username || !password) {
     return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
   }
+  const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
-  const rows = await authRepo.findByUsername(username)
-  const user = rows[0]
-
-  if (!user) {
-    return Response.json({ success: false, error: "invalid username or password??" }, { status: 401 })
-  }
-  //console.log(user)
-  const valid = await Bun.password.verify(password, user.password, "bcrypt")
-  if (!valid) {
-    return Response.json({ success: false, error: "Username atau password salah" }, { status: 401 })
-  }
-
-  const sessionId = crypto.randomUUID()
-
-  return Response.json({ success: true }, {
-    headers: {
-      'Set-Cookie': `sessionId=${sessionId}; HttpOnly; Path=/; Max-Age=86400`
+  if(emailRegex.test(username)){
+    const rows = await authRepo.findEmail(username);
+    const user = rows[0];
+    if(!user)  return Response.json({ success: false, error: "invalid email or password??" }, { status: 401 })
+    const valid = await Bun.password.verify(password, user.password, "bcrypt")
+    if (!valid) {
+      return Response.json({ success: false, error: "email atau password salah" }, { status: 401 })
     }
-  })
+
+    const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,valid_until:Math.floor(Date.now() / 10000) + 30 })
+    const signedCookie = signCookie(payload)
+    const encrypted = await encryptCookie(payload)
+
+
+    return Response.json({ success: true }, {
+      headers: {
+        'Set-Cookie': `session=${encrypted}; HttpOnly; Path=/; Max-Age=86400`
+      }
+    })
+  } else {
+    const rows = await authRepo.findByUsername(username)
+    const user = rows[0]
+
+    if (!user) {
+      return Response.json({ success: false, error: "invalid username or password??" }, { status: 401 })
+    }
+    const valid = await Bun.password.verify(password, user.password, "bcrypt")
+    if (!valid) {
+      return Response.json({ success: false, error: "Username atau password salah" }, { status: 401 })
+    }
+
+    const sessionId = crypto.randomUUID()
+    const payload = JSON.stringify({ userId: user.id, username: user.username })
+    const signedCookie = signCookie(payload)
+     const encrypted = await encryptCookie(payload)
+
+     return Response.json({ success: true }, {
+      headers: {
+        'Set-Cookie': `session=${encrypted}; HttpOnly; Path=/; Max-Age=86400`
+      }
+    })
+  }
+  
 }
 /*
 INSERT INTO user (username, password, email, no_tlp, tingkat_pendidikan_id) 
