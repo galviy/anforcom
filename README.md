@@ -23,6 +23,11 @@ This project was created using `bun init` in bun v1.3.11. [Bun](https://bun.com)
 
 
 # Backend to do
+- tambah middleware untuk /dashboard
+- tambah otp untuk verifikasi email
+- tambah endpoint create_team
+ 
+
 
 
 ## Create account
