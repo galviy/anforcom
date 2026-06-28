@@ -26,7 +26,7 @@ This project was created using `bun init` in bun v1.3.11. [Bun](https://bun.com)
 
 
 ## Create account
-```json
+```nginx
 curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
 -X POST http://127.0.0.1:1337/api/auth/create_account \
 -H "Content-Type: application/json" \
