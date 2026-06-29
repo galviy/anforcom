@@ -10,6 +10,7 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "mariadb": "^3.5.3"
+    "mariadb": "^3.5.3",
+    "react-router-dom": "^7.18.0"
   }
 }

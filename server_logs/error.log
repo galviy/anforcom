@@ -14,3 +14,39 @@
     (pool connections: active=0 idle=0 limit=10)
 2026-06-27 - 10:12:21 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
     (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 12:41:53 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 12:43:03 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 13:02:59 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 13:13:41 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 13:14:49 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 13:23:07 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 13:41:12 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 14:36:55 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 14:37:18 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 14:46:15 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 14:48:03 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 14:50:27 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 14:55:15 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 15:01:50 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 15:05:39 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 15:21:44 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 15:25:17 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 15:28:09 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)

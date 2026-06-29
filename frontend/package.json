@@ -1,0 +1,25 @@
+{
+  "name": "frontend",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@vitejs/plugin-react": "^6.0.3",
+    "vite": "^8.1.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "mariadb": "^3.5.3",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.0"
+  },
+  "scripts": {
+    "dev": "bun --bun vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  }
+}
