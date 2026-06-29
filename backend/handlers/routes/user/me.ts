@@ -1,7 +1,7 @@
 // routes/user/index.ts
 import { decryptCookie,parseCookie } from '../../cookies'
 import {UserRepository} from "../../../DB/repositories"
-import { WatchDirectoryFlags } from 'typescript'
+
 const authRepo = new UserRepository()
 
 export const method = 'GET'
