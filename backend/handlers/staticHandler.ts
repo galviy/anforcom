@@ -41,19 +41,16 @@ export class StaticHandler {
         }
 
     
-        if (pathname.startsWith('/dist/')) {
-         
-            const filePath = path.join(this.publicDir, pathname)
+        if (pathname.startsWith('/dist/') || pathname.startsWith('/assets/')) {
+            const filePath = path.join(this.publicDir, 'dist', pathname.startsWith('/dist/') ? pathname.replace('/dist/', '') : pathname)
             
             const safeTargetDir = path.resolve(this.publicDir, "dist");
-            const requestedPath = path.resolve(this.publicDir, `.${pathname}`);
+            const requestedPath = path.resolve(filePath);
 
-       
             if (!requestedPath.startsWith(safeTargetDir)) {
                 console.warn(`[WARNING] path traversal: ${pathname}`);
-                return this.notFound; 
+                return this.notFound;
             }
-
             return this.serveFile(filePath)
         }
     
