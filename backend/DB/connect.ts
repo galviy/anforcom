@@ -41,6 +41,10 @@ export class Connect {
     public async query(sql:string,params?: any[]){
         return await this.pool.query(sql,params);
     }
+     public async getConnection(): Promise<PoolConnection> {
+        return await this.pool.getConnection();
+    }
+
     
 }
 export const db = new Connect('localhost', 3306, 'anforcom_dummy')
