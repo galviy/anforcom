@@ -28,6 +28,7 @@ CREATE TABLE `isi_tim` (
   `nama_lengkap` varchar(255) NOT NULL,
   `asal_instansi` varchar(100) NOT NULL,
   `tim_id` int(11) DEFAULT NULL,
+  `nomor_induk` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `isi_tim_tim_FK` (`tim_id`),
   CONSTRAINT `isi_tim_tim_FK` FOREIGN KEY (`tim_id`) REFERENCES `tim` (`id`)
@@ -57,7 +58,7 @@ CREATE TABLE `lomba` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nama_lomba` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -67,6 +68,10 @@ CREATE TABLE `lomba` (
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `lomba` WRITE;
 /*!40000 ALTER TABLE `lomba` DISABLE KEYS */;
+INSERT INTO `lomba` VALUES
+(4,'DUC (SMA/Sederajat)'),
+(5,'DUC (Perguruan Tinggi)'),
+(6,'DCPC (SMA/Sederajat)');
 /*!40000 ALTER TABLE `lomba` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -112,6 +117,7 @@ CREATE TABLE `tim` (
   `nama_tim` varchar(100) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tim_lomba` int(11) DEFAULT NULL,
+  `isVerified` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `tim_unique` (`nama_tim`),
   KEY `tim_lomba_FK` (`tim_lomba`),
@@ -142,7 +148,7 @@ CREATE TABLE `tingkat_pendidikan` (
   `tingkat` varchar(100) NOT NULL,
   `id` int(11) NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,7 +159,8 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `tingkat_pendidikan` WRITE;
 /*!40000 ALTER TABLE `tingkat_pendidikan` DISABLE KEYS */;
 INSERT INTO `tingkat_pendidikan` VALUES
-('Sarjana',1);
+('Sarjana',1),
+('SMA/Sederajat',2);
 /*!40000 ALTER TABLE `tingkat_pendidikan` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -181,7 +188,7 @@ CREATE TABLE `user` (
   KEY `user_role_FK` (`role_user`),
   CONSTRAINT `user_role_FK` FOREIGN KEY (`role_user`) REFERENCES `role` (`id`),
   CONSTRAINT `user_tingkat_pendidikan_FK` FOREIGN KEY (`tingkat_pendidikan_id`) REFERENCES `tingkat_pendidikan` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -192,7 +199,10 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES
-(5,'galvin2','$2b$10$iwAOWztRVpVRZwNZPGUVPO4XycOXyWbgU07kx2b.1VsJs9lMibGom','galvinchan0997@gmail.com','08589',1,1);
+(5,'galvin2','$2b$10$iwAOWztRVpVRZwNZPGUVPO4XycOXyWbgU07kx2b.1VsJs9lMibGom','galvinchan0997@gmail.com','08589',1,1),
+(6,'galvin','$2b$10$sYFX4y.ilQaCNaRBJx8zLOSAeUbGk5Zrdh.6MKDa5lomiUHOlvCV.','galvindoser@gmail.com','085892297874',1,1),
+(7,'{{7*7}}','$2b$10$VAd0XMpqli2ojtcz4dpYuO0GWabYrY3BUtSzEsCZr8s.nSTql3DK2','galvindodawser@gmail.com','084892297874',1,1),
+(8,'galvintest','$2b$10$iAvfQA1wl0QJUcGlUSjKSOUvCQnXuqNuus4rm2KPdvKDNe82Spl22','galvindoserr@gmail.com','0848992297874',1,1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -236,4 +246,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-06-27 18:26:06
+-- Dump completed on 2026-06-30 10:55:38
