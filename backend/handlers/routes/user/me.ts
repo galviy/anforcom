@@ -24,7 +24,8 @@ export async function handler(req: Request): Promise<Response> {
   }
 
   let json = JSON.parse(decrypted);
-  if (Math.floor(Date.now() / 1000) > json.valid_until) return Response.json({ success: false, error: "inactived session" }, { status: 401 })
+  //console.log(json)
+  if (Math.floor(Date.now() / 10000) > json.valid_until) return Response.json({ success: false, error: "inactived session" }, { status: 401 })
   //console.log(json)
 
 
