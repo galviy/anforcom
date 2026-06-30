@@ -96,3 +96,42 @@ Content-Length: 101
 
 [INFO] Waktu Total Respons: 0.001074 detik
 ```
+
+## Register team
+
+```curl
+curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
+-X POST http://127.0.0.1:1337/api/teams/create_team \
+-H "Content-Type: application/json" \
+-H "Cookie: session=valid_session" \
+-d '{"team_name": "Jangan lupa join arkavidia","lomba_id":2}'
+```
+
+Response
+
+Gagal
+
+```nginx
+HTTP/1.1 401 Unauthorized
+Content-Type: application/json;charset=utf-8
+Date: Tue, 30 Jun 2026 07:32:57 GMT
+Content-Length: 138
+
+{"success":false,"error":"Saat ini kamu terdaftar sebagai Kategori (Sarjana),lomba tersebut hanya tersedia untuk kategori SMA/Sederajat!"}
+
+[INFO] Waktu Total Respons: 0.001249 detik
+```
+
+```nginx
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=utf-8
+Date: Tue, 30 Jun 2026 07:33:18 GMT
+Content-Length: 171
+
+{"error":true,"message":"Kamu sudah punya tim, untuk saat ini hanya tersedia 1 perlombaan untuk kategori sarjana, maka kamu tidak diizinkan untuk membuat tim baru lagi!."}
+
+[INFO] Waktu Total Respons: 0.004125 detik
+```
+
+
+Berhasil
