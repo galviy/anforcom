@@ -7,6 +7,7 @@ const authRepo = new UserRepository()
 export const method = 'GET'
 
 export async function handler(req: Request): Promise<Response> {
+  if (req.method != 'GET') return new Response(null, {status:404});
   const cookieHeader = req.headers.get('cookie')
   if (!cookieHeader) {
     return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })

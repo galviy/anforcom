@@ -1,6 +1,19 @@
 import {db} from './connect'
 
 
+export class TeamRepository{
+    async findByUsername(username: string) {
+        const sql = `
+            SELECT t.id, t.nama_tim 
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            WHERE u.username = ?
+        `;
+        return await db.query(sql, [username]);
+    }
+}
+
 export class UserRepository{
     async findByUsername(username: string) {
         return await db.query("SELECT * FROM user WHERE username = ?", [username])
@@ -63,7 +76,7 @@ export class UserRepository{
 
             case 2: {
                 const rows = await conn.query('SELECT COUNT(*) AS jumlah FROM user_tim WHERE user_id = ?', [userId]);
-                if (Number(rows[0].jumlah) >= 2) {
+                if (Number(rows[0].jumlah) >= 1) {
                     await conn.rollback();
                     return { error: true, message: `Kamu sudah punya tim, untuk saat ini hanya tersedia 2 jenis perlombaan untuk kategori SMA/Sederajat, maka kamu tidak diizinkan untuk membuat tim baru lagi!.` };
                 }
