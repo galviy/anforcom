@@ -31,18 +31,12 @@ This project was created using `bun init` in bun v1.3.11. [Bun](https://bun.com)
   
   
 - tambah endpoint /teams
-
-  a. [x] create_team (buat team)
-
-  b. [x] show_team (show isi team)
-
-  c. [x] show_member_team (show isi member team, parameter tim_id ?) 
-
-  d. [ ] delete_team
-
-  e. [ ] delete_user_team
-
-  f. [ ] add_member_team (parameter nama_lengkap,asal_instansi_tim_id,nomor_induk,kartu tanda pelajar/mahasiswa)
+  - [x] create_team (buat team)
+  - [x] show_team (show isi team)
+  - [x] show_member_team (show isi member team, parameter tim_id ?) 
+  - [ ] delete_team
+  - [ ] delete_user_team
+  - [ ] add_member_team (parameter nama_lengkap,asal_instansi_tim_id,nomor_induk,kartu tanda pelajar/mahasiswa)
 
 ![Database ERD](database.png)
 
