@@ -24,17 +24,24 @@ This project was created using `bun init` in bun v1.3.11. [Bun](https://bun.com)
 
 # Backend to do
 - endpoint  /emails
+
   a. send_otp_email
+
   b. verify/token (activate account)
   
   
 - tambah endpoint /teams
 
   a. create_team (buat team)
+
   b. show_team (show isi team)
+
   c. show_member_team (show isi member team, parameter tim_id ?) 
+
   d. delete_team
+
   e. delete_user_team
+
   f. add_member_team (parameter nama_lengkap,asal_instansi_tim_id,nomor_induk,kartu tanda pelajar/mahasiswa)
 
 ![Database ERD](database.png)
