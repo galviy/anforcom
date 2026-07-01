@@ -12,6 +12,25 @@ export class TeamRepository{
         `;
         return await db.query(sql, [username]);
     }
+    async timIdCheck(Iduser:number,Idteam:number){
+       
+        const sql = `
+            select tim_id 
+            from user_tim
+            where user_id = ? and tim_id = ? 
+        `;
+        return await db.query(sql,[Iduser,Idteam]);
+    }
+
+    async isiTimCheck(Idteam:number){
+        const sql = `
+            select * 
+            from isi_tim
+            where tim_id = ?
+        `;
+        return await db.query(sql,[Idteam]);
+
+    }
 }
 
 export class UserRepository{

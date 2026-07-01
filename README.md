@@ -22,27 +22,27 @@ bun --watch --hot backend/index.ts
 This project was created using `bun init` in bun v1.3.11. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
 
 
+
 # Backend to do
 - endpoint  /emails
+  - [ ] send_otp_email
 
-  a. send_otp_email
-
-  b. verify/token (activate account)
+  - [ ] verify/token (activate account)
   
   
 - tambah endpoint /teams
 
-  a. create_team (buat team)
+  a. [x] create_team (buat team)
 
-  b. show_team (show isi team)
+  b. [x] show_team (show isi team)
 
-  c. show_member_team (show isi member team, parameter tim_id ?) 
+  c. [x] show_member_team (show isi member team, parameter tim_id ?) 
 
-  d. delete_team
+  d. [ ] delete_team
 
-  e. delete_user_team
+  e. [ ] delete_user_team
 
-  f. add_member_team (parameter nama_lengkap,asal_instansi_tim_id,nomor_induk,kartu tanda pelajar/mahasiswa)
+  f. [ ] add_member_team (parameter nama_lengkap,asal_instansi_tim_id,nomor_induk,kartu tanda pelajar/mahasiswa)
 
 ![Database ERD](database.png)
 
@@ -151,4 +151,46 @@ Content-Length: 171
 ```
 
 
-Berhasil
+# Show isi team
+
+```curl
+curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
+-X GET http://127.0.0.1:1337/api/teams/show_team \
+-H "Cookie: session=valid_session"
+```
+Response berhasil
+
+```nginx
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=utf-8
+Date: Wed, 01 Jul 2026 14:33:42 GMT
+Content-Length: 76
+
+{"success":true,"data":[{"id":408,"nama_tim":"Jangan lupa join arkavidia"}]}
+
+[INFO] Waktu Total Respons: 0.009535 detik
+```
+
+# Show member team
+
+
+```curl
+curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
+-X POST http://127.0.0.1:1337/api/teams/show_member_teams \
+-H "Content-Type: application/json" \
+-H "Cookie: session=valid_session" \
+-d '{"tim_id": id_team}'
+
+```
+
+Response berhasil
+```
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=utf-8
+Date: Wed, 01 Jul 2026 14:35:30 GMT
+Content-Length: 115
+
+{"success":true,"data":[{"id":1,"nama_lengkap":"Galvin S","asal_instansi":"UNDIP","nomor_induk":"24060124140162"}]}
+
+[INFO] Waktu Total Respons: 0.004338 detik
+```

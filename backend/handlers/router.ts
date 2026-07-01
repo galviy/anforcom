@@ -6,13 +6,15 @@ import * as user from './routes/user/me'
 import * as c_acc from './routes/auth/create_account'
 import * as c_team from './routes/teams/create_team'
 import * as show_u from './routes/teams/show_team'
+import * as show_t from './routes/teams/show_member_teams'
 
 const rutercoy = new Map([
     ['/auth/login', login],
     ['/auth/create_account',c_acc],
     ['/user/me', user],
     ['/teams/create_team',c_team],
-    ['/teams/show_team',show_u]
+    ['/teams/show_team',show_u],
+    ['/teams/show_member_teams',show_t]
 ])
 
 export class router {
