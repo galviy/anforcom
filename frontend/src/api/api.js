@@ -1,21 +1,19 @@
 // const API_BASE = import.meta.env.VITE_API_URL;
-const API_BASE = '/api'; // atau tetap pakai import.meta.env.VITE_API_URL, asalkan .env diubah jadi '/api'
-console.log('API_BASE:', API_BASE); // <- tambahkan log untuk debug
+const API_BASE = '/api';
 
-// Helper untuk menangani response (aman untuk response kosong / non-JSON)
 const handleResponse = async (response) => {
   const contentLength = response.headers.get('content-length');
   if (contentLength === '0' || !response.headers.get('content-type')?.includes('application/json')) {
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
-    return {}; // response kosong tapi sukses
+    return {};
   }
 
   try {
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.message || `HTTP ${response.status}`);
+      throw new Error(data.error || data.message || `HTTP ${response.status}`);
     }
     return data;
   } catch (err) {
@@ -23,14 +21,10 @@ const handleResponse = async (response) => {
   }
 };
 
-// Helper untuk mengambil token dari localStorage
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
-  return token ? { 'Authorization': `Bearer ${token}` } : {};
-};
+// NOTE: Auth backend ini berbasis session cookie (HttpOnly), BUKAN Bearer token.
+// Cookie otomatis terkirim oleh browser untuk request same-origin.
 
 export const authAPI = {
-  // REGISTER
   register: (userData) => {
     return fetch(`${API_BASE}/auth/create_account`, {
       method: 'POST',
@@ -39,7 +33,6 @@ export const authAPI = {
     }).then(handleResponse);
   },
 
-  // LOGIN (Asumsi endpoint-nya /auth/login, sesuaikan jika beda)
   login: (credentials) => {
     return fetch(`${API_BASE}/auth/login`, {
       method: 'POST',
@@ -49,16 +42,43 @@ export const authAPI = {
   },
 };
 
-// API khusus untuk user yang sudah login (membutuhkan token)
 export const userAPI = {
-  // GET /api/user/me
   getMe: () => {
     return fetch(`${API_BASE}/user/me`, {
       method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        ...getAuthHeaders(), // <-- Kirim token di header Authorization
-      },
+      headers: { 'Content-Type': 'application/json' },
+    }).then(handleResponse);
+  },
+};
+
+export const teamAPI = {
+  getLombaList: () => {
+    return fetch(`${API_BASE}/teams/lomba_list`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    }).then(handleResponse);
+  },
+
+  createTeam: (teamData) => {
+    return fetch(`${API_BASE}/teams/create_team`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(teamData),
+    }).then(handleResponse);
+  },
+
+  getMyTeams: () => {
+    return fetch(`${API_BASE}/teams/show_team`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    }).then(handleResponse);
+  },
+
+  getTeamMembers: (timId) => {
+    return fetch(`${API_BASE}/teams/show_member_teams`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tim_id: timId }),
     }).then(handleResponse);
   },
 };

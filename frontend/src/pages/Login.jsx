@@ -19,11 +19,9 @@ export default function Login() {
     setError('');
 
     try {
-      const response = await authAPI.login(form);
-      // Asumsi response dari login mengembalikan { token, user }
-      localStorage.setItem('token', response.token); // Simpan token
-      localStorage.setItem('user', JSON.stringify(response.user)); // Opsional
-      
+      // Login berhasil -> backend set-cookie session (HttpOnly), tidak ada token di body
+      await authAPI.login(form);
+
       // Redirect ke dashboard seperti yang diminta Galvin
       window.location.href = '/dashboard'; // Hard redirect biar state reset
     } catch (err) {

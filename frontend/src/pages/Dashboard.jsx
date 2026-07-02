@@ -1,37 +1,36 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { userAPI } from '../api/api';
+import { userAPI, teamAPI } from '../api/api';
 
 export default function Dashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
+  const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    
-    // 1. Validasi: Kalo ga ada token, balikin ke halaman login
-    if (!token) {
-      navigate('/login');
-      return;
-    }
-
-    // 2. Fetch data user
+    // Sesi login dicek lewat cookie (HttpOnly), bukan localStorage.
     const fetchUser = async () => {
       try {
         setLoading(true);
         const response = await userAPI.getMe();
-        setUser(response); // Asumsi response langsung object user
+        setUser(response);
         setError('');
+
+        try {
+          const teamRes = await teamAPI.getMyTeams();
+          setTeams(teamRes?.data || []);
+        } catch (teamErr) {
+          console.error('Failed to fetch teams:', teamErr);
+        }
       } catch (err) {
         console.error('Failed to fetch user:', err);
-        setError('Gagal memuat data pengguna. Pastikan backend berjalan.');
-        // Jika token tidak valid (401), lempar ke login
         if (err.message.includes('401') || err.message.includes('403')) {
-          localStorage.removeItem('token');
           navigate('/login');
+          return;
         }
+        setError('Gagal memuat data pengguna. Pastikan backend berjalan.');
       } finally {
         setLoading(false);
       }
@@ -41,7 +40,7 @@ export default function Dashboard() {
   }, [navigate]);
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    // TODO: backend belum punya endpoint logout untuk menghapus cookie session
     navigate('/login');
   };
 
@@ -66,7 +65,6 @@ export default function Dashboard() {
 
   return (
     <div className="dashboard-container">
-      {/* Navbar */}
       <nav className="dashboard-navbar">
         <h1 className="dashboard-logo">ANFORCOM</h1>
         <button onClick={handleLogout} className="btn-logout">
@@ -74,7 +72,6 @@ export default function Dashboard() {
         </button>
       </nav>
 
-      {/* Main Content */}
       <div className="dashboard-main">
         <div className="dashboard-card">
           <h2>Selamat Datang, {user?.username || 'User'}! 👋</h2>
@@ -94,18 +91,33 @@ export default function Dashboard() {
             </div>
             <div className="info-item">
               <span className="info-label">Tingkat Pendidikan</span>
-              <span className="info-value">{user?.tingkat_pendidikan || '-'}</span>
+              <span className="info-value">{user?.pendidikan_id === 1 ? 'Sarjana' : user?.pendidikan_id === 2 ? 'SMA/Sederajat' : '-'}</span>
             </div>
           </div>
 
           <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
-            <button className="btn-primary" style={{ width: 'auto', padding: '0.75rem 2rem' }}>
+            <button
+              className="btn-primary"
+              style={{ width: 'auto', padding: '0.75rem 2rem' }}
+              onClick={() => navigate('/create-team')}
+            >
               + Buat Tim Baru
             </button>
-            <button className="btn-secondary" style={{ width: 'auto', padding: '0.75rem 2rem' }}>
-              Lihat Tim Saya
-            </button>
           </div>
+        </div>
+
+        <div className="dashboard-card" style={{ marginTop: '1.5rem' }}>
+          <h3>Tim Saya</h3>
+          <hr />
+          {teams.length === 0 ? (
+            <p>Kamu belum punya tim. Yuk buat tim baru!</p>
+          ) : (
+            <ul>
+              {teams.map((t) => (
+                <li key={t.id}>{t.nama_tim}</li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </div>
