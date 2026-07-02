@@ -51,6 +51,7 @@ export async function handler(req: Request): Promise<Response> {
     
 
   } catch(e){
+    
     return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
   }
   

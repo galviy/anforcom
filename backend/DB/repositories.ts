@@ -2,6 +2,8 @@ import {db} from './connect'
 
 
 export class TeamRepository{
+
+    
     async findByUsername(username: string) {
         const sql = `
             SELECT t.id, t.nama_tim 
@@ -12,6 +14,33 @@ export class TeamRepository{
         `;
         return await db.query(sql, [username]);
     }
+
+    async deleteUserTeam(idTeam:number,idUser:number){
+        const sql = `
+            DELETE from
+            isi_tim 
+            where id = ? and tim_id = ?
+        `
+        return await db.query(sql,[idUser,idTeam])
+    }
+    async deleteTeam(IdTeam: number) {
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
+            await conn.query(`DELETE from user_tim where tim_id = ?`, [IdTeam]);
+            await conn.query(`DELETE FROM isi_tim WHERE tim_id = ?`, [IdTeam]);
+            const result = await conn.query(`DELETE FROM tim WHERE id = ?`, [IdTeam]);
+            
+            await conn.commit();
+            return result;
+        } catch (e) {
+            console.error(e);
+            await conn.rollback();
+            throw e; 
+        } finally {
+            conn.release(); 
+        }
+    }   
     async timIdCheck(Iduser:number,Idteam:number){
        
         const sql = `

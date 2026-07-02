@@ -7,6 +7,8 @@ import * as c_acc from './routes/auth/create_account'
 import * as c_team from './routes/teams/create_team'
 import * as show_u from './routes/teams/show_team'
 import * as show_t from './routes/teams/show_member_teams'
+import * as del_t from './routes/teams/delete_team'
+import * as del_u_t from './routes/teams/delete_user_team'
 
 const rutercoy = new Map([
     ['/auth/login', login],
@@ -14,7 +16,10 @@ const rutercoy = new Map([
     ['/user/me', user],
     ['/teams/create_team',c_team],
     ['/teams/show_team',show_u],
-    ['/teams/show_member_teams',show_t]
+    ['/teams/show_member_teams',show_t],
+    ['/teams/delete_team',del_t],
+    ['/teams/delete_user_team',del_u_t]
+
 ])
 
 export class router {
