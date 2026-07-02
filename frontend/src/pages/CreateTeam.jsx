@@ -1,34 +1,48 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { teamAPI } from '../api/api';
+import { userAPI, teamAPI } from '../api/api';
+
+// Backend TIDAK punya endpoint untuk mengambil daftar lomba, jadi daftar ini
+// didefinisikan statis di sini. Harus selalu sinkron dengan:
+// - data tabel `lomba` (lihat anforcom_dummy.sql)
+// - validasi di backend/handlers/routes/teams/create_team.ts
+//     pendidikan 1 (Sarjana)      -> lomba 1 & 3 DITOLAK, hanya lomba 2 yang boleh
+//     pendidikan 2 (SMA/Sederajat)-> lomba 2 DITOLAK, lomba 1 & 3 yang boleh
+const ALL_LOMBA = [
+  { id: 1, nama_lomba: 'DUC (SMA/Sederajat)', untuk_pendidikan: 2 },
+  { id: 2, nama_lomba: 'DUC (Perguruan Tinggi)', untuk_pendidikan: 1 },
+  { id: 3, nama_lomba: 'DCPC (SMA/Sederajat)', untuk_pendidikan: 2 },
+];
 
 export default function CreateTeam() {
   const navigate = useNavigate();
   const [teamName, setTeamName] = useState('');
   const [lombaId, setLombaId] = useState('');
   const [lombaOptions, setLombaOptions] = useState([]);
-  const [loadingLomba, setLoadingLomba] = useState(true);
+  const [loadingUser, setLoadingUser] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
 
+  // Ambil kategori pendidikan user yang login, lalu filter lomba yang relevan
   useEffect(() => {
-    const fetchLomba = async () => {
+    const fetchUser = async () => {
       try {
-        setLoadingLomba(true);
-        const res = await teamAPI.getLombaList();
-        setLombaOptions(res?.data || []);
+        setLoadingUser(true);
+        const me = await userAPI.getMe();
+        const options = ALL_LOMBA.filter((l) => l.untuk_pendidikan === me.pendidikan_id);
+        setLombaOptions(options);
       } catch (err) {
-        console.error('Failed to fetch lomba list:', err);
-        setError('Gagal memuat daftar lomba. Pastikan kamu sudah login.');
+        console.error('Failed to fetch user:', err);
+        setError('Gagal memuat data pengguna. Pastikan kamu sudah login.');
         if (err.message.includes('401')) {
           navigate('/login');
         }
       } finally {
-        setLoadingLomba(false);
+        setLoadingUser(false);
       }
     };
-    fetchLomba();
+    fetchUser();
   }, [navigate]);
 
   const handleSubmit = async (e) => {
@@ -54,6 +68,8 @@ export default function CreateTeam() {
         lomba_id: parseInt(lombaId),
       });
 
+      // PENTING: create_team bisa balas HTTP 200 tapi { error: true, message }
+      // untuk kegagalan bisnis (misal: user sudah punya tim)
       if (response?.error) {
         setError(response.message || 'Gagal membuat tim.');
         setLoading(false);
@@ -65,6 +81,7 @@ export default function CreateTeam() {
         navigate('/dashboard');
       }, 1500);
     } catch (err) {
+      // Ini menangkap error validasi (HTTP 401/400), pesannya datang dari field `error`
       setError(err.message || 'Gagal membuat tim. Coba lagi.');
     } finally {
       setLoading(false);
@@ -98,10 +115,10 @@ export default function CreateTeam() {
               value={lombaId}
               onChange={(e) => setLombaId(e.target.value)}
               required
-              disabled={loadingLomba}
+              disabled={loadingUser}
             >
               <option value="">
-                {loadingLomba ? 'Memuat daftar lomba...' : '-- Pilih Lomba --'}
+                {loadingUser ? 'Memuat...' : '-- Pilih Lomba --'}
               </option>
               {lombaOptions.map((l) => (
                 <option key={l.id} value={l.id}>
@@ -109,12 +126,12 @@ export default function CreateTeam() {
                 </option>
               ))}
             </select>
-            {!loadingLomba && lombaOptions.length === 0 && (
+            {!loadingUser && lombaOptions.length === 0 && (
               <small>Tidak ada lomba yang tersedia untuk kategori kamu saat ini.</small>
             )}
           </div>
 
-          <button type="submit" className="btn-primary" disabled={loading || loadingLomba}>
+          <button type="submit" className="btn-primary" disabled={loading || loadingUser}>
             {loading ? 'Memproses...' : 'Buat Tim'}
           </button>
         </form>

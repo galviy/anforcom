@@ -51,14 +51,14 @@ export const userAPI = {
   },
 };
 
+// API untuk fitur tim
+// NOTE: backend TIDAK punya endpoint /teams/lomba_list, jadi daftar lomba
+// didefinisikan statis di frontend (lihat CreateTeam.jsx) dan disesuaikan
+// dengan validasi lomba_id yang ada di backend/handlers/routes/teams/create_team.ts
 export const teamAPI = {
-  getLombaList: () => {
-    return fetch(`${API_BASE}/teams/lomba_list`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    }).then(handleResponse);
-  },
-
+  // POST buat tim baru. Perhatian: response sukses (HTTP 200) bisa tetap
+  // berisi { error: true, message: "..." } untuk kegagalan bisnis
+  // (misal: user sudah punya tim), jadi selalu cek field `error` juga.
   createTeam: (teamData) => {
     return fetch(`${API_BASE}/teams/create_team`, {
       method: 'POST',
@@ -67,6 +67,7 @@ export const teamAPI = {
     }).then(handleResponse);
   },
 
+  // GET daftar tim milik user yang login -> { success, data: [{id, nama_tim}] }
   getMyTeams: () => {
     return fetch(`${API_BASE}/teams/show_team`, {
       method: 'GET',
@@ -74,11 +75,30 @@ export const teamAPI = {
     }).then(handleResponse);
   },
 
+  // POST daftar anggota dari sebuah tim -> { success, data: [{id, nama_lengkap, asal_instansi, nomor_induk}] }
   getTeamMembers: (timId) => {
     return fetch(`${API_BASE}/teams/show_member_teams`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ tim_id: timId }),
+    }).then(handleResponse);
+  },
+
+  // POST hapus tim (beserta seluruh anggotanya)
+  deleteTeam: (timId) => {
+    return fetch(`${API_BASE}/teams/delete_team`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tim_id: timId }),
+    }).then(handleResponse);
+  },
+
+  // POST hapus satu anggota dari sebuah tim
+  deleteUserTeam: (timId, userId) => {
+    return fetch(`${API_BASE}/teams/delete_user_team`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tim_id: timId, user_id: userId }),
     }).then(handleResponse);
   },
 };
