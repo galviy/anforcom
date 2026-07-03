@@ -46,7 +46,7 @@ export async function handler(req: Request): Promise<Response> {
     let result2 = await authRepo.deleteUserTeam(tim_id,user_id);
 
 
-    return Response.json({ success: true }, { status: 404 })
+    return Response.json({ success: true }, { status: 200 })
 
   } catch(e){
     console.error(e)
