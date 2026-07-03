@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { authAPI } from '../api/api';
+import { authAPI, userAPI } from '../api/api';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -9,11 +9,20 @@ export default function Register() {
     email: '',
     password: '',
     no_tlp: '',              // ← Ganti dari no_tel
-    tingkat_pendidikan: ''   // ← Tambah ini (value: 0,1,2)
+    tingkat_pendidikan: ''   // ← value: 1 (S1/Sederajat) atau 2 (SMA/Sederajat)
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  // Kalau cookie session masih valid, jangan tampilkan form register lagi —
+  // langsung lempar ke dashboard.
+  useEffect(() => {
+    userAPI.getMe()
+      .then(() => navigate('/dashboard', { replace: true }))
+      .catch(() => setCheckingSession(false));
+  }, [navigate]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -33,7 +42,7 @@ export default function Register() {
         password: form.password,
         email: form.email,
         no_tlp: form.no_tlp,           // ← Field ini
-        tingkat_pendidikan: parseInt(form.tingkat_pendidikan) // ← Harus angka 0/1/2
+        tingkat_pendidikan: parseInt(form.tingkat_pendidikan) // ← Harus angka 1 atau 2
       });
       setSuccess(true);
       setTimeout(() => navigate('/login'), 1500);
@@ -43,6 +52,14 @@ export default function Register() {
       setLoading(false);
     }
   };
+
+  if (checkingSession) {
+    return (
+      <div className="auth-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <p>Memuat...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-container">
@@ -69,17 +86,14 @@ export default function Register() {
             <input type="tel" name="no_tlp" value={form.no_tlp} onChange={handleChange} placeholder="08xxxxxxxxxx" required />
           </div>
 
-          {/* ↓↓↓ TAMBAHKAN INI ↓↓↓ */}
           <div className="form-group">
             <label>Tingkat Pendidikan</label>
             <select name="tingkat_pendidikan" value={form.tingkat_pendidikan} onChange={handleChange} required>
               <option value="">Pilih tingkat pendidikan</option>
-              <option value="0">SMA/SMK</option>
-              <option value="1">D3</option>
-              <option value="2">S1</option>
+              <option value="1">S1/Sederajat</option>
+              <option value="2">SMA/Sederajat</option>
             </select>
           </div>
-          {/* ↑↑↑ TAMBAHKAN INI ↑↑↑ */}
 
           <div className="form-group">
             <label>Password</label>

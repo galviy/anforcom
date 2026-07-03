@@ -1,12 +1,21 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { authAPI } from '../api/api';
+import { authAPI, userAPI } from '../api/api';
 
 export default function Login() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [checkingSession, setCheckingSession] = useState(true);
+
+  // Kalau cookie session masih valid, jangan tampilkan form login lagi —
+  // langsung lempar ke dashboard.
+  useEffect(() => {
+    userAPI.getMe()
+      .then(() => navigate('/dashboard', { replace: true }))
+      .catch(() => setCheckingSession(false));
+  }, [navigate]);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -30,6 +39,14 @@ export default function Login() {
       setLoading(false);
     }
   };
+
+  if (checkingSession) {
+    return (
+      <div className="auth-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <p>Memuat...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-container">
