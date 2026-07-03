@@ -20,6 +20,7 @@ export class Server {
     
     const url = new URL(req.url)
     const pathname = url.pathname
+  
     if(pathname.startsWith("/api/"))
         return this.router.handle(req,pathname);
     return this.static_.handle(req,pathname)

@@ -9,6 +9,7 @@ export const method = 'GET'
 interface datar_tim {
   id: number;
   nama_tim: string;
+  isVerified: boolean;
 }
 
 export async function handler(req: Request): Promise<Response> {
@@ -45,8 +46,9 @@ export async function handler(req: Request): Promise<Response> {
     let p: datar_tim[] = []; 
 
     for(let i = 0; i < result.length; i++){
-        p.push({id:result[i].id,nama_tim:result[i].nama_tim});
+        p.push({id:result[i].id,nama_tim:result[i].nama_tim,isVerified:result[i].isVerified});
     }
+
     return Response.json({success:true,data:p},{status:200})
     
 

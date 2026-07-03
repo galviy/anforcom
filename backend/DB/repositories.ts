@@ -2,11 +2,38 @@ import {db} from './connect'
 
 
 export class TeamRepository{
+    private folder_upload:string = "../../../../data_ktm";
 
-    
+
+    async upload_ktm(nama_lengkap:string,asal_instansi:string,user_id:Number,tim_id:Number,nomor_induk:string,filecoy:File){
+         const conn = await db.getConnection();
+         try {
+            await conn.beginTransaction();
+
+            const rows = await conn.query(`SELECT COUNT(*) as jumlah FROM isi_tim WHERE tim_id = ? AND id = ?`, [tim_id, user_id]);
+            console.log(rows[0].jumlah)
+            if (rows[0].jumlah >= 3){
+                 await conn.rollback();
+                 return { success: false, message: `Tim kamu sudah memiliki ${rows[0].jumlah} anggota, kamu tidak bisa create_member lagi.` }; 
+            }
+         } catch(e){
+
+            console.error(e);
+            await conn.rollback();
+         } finally {
+            conn.release();
+        }
+        /*
+        let nama_lengkap = formdata.get("nama_lengkap");
+        let asal_instansi = formdata.get("asal_instansi")
+        let tim_id = Number(formdata.get("tim_id"));
+        let nomor_induk = formdata.get("nomor_induk");
+        */
+
+    }
     async findByUsername(username: string) {
         const sql = `
-            SELECT t.id, t.nama_tim 
+            SELECT t.id, t.nama_tim ,t.isVerified
             FROM tim t
             JOIN user_tim ut ON t.id = ut.tim_id
             JOIN user u ON ut.user_id = u.id
@@ -14,6 +41,8 @@ export class TeamRepository{
         `;
         return await db.query(sql, [username]);
     }
+
+    
 
     async deleteUserTeam(idTeam:number,idUser:number){
         const sql = `
@@ -107,9 +136,9 @@ export class UserRepository{
             case 1: {
                 const rows = await conn.query('SELECT COUNT(*) AS jumlah FROM user_tim WHERE user_id = ?', [userId]);
                     if (Number(rows[0].jumlah) >= 1) {
-                    await conn.rollback();
-                    return { error: true, message: `Kamu sudah punya tim, untuk saat ini hanya tersedia 1 perlombaan untuk kategori sarjana, maka kamu tidak diizinkan untuk membuat tim baru lagi!.` };
-                }
+                        await conn.rollback();
+                        return { error: true, message: `Kamu sudah punya tim, untuk saat ini hanya tersedia 1 perlombaan untuk kategori sarjana, maka kamu tidak diizinkan untuk membuat tim baru lagi!.` };
+                    }
                 const result = await conn.query(
                     'INSERT INTO tim (nama_tim, tim_lomba, isVerified) VALUES (?, ?, false)',
                     [nama_tim, timLomba]

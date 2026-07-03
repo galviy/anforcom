@@ -9,6 +9,7 @@ import * as show_u from './routes/teams/show_team'
 import * as show_t from './routes/teams/show_member_teams'
 import * as del_t from './routes/teams/delete_team'
 import * as del_u_t from './routes/teams/delete_user_team'
+import * as add_u from './routes/teams/add_user_team'
 
 const rutercoy = new Map([
     ['/auth/login', login],
@@ -18,7 +19,8 @@ const rutercoy = new Map([
     ['/teams/show_team',show_u],
     ['/teams/show_member_teams',show_t],
     ['/teams/delete_team',del_t],
-    ['/teams/delete_user_team',del_u_t]
+    ['/teams/delete_user_team',del_u_t],
+    ['/teams/add_user_team',add_u]
 
 ])
 
@@ -38,7 +40,9 @@ export class router {
         if (!url) return this.notFound;
         console.log(url)
         let route = rutercoy.get(url) 
+        console.log("masuk gak ?")
         if(!route) return this.notFound;
+
         return route.handler(req)
     }
 }
