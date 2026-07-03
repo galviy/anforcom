@@ -5,31 +5,37 @@ export class TeamRepository{
     private folder_upload:string = "../../../../data_ktm";
 
 
-    async upload_ktm(nama_lengkap:string,asal_instansi:string,user_id:Number,tim_id:Number,nomor_induk:string,filecoy:File){
-         const conn = await db.getConnection();
-         try {
+    async upload_ktm(nama_lengkap: string, asal_instansi: string, user_id: number, tim_id: number, nomor_induk: string, filecoy: File) {
+        const conn = await db.getConnection();
+        try {
             await conn.beginTransaction();
 
-            const rows = await conn.query(`SELECT COUNT(*) as jumlah FROM isi_tim WHERE tim_id = ? AND id = ?`, [tim_id, user_id]);
-            console.log(rows[0].jumlah)
-            if (rows[0].jumlah >= 3){
-                 await conn.rollback();
-                 return { success: false, message: `Tim kamu sudah memiliki ${rows[0].jumlah} anggota, kamu tidak bisa create_member lagi.` }; 
-            }
-         } catch(e){
+            // FOR UPDATE mengunci baris yang match, request lain harus nunggu sampai transaksi ini commit/rollback
+            const sql1 = await conn.query(
+            `SELECT COUNT(*) as jumlah FROM isi_tim WHERE tim_id = ? FOR UPDATE`,
+            [tim_id]
+            );
 
+            if (sql1[0].jumlah >= 3) {
+                await conn.rollback();
+                return { success: false, message: `Tim kamu sudah memiliki ${sql1[0].jumlah} anggota, kamu tidak bisa create_member lagi.` };
+            }
+
+            const sql2 = await conn.query(
+                `INSERT INTO isi_tim (nama_lengkap, asal_instansi, tim_id, nomor_induk) VALUES (?, ?, ?, ?)`,
+                [nama_lengkap, asal_instansi, tim_id, nomor_induk]
+            );
+
+            await conn.commit();
+            return { success: true, message: `successfully created a team member, id ${sql2.insertId}` };
+
+        } catch (e) {
             console.error(e);
             await conn.rollback();
-         } finally {
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
             conn.release();
         }
-        /*
-        let nama_lengkap = formdata.get("nama_lengkap");
-        let asal_instansi = formdata.get("asal_instansi")
-        let tim_id = Number(formdata.get("tim_id"));
-        let nomor_induk = formdata.get("nomor_induk");
-        */
-
     }
     async findByUsername(username: string) {
         const sql = `

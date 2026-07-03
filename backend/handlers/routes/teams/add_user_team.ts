@@ -71,30 +71,34 @@ export async function handler(req: Request): Promise<Response> {
       return Response.json({ success: false, error: "Tipe file tidak didukung" }, { status: 400 });
     }
     if (photo instanceof File) {
-  let nama_lengkap = formdata.get("nama_lengkap");
-  let asal_instansi = formdata.get("asal_instansi");
-  let tim_id = Number(formdata.get("tim_id"));
-  let nomor_induk = formdata.get("nomor_induk");
-  let ukuran_foto = photo.size / (1000 * 1000);
+      let nama_lengkap = formdata.get("nama_lengkap");
+      let asal_instansi = formdata.get("asal_instansi");
+      let tim_id = Number(formdata.get("tim_id"));
+      let nomor_induk = formdata.get("nomor_induk");
+      let ukuran_foto = photo.size / (1000 * 1000);
 
-  if (typeof nama_lengkap !== "string" || typeof asal_instansi !== "string" || typeof nomor_induk !== "string") {
-    return Response.json({ success: false, error: "Missing or invalid form fields" }, { status: 400 });
-  }
+      if (typeof nama_lengkap !== "string" || typeof asal_instansi !== "string" || typeof nomor_induk !== "string") {
+        return Response.json({ success: false, error: "Missing or invalid form fields" }, { status: 400 });
+      }
 
-  let result = await authRepo.timIdCheck(json.userId, Number(tim_id));
-  if (result.length == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 });
+      let result = await authRepo.timIdCheck(json.userId, Number(tim_id));
+      if (result.length == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 });
 
-  console.log(`nama_lengkap: ${nama_lengkap}\nasal_instansi: ${asal_instansi}\ntim_id: ${tim_id}\nnomor_induk: ${nomor_induk}\nukuran_foto: ${ukuran_foto} MB\nnama_foto: ${photo.name}`);
-  
-  if (ukuran_foto >= 10) return Response.json({ success: false, error: `Size file is way too big ${ukuran_foto}` });
-  
-  let nama_file = `${crypto.randomUUID()}.${ext}`;
-  
+      console.log(`nama_lengkap: ${nama_lengkap}\nasal_instansi: ${asal_instansi}\ntim_id: ${tim_id}\nnomor_induk: ${nomor_induk}\nukuran_foto: ${ukuran_foto} MB\nnama_foto: ${photo.name}`);
+      
+      if (ukuran_foto >= 10) return Response.json({ success: false, error: `Size file is way too big ${ukuran_foto}` });
+      
+      let nama_file = `${crypto.randomUUID()}.${ext}`;
+      
 
-  let up_data = authRepo.upload_ktm(nama_lengkap, asal_instansi, json.userId, tim_id, nomor_induk, photo);
-  
-  return Response.json({ success: true, message: `Uploaded ${photo.name} with size of ${ukuran_foto}`, nama_file: `${nama_file}` }, { status: 200 });
-}
+      let up_data = await authRepo.upload_ktm(nama_lengkap, asal_instansi, json.userId, tim_id, nomor_induk, photo);
+      console.log(up_data.success == true )
+      if (up_data.success) {
+         
+         return Response.json({ success: true, message: `Uploaded ${photo.name} with size of ${ukuran_foto}`, nama_file: `${nama_file}` }, { status: 200 });
+      }
+      return Response.json({ up_data }, { status: 403 })
+    }
     return Response.json({ success: false }, { status: 403 })
    
 
