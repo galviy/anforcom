@@ -1,8 +1,6 @@
 // routes/user/index.ts
 import { encryptCookie,parseCookie, decryptCookie } from '../../cookies'
 import {TeamRepository} from "../../../DB/repositories"
-import path from 'path'
-import fs from 'fs/promises'
 
 const authRepo = new TeamRepository()
 
@@ -89,10 +87,8 @@ export async function handler(req: Request): Promise<Response> {
       if (ukuran_foto >= 10) return Response.json({ success: false, error: `Size file is way too big ${ukuran_foto}` });
       
       let nama_file = `${crypto.randomUUID()}.${ext}`;
-      
 
-      let up_data = await authRepo.upload_ktm(nama_lengkap, asal_instansi, json.userId, tim_id, nomor_induk, photo);
-      console.log(up_data.success == true )
+      let up_data = await authRepo.upload_ktm(nama_lengkap, asal_instansi, json.userId, tim_id, nomor_induk, photo,nama_file);
       if (up_data.success) {
          
          return Response.json({ success: true, message: `Uploaded ${photo.name} with size of ${ukuran_foto}`, nama_file: `${nama_file}` }, { status: 200 });

@@ -1,29 +1,70 @@
 import {db} from './connect'
-
+import path from 'path'; 
 
 export class TeamRepository{
-    private folder_upload:string = "../../../../data_ktm";
+    private folder_upload: string = path.join(import.meta.dir, "../../data_ktm");
+
+   async check_file_sesuai(idUser: number, nama_file: string) {
+        const conn = await db.getConnection();
+        try {
+            const sql = await conn.query(
+                `SELECT ut.user_id 
+                FROM isi_tim it
+                JOIN user_tim ut ON it.tim_id = ut.tim_id
+                WHERE it.data_image = ?`, 
+                [nama_file]
+            );
+            if (sql.length == 0) {
+                return { success: false, message: 'not found' }; 
+            }
+
+            if (Number(idUser) !== Number(sql[0].user_id)) {
+                return { success: false, message: 'pentester kah bang?' };
+            }
+            
+            return { success: true };  
+        } catch (e) {
+            console.error(e);
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+           
+            conn.release();
+        }
+    }
 
 
-    async upload_ktm(nama_lengkap: string, asal_instansi: string, user_id: number, tim_id: number, nomor_induk: string, filecoy: File) {
+    async upload_ktm_file(filecoy: File, nama_ktm: string) {
+        try {
+            const filePath = path.join(this.folder_upload, nama_ktm);
+            await Bun.write(filePath, filecoy);
+            console.log("Saved to:", filePath);
+            return filePath;
+        } catch (e) {
+            console.error(e);
+            throw e; 
+        }
+    }
+    
+    async upload_ktm(nama_lengkap: string, asal_instansi: string, user_id: number, tim_id: number, nomor_induk: string, filecoy: File,nama_ktm:string) {
         const conn = await db.getConnection();
         try {
             await conn.beginTransaction();
 
             // FOR UPDATE mengunci baris yang match, request lain harus nunggu sampai transaksi ini commit/rollback
             const sql1 = await conn.query(
-            `SELECT COUNT(*) as jumlah FROM isi_tim WHERE tim_id = ? FOR UPDATE`,
-            [tim_id]
+                `SELECT COUNT(*) as jumlah FROM isi_tim WHERE tim_id = ? FOR UPDATE`,
+                [tim_id]
             );
 
             if (sql1[0].jumlah >= 3) {
                 await conn.rollback();
                 return { success: false, message: `Tim kamu sudah memiliki ${sql1[0].jumlah} anggota, kamu tidak bisa create_member lagi.` };
             }
-
+            await this.upload_ktm_file(filecoy,nama_ktm)
+            console.log(nama_ktm)
             const sql2 = await conn.query(
-                `INSERT INTO isi_tim (nama_lengkap, asal_instansi, tim_id, nomor_induk) VALUES (?, ?, ?, ?)`,
-                [nama_lengkap, asal_instansi, tim_id, nomor_induk]
+                `INSERT INTO isi_tim (nama_lengkap, asal_instansi, tim_id, nomor_induk,data_image) VALUES (?, ?, ?, ?, ?)`,
+                [nama_lengkap, asal_instansi, tim_id, nomor_induk,nama_ktm]
             );
 
             await conn.commit();

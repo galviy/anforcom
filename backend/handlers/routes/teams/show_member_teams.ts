@@ -11,6 +11,7 @@ interface isi_tim {
   nama_lengkap: string;
   asal_instansi:string;
   nomor_induk:string;
+  data_image:string;
 
 }
 
@@ -55,7 +56,7 @@ export async function handler(req: Request): Promise<Response> {
     //console.log(result2);
     let p: isi_tim[] = []; 
     for(let i = 0; i < result2.length; i++){
-        p.push({id:result2[i].id,nama_lengkap:result2[i].nama_lengkap,asal_instansi:result2[i].asal_instansi,nomor_induk:result2[i].nomor_induk});
+        p.push({id:result2[i].id,nama_lengkap:result2[i].nama_lengkap,asal_instansi:result2[i].asal_instansi,nomor_induk:result2[i].nomor_induk,data_image:result2[i].data_image});
     }
     return Response.json({ success: true, data: p }, { status: 200 })
 

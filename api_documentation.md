@@ -141,7 +141,7 @@ Content-Type: application/json;charset=utf-8
 Date: Wed, 01 Jul 2026 14:35:30 GMT
 Content-Length: 115
 
-{"success":true,"data":[{"id":1,"nama_lengkap":"Galvin S","asal_instansi":"UNDIP","nomor_induk":"24060124140162"}]}
+{"success":true,"data":[{"id":12,"nama_lengkap":"Galvin Shala","asal_instansi":"Universitas Diponegoro","nomor_induk":"24060124140162","data_image":"beb688de-a4e0-41cc-a8ea-ea6841663aff.jpg"},{"id":13,"nama_lengkap":"Galvin Shala","asal_instansi":"Universitas Diponegoro","nomor_induk":"24060124140162","data_image":"4f530414-018d-4eee-b824-fe8cf4c31e85.jpg"},{"id":14,"nama_lengkap":"Galvin Shala","asal_instansi":"Universitas Diponegoro","nomor_induk":"24060124140162","data_image":"ec260abb-7a80-4d9d-aaf6-2ebc48b3fce5.jpg"}]}
 
 [INFO] Waktu Total Respons: 0.004338 detik
 ```
@@ -193,3 +193,14 @@ Content-Length: 16
 
 [INFO] Waktu Total Respons: 0.010545 detik
 ```
+
+# view ktm tiap user
+
+```curl
+curl -X GET http://127.0.0.1:1337/api/teams/view_ktm?id=4f530414-018d-4eee-b824-fe8cf4c31e85.jpg \
+-H "Cookie: session=active_session"
+```
+
+Response berhasil
+
+file dati data_ktm
