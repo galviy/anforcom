@@ -204,3 +204,25 @@ curl -X GET http://127.0.0.1:1337/api/teams/view_ktm?id=4f530414-018d-4eee-b824-
 Response berhasil
 
 file dati data_ktm
+
+# Add user team
+
+```curl
+curl -X POST http://127.0.0.1:1337/api/teams/add_user_team \
+-H "Cookie: session=active_session" \
+-F "nama_lengkap=Galvin Shala" \
+-F "asal_instansi=Universitas Diponegoro" \
+-F "tim_id=409" \
+-F "nomor_induk=24060124140162" \
+-F "data_photo=@$HOME/Downloads/file.jpg;type=image/jpeg"
+                                                                   
+```
+
+Response berhasil
+```nginx
+{
+  "success": true,
+  "message": "Uploaded namafoto.jpg with size of 2.3456",
+  "nama_file": "a1b2c3d4-uuid.jpg"
+}
+```
