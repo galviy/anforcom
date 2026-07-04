@@ -29,10 +29,11 @@ CREATE TABLE `isi_tim` (
   `asal_instansi` varchar(100) NOT NULL,
   `tim_id` int(11) DEFAULT NULL,
   `nomor_induk` varchar(100) NOT NULL,
+  `data_image` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `isi_tim_tim_FK` (`tim_id`),
   CONSTRAINT `isi_tim_tim_FK` FOREIGN KEY (`tim_id`) REFERENCES `tim` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -43,7 +44,9 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `isi_tim` WRITE;
 /*!40000 ALTER TABLE `isi_tim` DISABLE KEYS */;
 INSERT INTO `isi_tim` VALUES
-(1,'Galvin S','UNDIP',408,'24060124140162');
+(12,'Galvin Shala','Universitas Diponegoro',409,'24060124140162','beb688de-a4e0-41cc-a8ea-ea6841663aff.jpg'),
+(13,'Galvin Shala','Universitas Diponegoro',409,'24060124140162','4f530414-018d-4eee-b824-fe8cf4c31e85.jpg'),
+(14,'Galvin Shala','Universitas Diponegoro',409,'24060124140162','ec260abb-7a80-4d9d-aaf6-2ebc48b3fce5.jpg');
 /*!40000 ALTER TABLE `isi_tim` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -124,7 +127,7 @@ CREATE TABLE `tim` (
   UNIQUE KEY `tim_unique` (`nama_tim`),
   KEY `tim_lomba_FK` (`tim_lomba`),
   CONSTRAINT `tim_lomba_FK` FOREIGN KEY (`tim_lomba`) REFERENCES `lomba` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=409 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=414 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -137,7 +140,8 @@ LOCK TABLES `tim` WRITE;
 INSERT INTO `tim` VALUES
 ('masih pemula bang',6,1,0),
 ('tutor puh sepuh',407,1,0),
-('Jangan lupa join arkavidia',408,2,0);
+('Jangan lupa join arkavidia',409,2,0),
+('galvin123',411,2,0);
 /*!40000 ALTER TABLE `tim` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -194,7 +198,7 @@ CREATE TABLE `user` (
   KEY `user_role_FK` (`role_user`),
   CONSTRAINT `user_role_FK` FOREIGN KEY (`role_user`) REFERENCES `role` (`id`),
   CONSTRAINT `user_tingkat_pendidikan_FK` FOREIGN KEY (`tingkat_pendidikan_id`) REFERENCES `tingkat_pendidikan` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -209,7 +213,9 @@ INSERT INTO `user` VALUES
 (6,'galvin','$2b$10$sYFX4y.ilQaCNaRBJx8zLOSAeUbGk5Zrdh.6MKDa5lomiUHOlvCV.','galvindoser@gmail.com','085892297874',1,1),
 (7,'{{7*7}}','$2b$10$VAd0XMpqli2ojtcz4dpYuO0GWabYrY3BUtSzEsCZr8s.nSTql3DK2','galvindodawser@gmail.com','084892297874',1,1),
 (8,'galvintest','$2b$10$iAvfQA1wl0QJUcGlUSjKSOUvCQnXuqNuus4rm2KPdvKDNe82Spl22','galvindoserr@gmail.com','0848992297874',1,1),
-(9,'galvinpentest','$2b$10$wV1bCPlMfExl.aDITlhvbuni6YIRK8EuopgIBsfswvG9Ihr7TSY0y','galvinexploit@gmail.com','0816102627',2,1);
+(9,'galvinpentest','$2b$10$wV1bCPlMfExl.aDITlhvbuni6YIRK8EuopgIBsfswvG9Ihr7TSY0y','galvinexploit@gmail.com','0816102627',2,1),
+(10,'galvin123','$2b$10$j7CxzycN0e2OLC6WgqTGe.cbopqpraaEYoLY7bsvNAYTDAP.OHg1a','galvin123@gmail.com','085892297871',1,1),
+(11,'v33n','$2b$10$8rZ5DJU0FzuZQlw7KzoK7.Hfad9R7IQMc/IvBE1GVn6gXrBrnsg42','123@gmail.com','081610218',1,1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -240,8 +246,9 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `user_tim` WRITE;
 /*!40000 ALTER TABLE `user_tim` DISABLE KEYS */;
 INSERT INTO `user_tim` VALUES
-(408,8),
-(6,9);
+(409,8),
+(6,9),
+(411,10);
 /*!40000 ALTER TABLE `user_tim` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -256,4 +263,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-07-02  9:21:05
+-- Dump completed on 2026-07-04 17:19:19
