@@ -1,4 +1,6 @@
 import path from 'path'
+import {session_handler,RateLimiter} from "./middleware"
+import { parseCookie } from './cookies'
 
 const ROOT = path.join(import.meta.dir)
 import * as login from './routes/auth/login'
@@ -25,6 +27,7 @@ const rutercoy = new Map([
     ['/teams/view_ktm',view_ktm]
 ])
 
+
 export class router {
     private publicDir: string
 
@@ -36,14 +39,39 @@ export class router {
         return new Response(null, {status:404});
     }
 
-    async handle(req: Request,pathname: string): Promise<Response> {
+    async handle(req: Request,pathname: string,server: Bun.Server<any>): Promise<Response> {
         let url = pathname.replace("/api", "");
         if (!url) return this.notFound;
-        console.log(url)
         let route = rutercoy.get(url) 
-        //console.log("masuk gak ?")
-        if(!route) return this.notFound;
+        
 
-        return route.handler(req)
+        if(!route) return this.notFound;
+        
+        if (url == '/auth/login' || url == '/auth/create_account'){
+           
+           return route.handler(req,  "ok");
+        }
+        const cookieHeader = req.headers.get('cookie')
+        if (!cookieHeader) {
+            return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
+        }
+        const raw = parseCookie(cookieHeader)?.session
+        if (!raw) {
+            return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
+        }
+
+        let json = await session_handler(raw);
+         if (json instanceof Response) {
+            return json; //kata ai lebih stabil gini :v
+        }
+        /*
+        if (json.ok == false){
+            //console.log("Blocked by middleware")
+            return json;
+        }*/
+       
+
+       
+        return route.handler(req,json);
     }
 }

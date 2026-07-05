@@ -1,28 +1,31 @@
 import { Logger } from './logger'
 import { StaticHandler } from './handlers/staticHandler'
 import { router } from './handlers/router'
-import { db } from './DB/connect'
+import {RateLimiter} from './handlers/middleware'
 
 
 export class Server {
   private logger = new Logger()
   private static_ = new StaticHandler()
   private router = new router();
-  // private db = new Connect("127.0.0.1", 3306, "anforcom_dummy") 
-  
-  
+  private limiter = new RateLimiter(100, 10000); 
+
+
  private port = Number(Bun.env.Backend_PORT) 
 
+
   private async handleRequest(req: Request,server: Bun.Server<any>): Promise<Response> {
-    // console.log(server.requestIP(req))
-    // console.log(req)
-    //console.log(new URL(req.url).pathname)
+   
     
     const url = new URL(req.url)
     const pathname = url.pathname
+    const ip = server.requestIP(req)?.address ?? "unknown";
+    if (!this.limiter.isAllowed(ip)) {
+      return new Response(null, { status: 429 });
+    }
   
     if(pathname.startsWith("/api/"))
-        return this.router.handle(req,pathname);
+        return this.router.handle(req,pathname,server);
     return this.static_.handle(req,pathname)
   }
 

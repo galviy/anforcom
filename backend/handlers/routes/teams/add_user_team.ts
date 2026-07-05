@@ -1,9 +1,6 @@
-// routes/user/index.ts
-import { encryptCookie,parseCookie, decryptCookie } from '../../cookies'
 import {TeamRepository} from "../../../DB/repositories"
 
 const authRepo = new TeamRepository()
-
 
 const allowedTypes = new Set([
   "image/jpeg",
@@ -20,39 +17,10 @@ const allowedExtensions = new Set([
 
 let folder_upload = "../../../../data_ktm";
 
-
-export async function handler(req: Request): Promise<Response> {
-  console.log("masuk ke dalam /api/teams/add_user_team")
- 
-  const cookieHeader = req.headers.get('cookie')
-   
-  
+export async function handler(req: Request, json?: any): Promise<Response> {
    if (req.method != 'POST')  return new Response(null, {status:404});
-   
-
-  if (!cookieHeader) {
-    return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
-  }
-
-
-  const raw = parseCookie(cookieHeader)?.session
-  if (!raw) {
-    return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
-  }
-
-  let decrypted = await decryptCookie(raw)
-
-  if (!decrypted) {
-    return Response.json({ success: false, error: "Session tidak valid" }, { status: 401 })
-  }
-
   try {
-    let json = JSON.parse(decrypted);
-
-    if (!json) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
-    if (!json.userId) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
-    if (Math.floor(Date.now() / 1000) > json.valid_until) return Response.json({ success: false, error: "inactived session" }, { status: 401 })
-  
+    
     const formdata = await req.formData(); 
     if (!formdata.get("nama_lengkap") || !formdata.get("asal_instansi") || !formdata.get("tim_id") || !formdata.get("nomor_induk") || !formdata.get("data_photo")) {
        return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })

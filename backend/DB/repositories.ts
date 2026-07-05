@@ -50,7 +50,6 @@ export class TeamRepository{
         try {
             await conn.beginTransaction();
 
-            // FOR UPDATE mengunci baris yang match, request lain harus nunggu sampai transaksi ini commit/rollback
             const sql1 = await conn.query(
                 `SELECT COUNT(*) as jumlah FROM isi_tim WHERE tim_id = ? FOR UPDATE`,
                 [tim_id]
@@ -97,7 +96,9 @@ export class TeamRepository{
             isi_tim 
             where id = ? and tim_id = ?
         `
-        return await db.query(sql,[idUser,idTeam])
+        const result = await db.query(sql,[idUser,idTeam]);
+
+        return result;
     }
     async deleteTeam(IdTeam: number) {
         const conn = await db.getConnection();
