@@ -5,9 +5,9 @@ export const method = 'GET'
 
 export async function handler(req: Request, json?: any): Promise<Response> {
   
-   const text = await req.text()
-   console.log(text)
+   
    if (req.method != 'POST')  return new Response(null, {status:404});
+   const text = await req.text()
    if (!text) {
     return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
   }

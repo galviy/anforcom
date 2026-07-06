@@ -22,8 +22,8 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     return Response.json({success:true,data:p},{status:200})
     
   } catch(e){
-    
-    return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
+    console.error(e)
+   return Response.json({ success: false, error: "Internal server error" }, { status: 500 })
   }
   
 }

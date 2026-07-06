@@ -3,8 +3,9 @@ const authRepo = new UserRepository()
 
 export async function handler(req: Request, json?: any): Promise<Response> {
 
-   const text = await req.text()
+   
    if (req.method != 'POST')  return new Response(null, {status:404});
+   const text = await req.text()
    if (!text) {
     return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
   }
@@ -36,7 +37,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     }
 
   } catch(e){
-    return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
+    return Response.json({ success: false, error: "Internal server error" }, { status: 500 })
   }
   
 }

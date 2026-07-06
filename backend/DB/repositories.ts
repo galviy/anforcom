@@ -173,6 +173,18 @@ export class UserRepository{
             throw error;
         }
     }
+    async updatePassword(userId: number, hashedPassword: string) {
+        const result = await db.query(
+            `UPDATE user 
+            SET password = ? 
+            WHERE id = ?;`,
+            [hashedPassword, userId]
+        );
+
+        if (result.affectedRows === 0) {
+            throw new Error("User not found");
+        }
+    }
 
     async createTeam(pendidikan_id: number, userId: string, nama_tim: string, timLomba: string) {
         const conn = await db.getConnection();

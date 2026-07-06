@@ -4,9 +4,8 @@ import {UserRepository} from "../../../DB/repositories"
 
 const authRepo = new UserRepository()
 
-export const method = 'GET'
 
-export async function handler(req: Request,json: JSON): Promise<Response> {
+export async function handler(req: Request,json: any): Promise<Response> {
   if (req.method !== 'GET') return new Response(null, { status: 404 });
   
   return new Response("Logged out successfully", {

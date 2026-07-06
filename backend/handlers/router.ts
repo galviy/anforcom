@@ -13,6 +13,7 @@ import * as del_t from './routes/teams/delete_team'
 import * as del_u_t from './routes/teams/delete_user_team'
 import * as add_u from './routes/teams/add_user_team'
 import * as view_ktm from './routes/teams/view_ktm'
+import * as logout from './routes/user/logout'
 
 const rutercoy = new Map([
     ['/auth/login', login],
@@ -24,7 +25,8 @@ const rutercoy = new Map([
     ['/teams/delete_team',del_t],
     ['/teams/delete_user_team',del_u_t],
     ['/teams/add_user_team',add_u],
-    ['/teams/view_ktm',view_ktm]
+    ['/teams/view_ktm',view_ktm],
+    ['/user/me', logout]
 ])
 
 
