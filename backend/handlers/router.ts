@@ -26,7 +26,7 @@ const rutercoy = new Map([
     ['/teams/delete_user_team',del_u_t],
     ['/teams/add_user_team',add_u],
     ['/teams/view_ktm',view_ktm],
-    ['/user/me', logout]
+    ['/user/me/logout', logout]
 ])
 
 
