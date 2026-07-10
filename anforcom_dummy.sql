@@ -17,6 +17,46 @@
 /*M!100616 SET @OLD_NOTE_VERBOSITY=@@NOTE_VERBOSITY, NOTE_VERBOSITY=0 */;
 
 --
+-- Table structure for table `dummy_user`
+--
+
+DROP TABLE IF EXISTS `dummy_user`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `dummy_user` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(100) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `no_tlp` varchar(100) NOT NULL,
+  `tingkat_pendidikan_id` int(11) NOT NULL,
+  `role_user` int(11) DEFAULT NULL,
+  `date_register` datetime DEFAULT current_timestamp(),
+  `token_verifikasi` varchar(255) DEFAULT NULL,
+  `email_verified` tinyint(1) NOT NULL DEFAULT 0,
+  `token_expired_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_tingkat_pendidikan_FK` (`tingkat_pendidikan_id`),
+  KEY `user_role_FK` (`role_user`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dummy_user`
+--
+
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
+LOCK TABLES `dummy_user` WRITE;
+/*!40000 ALTER TABLE `dummy_user` DISABLE KEYS */;
+INSERT INTO `dummy_user` VALUES
+(2,'galvintestemail','$2b$10$CznF7QStmyG0A.WPlxTsneRMNodWWrizI8/Fkr2mGU9.yzuWGQD/2','galvindoser@gmail.com','0848927874',1,1,'2026-07-10 22:54:08','27f0991a-82fe-41b7-85b1-2807a4de0549',0,NULL),
+(3,'galvintestemail','$2b$10$Osk0mfegOtzPkTnY9fZPO.H8nDFEvseYlyPeINT1htFGMnYqs3rqK','galvindoser@gmail.com','0848927874',1,1,'2026-07-10 22:54:57','b05f2e48-bb1e-4576-a2d8-1874637a8314',0,NULL);
+/*!40000 ALTER TABLE `dummy_user` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
+
+--
 -- Table structure for table `isi_tim`
 --
 
@@ -43,10 +83,6 @@ CREATE TABLE `isi_tim` (
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `isi_tim` WRITE;
 /*!40000 ALTER TABLE `isi_tim` DISABLE KEYS */;
-INSERT INTO `isi_tim` VALUES
-(12,'Galvin Shala','Universitas Diponegoro',409,'24060124140162','beb688de-a4e0-41cc-a8ea-ea6841663aff.jpg'),
-(13,'Galvin Shala','Universitas Diponegoro',409,'24060124140162','4f530414-018d-4eee-b824-fe8cf4c31e85.jpg'),
-(14,'Galvin Shala','Universitas Diponegoro',409,'24060124140162','ec260abb-7a80-4d9d-aaf6-2ebc48b3fce5.jpg');
 /*!40000 ALTER TABLE `isi_tim` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -63,7 +99,7 @@ CREATE TABLE `lomba` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nama_lomba` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -74,9 +110,9 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `lomba` WRITE;
 /*!40000 ALTER TABLE `lomba` DISABLE KEYS */;
 INSERT INTO `lomba` VALUES
-(1,'DUC (SMA/Sederajat)'),
-(2,'DUC (Perguruan Tinggi)'),
-(3,'DCPC (SMA/Sederajat)');
+(1,'DUC (SMA/Sarjana)'),
+(2,'DCPC (SMA/Sederajat)'),
+(3,'DSDC (Sarjana)');
 /*!40000 ALTER TABLE `lomba` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -127,7 +163,7 @@ CREATE TABLE `tim` (
   UNIQUE KEY `tim_unique` (`nama_tim`),
   KEY `tim_lomba_FK` (`tim_lomba`),
   CONSTRAINT `tim_lomba_FK` FOREIGN KEY (`tim_lomba`) REFERENCES `lomba` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=414 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=420 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,10 +174,8 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `tim` WRITE;
 /*!40000 ALTER TABLE `tim` DISABLE KEYS */;
 INSERT INTO `tim` VALUES
-('masih pemula bang',6,1,0),
-('tutor puh sepuh',407,1,0),
-('Jangan lupa join arkavidia',409,2,0),
-('galvin123',411,2,0);
+('Test sahaja',415,3,0),
+('Test 2',419,1,0);
 /*!40000 ALTER TABLE `tim` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -198,7 +232,7 @@ CREATE TABLE `user` (
   KEY `user_role_FK` (`role_user`),
   CONSTRAINT `user_role_FK` FOREIGN KEY (`role_user`) REFERENCES `role` (`id`),
   CONSTRAINT `user_tingkat_pendidikan_FK` FOREIGN KEY (`tingkat_pendidikan_id`) REFERENCES `tingkat_pendidikan` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -210,12 +244,12 @@ LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
 INSERT INTO `user` VALUES
 (5,'galvin2','$2b$10$iwAOWztRVpVRZwNZPGUVPO4XycOXyWbgU07kx2b.1VsJs9lMibGom','galvinchan0997@gmail.com','08589',1,1),
-(6,'galvin','$2b$10$sYFX4y.ilQaCNaRBJx8zLOSAeUbGk5Zrdh.6MKDa5lomiUHOlvCV.','galvindoser@gmail.com','085892297874',1,1),
 (7,'{{7*7}}','$2b$10$VAd0XMpqli2ojtcz4dpYuO0GWabYrY3BUtSzEsCZr8s.nSTql3DK2','galvindodawser@gmail.com','084892297874',1,1),
 (8,'galvintest','$2b$10$iAvfQA1wl0QJUcGlUSjKSOUvCQnXuqNuus4rm2KPdvKDNe82Spl22','galvindoserr@gmail.com','0848992297874',1,1),
 (9,'galvinpentest','$2b$10$wV1bCPlMfExl.aDITlhvbuni6YIRK8EuopgIBsfswvG9Ihr7TSY0y','galvinexploit@gmail.com','0816102627',2,1),
 (10,'galvin123','$2b$10$j7CxzycN0e2OLC6WgqTGe.cbopqpraaEYoLY7bsvNAYTDAP.OHg1a','galvin123@gmail.com','085892297871',1,1),
-(11,'v33n','$2b$10$8rZ5DJU0FzuZQlw7KzoK7.Hfad9R7IQMc/IvBE1GVn6gXrBrnsg42','123@gmail.com','081610218',1,1);
+(11,'v33n','$2b$10$8rZ5DJU0FzuZQlw7KzoK7.Hfad9R7IQMc/IvBE1GVn6gXrBrnsg42','123@gmail.com','081610218',1,1),
+(13,'galvinyadayada','$2b$10$QaKHVKuoQ93XLEaJ6X1bbuDse9ow1beeRXM0GBElbjPRICGJgzlDy','galvindoser@gmail.com','08489922978282874',1,1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -246,9 +280,8 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `user_tim` WRITE;
 /*!40000 ALTER TABLE `user_tim` DISABLE KEYS */;
 INSERT INTO `user_tim` VALUES
-(409,8),
-(6,9),
-(411,10);
+(415,8),
+(419,8);
 /*!40000 ALTER TABLE `user_tim` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -263,4 +296,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-07-04 17:19:19
+-- Dump completed on 2026-07-10 23:46:17
