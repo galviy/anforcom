@@ -18,14 +18,16 @@ export async function handler(req: Request, json?: any): Promise<Response> {
 
     switch(json.tingkat_pendidikan){
         case 1:{
-            if (lomba_id == 1 || lomba_id == 3) return Response.json({ success: false, error: "Saat ini kamu terdaftar sebagai Kategori (Sarjana),lomba tersebut hanya tersedia untuk kategori SMA/Sederajat!" }, { status: 401 })
-               const result = await authRepo.createTeam(json.tingkat_pendidikan, json.userId, team_name, lomba_id);
+            if (lomba_id == 2) return Response.json({ success: false, error: "Saat ini kamu terdaftar sebagai Kategori (Sarjana),lomba tersebut hanya tersedia untuk kategori SMA/Sederajat!" }, { status: 401 })
+            if (lomba_id > 3)  return Response.json({ success: false, error: "Invalid Lomba ID??" }, { status: 401 })
+            const result = await authRepo.createTeam(json.tingkat_pendidikan, json.userId, team_name, lomba_id);
 
-              if (!result) return Response.json({ success: false, error: "internal server error" }, { status: 500 })
-              return Response.json(result);
+            if (!result) return Response.json({ success: false, error: "internal server error" }, { status: 500 })
+            return Response.json(result);
         } break;
         case 2:{
-            if (lomba_id == 2) return Response.json({ success: false, error: "Saat ini kamu terdaftar sebagai Kategori (SMA/Sederajat), lomba tersebut hanya tersedia untuk kategori Sarjana!" }, { status: 401 })
+            if (lomba_id == 3) return Response.json({ success: false, error: "Saat ini kamu terdaftar sebagai Kategori (SMA/Sederajat), lomba tersebut hanya tersedia untuk kategori Sarjana!" }, { status: 401 })
+              if (lomba_id > 3)  return Response.json({ success: false, error: "Invalid Lomba ID??" }, { status: 401 })
               const result = await authRepo.createTeam(json.tingkat_pendidikan, json.userId, team_name, lomba_id);
               if (!result) return Response.json({ success: false, error: "internal server error" }, { status: 500 })
               return Response.json(result);

@@ -14,6 +14,7 @@ import * as del_u_t from './routes/teams/delete_user_team'
 import * as add_u from './routes/teams/add_user_team'
 import * as view_ktm from './routes/teams/view_ktm'
 import * as logout from './routes/user/logout'
+import * as verification from "./routes/auth/verification"
 
 const rutercoy = new Map([
     ['/auth/login', login],
@@ -26,7 +27,8 @@ const rutercoy = new Map([
     ['/teams/delete_user_team',del_u_t],
     ['/teams/add_user_team',add_u],
     ['/teams/view_ktm',view_ktm],
-    ['/user/me/logout', logout]
+    ['/user/me/logout', logout],
+    ['/auth/verification',verification]
 ])
 
 
@@ -49,7 +51,7 @@ export class router {
 
         if(!route) return this.notFound;
         
-        if (url == '/auth/login' || url == '/auth/create_account'){
+        if (url == '/auth/login' || url == '/auth/create_account' || url == '/auth/verification'){
            
            return route.handler(req,  "ok");
         }

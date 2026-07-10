@@ -32,12 +32,97 @@ export class TeamRepository{
         }
     }
 
+    async cek_dummy_user(token: string) {
+        const conn = await db.getConnection();
+
+        try {
+            await conn.beginTransaction();
+
+            const rows = await conn.query(
+                `SELECT * FROM dummy_user WHERE token_verifikasi = ? FOR UPDATE`,
+                [token]
+            );
+
+            if (rows.length === 0) {
+                await conn.rollback();
+                return {
+                    success: false,
+                    message: "Token verifikasi tidak valid."
+                };
+            }
+
+            const dummy = rows[0];
+
+            const createdAt = new Date(dummy.date_register);
+            const now = new Date();
+
+            const diffMs = now.getTime() - createdAt.getTime();
+            const diffHours = diffMs / (1000 * 60 * 60);
+
+            if (diffHours > 24) {
+                await conn.rollback();
+                return {
+                    success: false,
+                    message: "Token verifikasi sudah kedaluwarsa."
+                };
+            }
+
+            const emailCheck  = await conn.query(
+                `SELECT COUNT(*) AS total FROM user WHERE email = ?`,
+                [dummy.email]
+            );
+
+            if (emailCheck[0].total > 0) {
+                await conn.rollback();
+                return {
+                    success: false,
+                    message: `${dummy.email} sudah terdaftar mungkin bisa cek email anda :) ??`
+                };
+            }
+
+            await conn.query(
+                `
+                INSERT INTO user
+                (
+                    username,
+                    password,
+                    email,
+                    no_tlp,
+                    tingkat_pendidikan_id,
+                    role_user
+                )
+                VALUES (?, ?, ?, ?, ?, ?)
+                `,
+                [dummy.username,dummy.password,dummy.email,dummy.no_tlp,dummy.tingkat_pendidikan_id,dummy.role_user]
+            );
+
+            await conn.query(
+                `DELETE FROM dummy_user WHERE id = ?`,
+                [dummy.id]
+            );
+
+            await conn.commit();
+
+            return {
+                success: true,
+                message: `Successfully created the account, please login using your email ${dummy.email} and password.`
+            };
+
+        } catch (e) {
+            await conn.rollback();
+            console.error(e);
+            throw e;
+        } finally {
+            conn.release();
+        }
+    }
+
 
     async upload_ktm_file(filecoy: File, nama_ktm: string) {
         try {
             const filePath = path.join(this.folder_upload, nama_ktm);
             await Bun.write(filePath, filecoy);
-            console.log("Saved to:", filePath);
+            //console.log("Saved to:", filePath);
             return filePath;
         } catch (e) {
             console.error(e);
@@ -60,7 +145,7 @@ export class TeamRepository{
                 return { success: false, message: `Tim kamu sudah memiliki ${sql1[0].jumlah} anggota, kamu tidak bisa create_member lagi.` };
             }
             await this.upload_ktm_file(filecoy,nama_ktm)
-            console.log(nama_ktm)
+            //console.log(nama_ktm)
             const sql2 = await conn.query(
                 `INSERT INTO isi_tim (nama_lengkap, asal_instansi, tim_id, nomor_induk,data_image) VALUES (?, ?, ?, ?, ?)`,
                 [nama_lengkap, asal_instansi, tim_id, nomor_induk,nama_ktm]
@@ -153,6 +238,40 @@ export class UserRepository{
         return await db.query("select * from user where no_tlp = ?", [phone_number]);
     }
 
+    async create_dummy_user(user: string,pass: string,email: string,no_telp: string,pendidikan: number,token_verif: string) {
+        try {
+            const hashedPassword = await Bun.password.hash(pass, {
+                algorithm: "bcrypt",
+                cost: 10,
+            });
+
+            const sql = `
+                INSERT INTO dummy_user (
+                    username,
+                    password,
+                    email,
+                    no_tlp,
+                    tingkat_pendidikan_id,
+                    role_user,
+                    token_verifikasi
+                )
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            `;
+
+            return await db.query(sql, [
+                user,
+                hashedPassword,
+                email,
+                no_telp,
+                pendidikan,
+                1,              
+                token_verif      
+            ]);
+        } catch (e) {
+            console.error("Gagal membuat akun dummy:", e);
+            throw e;
+        }
+    }
     async create_account(user: string, pass: string, email: string, no_telp: string, pendidikan: number) {
         try {
 
@@ -180,10 +299,8 @@ export class UserRepository{
             WHERE id = ?;`,
             [hashedPassword, userId]
         );
-
-        if (result.affectedRows === 0) {
-            throw new Error("User not found");
-        }
+        return result;
+       
     }
 
     async createTeam(pendidikan_id: number, userId: string, nama_tim: string, timLomba: string) {
@@ -194,10 +311,10 @@ export class UserRepository{
 
             switch (pendidikan_id) {
             case 1: {
-                const rows = await conn.query('SELECT COUNT(*) AS jumlah FROM user_tim WHERE user_id = ?', [userId]);
+                const rows = await conn.query('select count(*) as jumlah from user_tim ut join tim t on ut.tim_id = t.id  where user_id = ? and tim_lomba = ?', [userId,timLomba]);
                     if (Number(rows[0].jumlah) >= 1) {
                         await conn.rollback();
-                        return { error: true, message: `Kamu sudah punya tim, untuk saat ini hanya tersedia 1 perlombaan untuk kategori sarjana, maka kamu tidak diizinkan untuk membuat tim baru lagi!.` };
+                        return { error: true, message: `Kamu sebelumnya sudah memiliki tim dengan kategori lomba tersebut!.` };
                     }
                 const result = await conn.query(
                     'INSERT INTO tim (nama_tim, tim_lomba, isVerified) VALUES (?, ?, false)',
@@ -212,10 +329,10 @@ export class UserRepository{
             }
 
             case 2: {
-                const rows = await conn.query('SELECT COUNT(*) AS jumlah FROM user_tim WHERE user_id = ?', [userId]);
+                const rows = await conn.query('select count(*) as jumlah from user_tim ut join tim t on ut.tim_id = t.id  where user_id = ? and tim_lomba = ?', [userId,timLomba]);
                 if (Number(rows[0].jumlah) >= 1) {
                     await conn.rollback();
-                    return { error: true, message: `Kamu sudah punya tim, untuk saat ini hanya tersedia 2 jenis perlombaan untuk kategori SMA/Sederajat, maka kamu tidak diizinkan untuk membuat tim baru lagi!.` };
+                    return { error: true, message: `Kamu sebelumnya sudah memiliki tim dengan kategori lomba tersebut!` };
                 }
                 const result = await conn.query(
                     'INSERT INTO tim (nama_tim, tim_lomba, isVerified) VALUES (?, ?, false)',

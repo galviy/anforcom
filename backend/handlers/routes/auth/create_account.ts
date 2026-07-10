@@ -1,5 +1,7 @@
 import {UserRepository} from '../../../DB/repositories'
+import {emailRepositories} from '../../../email/repositories'
 
+const emailHandler = new emailRepositories();
 const authRepo = new UserRepository()
 
 export async function handler(req: Request): Promise<Response> {
@@ -35,9 +37,11 @@ export async function handler(req: Request): Promise<Response> {
   const parseinteger = Number(tingkat_pendidikan);
   if (parseinteger >= 0 && parseinteger <= 2){ 
     try {
-        const rows4 = await authRepo.create_account(username,password,email,no_tlp,tingkat_pendidikan);
-       
-        return Response.json({success:true,message: `Successfully created ${username} please relogin to get session_id`},{status:200})
+      let generate_token = crypto.randomUUID();
+      await authRepo.create_dummy_user(username,password,email,no_tlp,tingkat_pendidikan,generate_token); 
+      await emailHandler.sendEmailVerification(email,generate_token);
+
+      return Response.json({success:true,message: `Sent a verification to your email account (${email})`},{status:200})
     } catch(e){
       console.error(e)
       return Response.json({success:false, error: `internal server error`},{status:500}) 

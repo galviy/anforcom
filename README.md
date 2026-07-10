@@ -36,7 +36,7 @@ This project was created using `bun init` in bun v1.3.11. [Bun](https://bun.com)
   - [x] show_member_team (show isi member team, parameter tim_id ?) 
   - [x] delete_team
   - [x] delete_user_team
-  - [ ] add_member_team (parameter nama_lengkap,asal_instansi_tim_id,nomor_induk,kartu tanda pelajar/mahasiswa)
+  - [x] add_member_team (parameter nama_lengkap,asal_instansi_tim_id,nomor_induk,kartu tanda pelajar/mahasiswa)
 
 ![Database ERD](database.png)
 
