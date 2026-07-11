@@ -21,6 +21,14 @@ const COMPETITIONS = [
     desc: 'Adu strategi dan logika lewat rangkaian studi kasus pemrograman kompetitif, dari babak penyisihan online sampai final di bawah tekanan waktu.',
     accent: 'teal',
   },
+  {
+    tag: 'DATA',
+    code: 'DDSC',
+    name: 'Diponegoro Data Science Competition',
+    audience: 'Mahasiswa S1/D4',
+    desc: 'Gali insight dari data dunia nyata — mulai dari eksplorasi dan pembersihan data, penerapan metode analisis/machine learning, sampai presentasi temuan yang bisa dipertanggungjawabkan di depan juri.',
+    accent: 'violet',
+  },
 ];
 
 const TIMELINE = [
@@ -47,7 +55,7 @@ const FAQS = [
   },
   {
     q: 'Siapa saja yang boleh mengikuti Anforcom?',
-    a: 'DUC terbuka untuk siswa SMA/SMK/MA sederajat maupun mahasiswa se-Indonesia. DCPC untuk saat ini terbuka bagi siswa SMA/Sederajat.',
+    a: 'DUC terbuka untuk siswa SMA/SMK/MA sederajat maupun mahasiswa se-Indonesia. DCPC untuk saat ini terbuka bagi siswa SMA/Sederajat, sedangkan DDSC khusus untuk mahasiswa S1/D4.',
   },
   {
     q: 'Apakah rangkaian acara online atau offline?',
@@ -127,7 +135,7 @@ export default function Landing() {
             <a href="#kompetisi" className="lp-btn lp-btn-ghost lp-btn-lg">Lihat Kompetisi</a>
           </div>
           <div className="lp-stat-strip">
-            <div className="lp-stat"><span className="lp-stat-dot" />2 cabang lomba</div>
+            <div className="lp-stat"><span className="lp-stat-dot" />3 cabang lomba</div>
             <div className="lp-stat"><span className="lp-stat-dot" />Nasional · SMA &amp; mahasiswa</div>
             <div className="lp-stat"><span className="lp-stat-dot" />Daring &amp; luring</div>
           </div>
@@ -136,12 +144,13 @@ export default function Landing() {
 
       <section id="tentang" className="lp-section lp-reveal">
         <span className="lp-section-eyebrow">// tentang</span>
-        <h2 className="lp-section-title">Satu kompetisi, dua jalur karya</h2>
+        <h2 className="lp-section-title">Satu kompetisi, tiga jalur karya</h2>
         <p className="lp-about-copy">
           Diselenggarakan oleh Himpunan Mahasiswa Informatika (HMIF) Universitas Diponegoro,
           Anforcom mempertemukan pelajar dan mahasiswa dari seluruh Indonesia untuk berkompetisi
-          sekaligus berkolaborasi di bidang teknologi — mulai dari merancang pengalaman pengguna
-          sampai menyelesaikan tantangan pemrograman kompetitif.
+          sekaligus berkolaborasi di bidang teknologi — mulai dari merancang pengalaman pengguna,
+          menyelesaikan tantangan pemrograman kompetitif, sampai membangun solusi perangkat lunak
+          dari studi kasus nyata.
         </p>
       </section>
 

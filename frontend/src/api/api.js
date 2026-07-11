@@ -40,6 +40,19 @@ export const authAPI = {
       body: JSON.stringify(credentials),
     }).then(handleResponse);
   },
+
+  // GET /api/user/me/logout -> backend balas 302 redirect + Set-Cookie penghapus cookie.
+  // PERHATIAN (bug backend): logout.ts menghapus cookie bernama "token", padahal
+  // cookie sesi yang sebenarnya dipakai bernama "session" (lihat login.ts).
+  // Akibatnya cookie "session" TIDAK terhapus oleh endpoint ini. Selama backend
+  // belum diperbaiki, logout di frontend tidak akan benar-benar mengakhiri sesi
+  // di server (walau UI akan tetap kembali ke halaman login).
+  logout: () => {
+    return fetch(`${API_BASE}/user/me/logout`, {
+      method: 'GET',
+      redirect: 'follow',
+    });
+  },
 };
 
 export const userAPI = {
@@ -67,7 +80,7 @@ export const teamAPI = {
     }).then(handleResponse);
   },
 
-  // GET daftar tim milik user yang login -> { success, data: [{id, nama_tim}] }
+  // GET daftar tim milik user yang login -> { success, data: [{id, nama_tim, isVerified}] }
   getMyTeams: () => {
     return fetch(`${API_BASE}/teams/show_team`, {
       method: 'GET',
@@ -75,7 +88,8 @@ export const teamAPI = {
     }).then(handleResponse);
   },
 
-  // POST daftar anggota dari sebuah tim -> { success, data: [{id, nama_lengkap, asal_instansi, nomor_induk}] }
+  // POST daftar anggota dari sebuah tim
+  // -> { success, data: [{id, nama_lengkap, asal_instansi, nomor_induk, data_image}] }
   getTeamMembers: (timId) => {
     return fetch(`${API_BASE}/teams/show_member_teams`, {
       method: 'POST',
@@ -93,12 +107,35 @@ export const teamAPI = {
     }).then(handleResponse);
   },
 
-  // POST hapus satu anggota dari sebuah tim
-  deleteUserTeam: (timId, userId) => {
+  // POST hapus satu anggota dari sebuah tim.
+  // `memberId` di sini adalah field `id` dari hasil getTeamMembers (id baris di
+  // tabel isi_tim), BUKAN id user asli — backend memang menamainya "user_id" di
+  // body request tapi memvalidasinya sebagai id anggota tim.
+  deleteUserTeam: (timId, memberId) => {
     return fetch(`${API_BASE}/teams/delete_user_team`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ tim_id: timId, user_id: userId }),
+      body: JSON.stringify({ tim_id: timId, user_id: memberId }),
     }).then(handleResponse);
   },
+
+  // POST tambah anggota tim + upload foto KTM (multipart/form-data).
+  // Maks 3 anggota per tim (divalidasi backend). Tipe file: jpg/jpeg/png/webp, maks ~10MB.
+  addUserTeam: ({ timId, namaLengkap, asalInstansi, nomorInduk, photoFile }) => {
+    const formData = new FormData();
+    formData.append('tim_id', timId);
+    formData.append('nama_lengkap', namaLengkap);
+    formData.append('asal_instansi', asalInstansi);
+    formData.append('nomor_induk', nomorInduk);
+    formData.append('data_photo', photoFile);
+
+    return fetch(`${API_BASE}/teams/add_user_team`, {
+      method: 'POST',
+      body: formData, // JANGAN set Content-Type manual, browser yang isi boundary-nya
+    }).then(handleResponse);
+  },
+
+  // URL untuk menampilkan foto KTM anggota (dipakai langsung sebagai <img src=...>,
+  // cookie sesi otomatis terkirim karena same-origin)
+  getKtmUrl: (filename) => `${API_BASE}/teams/view_ktm?id=${encodeURIComponent(filename)}`,
 };

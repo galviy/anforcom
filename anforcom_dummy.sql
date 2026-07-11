@@ -112,7 +112,7 @@ LOCK TABLES `lomba` WRITE;
 INSERT INTO `lomba` VALUES
 (1,'DUC (SMA/Sarjana)'),
 (2,'DCPC (SMA/Sederajat)'),
-(3,'DSDC (Sarjana)');
+(3,'DDSC (Sarjana)');
 /*!40000 ALTER TABLE `lomba` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;

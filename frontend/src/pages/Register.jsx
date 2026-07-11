@@ -13,7 +13,7 @@ export default function Register() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
+  const [success, setSuccess] = useState('');
   const [checkingSession, setCheckingSession] = useState(true);
 
   // Kalau cookie session masih valid, jangan tampilkan form register lagi —
@@ -33,19 +33,22 @@ export default function Register() {
     e.preventDefault();
     setLoading(true);
     setError('');
-    setSuccess(false);
+    setSuccess('');
 
     try {
       // Kirim data dengan field yang sesuai
-      await authAPI.register({
+      const res = await authAPI.register({
         username: form.username,
         password: form.password,
         email: form.email,
         no_tlp: form.no_tlp,           // ← Field ini
         tingkat_pendidikan: parseInt(form.tingkat_pendidikan) // ← Harus angka 1 atau 2
       });
-      setSuccess(true);
-      setTimeout(() => navigate('/login'), 1500);
+      // PENTING: akun BELUM aktif setelah register. Backend hanya menyimpan
+      // pendaftaran sementara dan mengirim link verifikasi ke email (berlaku
+      // 24 jam). Akun baru benar-benar dibuat setelah link itu diklik, jadi
+      // jangan langsung arahkan ke /login karena login akan gagal (akun belum ada).
+      setSuccess(res?.message || 'Link verifikasi telah dikirim ke email kamu.');
     } catch (err) {
       setError(err.message || 'Gagal mendaftar. Coba lagi.');
     } finally {
@@ -68,8 +71,9 @@ export default function Register() {
         <p className="auth-subtitle">Buat akun untuk mulai berkompetisi</p>
 
         {error && <div className="alert-error">{error}</div>}
-        {success && <div className="alert-success">✅ Pendaftaran berhasil! Mengalihkan ke Login...</div>}
+        {success && <div className="alert-success">✅ {success} Cek email kamu (termasuk folder spam) dan klik link verifikasinya sebelum login.</div>}
 
+        {!success && (
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label>Username</label>
@@ -104,6 +108,7 @@ export default function Register() {
             {loading ? 'Memproses...' : 'Daftar'}
           </button>
         </form>
+        )}
 
         <div className="auth-footer">
           Sudah punya akun? <Link to="/login">Masuk di sini</Link>

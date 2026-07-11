@@ -6,12 +6,12 @@ import { userAPI, teamAPI } from '../api/api';
 // didefinisikan statis di sini. Harus selalu sinkron dengan:
 // - data tabel `lomba` (lihat anforcom_dummy.sql)
 // - validasi di backend/handlers/routes/teams/create_team.ts
-//     pendidikan 1 (Sarjana)      -> lomba 1 & 3 DITOLAK, hanya lomba 2 yang boleh
-//     pendidikan 2 (SMA/Sederajat)-> lomba 2 DITOLAK, lomba 1 & 3 yang boleh
+//     pendidikan 1 (Sarjana)       -> lomba 2 DITOLAK (khusus SMA). Lomba 1 & 3 boleh.
+//     pendidikan 2 (SMA/Sederajat) -> lomba 3 DITOLAK (khusus Sarjana). Lomba 1 & 2 boleh.
 const ALL_LOMBA = [
-  { id: 1, nama_lomba: 'DUC (SMA/Sederajat)', untuk_pendidikan: 2 },
-  { id: 2, nama_lomba: 'DUC (Perguruan Tinggi)', untuk_pendidikan: 1 },
-  { id: 3, nama_lomba: 'DCPC (SMA/Sederajat)', untuk_pendidikan: 2 },
+  { id: 1, nama_lomba: 'DUC (SMA/Sarjana)', untuk_pendidikan: [1, 2] },
+  { id: 2, nama_lomba: 'DCPC (SMA/Sederajat)', untuk_pendidikan: [2] },
+  { id: 3, nama_lomba: 'DDSC (Sarjana)', untuk_pendidikan: [1] },
 ];
 
 export default function CreateTeam() {
@@ -30,7 +30,7 @@ export default function CreateTeam() {
       try {
         setLoadingUser(true);
         const me = await userAPI.getMe();
-        const options = ALL_LOMBA.filter((l) => l.untuk_pendidikan === me.pendidikan_id);
+        const options = ALL_LOMBA.filter((l) => l.untuk_pendidikan.includes(me.pendidikan_id));
         setLombaOptions(options);
       } catch (err) {
         console.error('Failed to fetch user:', err);
@@ -95,7 +95,7 @@ export default function CreateTeam() {
         <p className="auth-subtitle">Isi data tim untuk mengikuti lomba</p>
 
         {error && <div className="alert-error">{error}</div>}
-        {success && <div className="alert-success">✅ Tim berhasil dibuat! Mengalihkan ke Dashboard...</div>}
+        {success && <div className="alert-success">✅ Tim berhasil dibuat! Mengalihkan ke Dashboard untuk menambahkan anggota...</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">

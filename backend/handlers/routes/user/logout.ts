@@ -12,7 +12,7 @@ export async function handler(req: Request,json: any): Promise<Response> {
     status: 302, 
     headers: {
       "Location": "/", 
-      "Set-Cookie": "token=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict",
+      "Set-Cookie": "session=; Path=/; Max-Age=0; HttpOnly; SameSite=Strict",
     },
   }); 
 }
