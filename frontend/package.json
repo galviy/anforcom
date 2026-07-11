@@ -19,7 +19,7 @@
   },
   "scripts": {
     "dev": "bun --bun vite",
-    "build": "vite build",
-    "preview": "vite preview"
+    "build": "bun --bun vite build",
+    "preview": "bun --bun vite preview"
   }
 }
