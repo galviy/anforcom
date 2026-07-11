@@ -34,8 +34,8 @@ export default function Dashboard() {
         await refreshTeams();
       } catch (err) {
         console.error('Failed to fetch user:', err);
-        if (err.message.includes('401') || err.message.includes('403')) {
-          navigate('/login');
+        if (err.status === 401 || err.status === 403) {
+          navigate('/login', { replace: true });
           return;
         }
         setError('Gagal memuat data pengguna. Pastikan backend berjalan.');

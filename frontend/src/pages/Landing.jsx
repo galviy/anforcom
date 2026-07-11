@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { userAPI } from '../api/api';
 import './Landing.css';
 
 const EYEBROW_TEXT = 'HMIF UNDIP // ANFORCOM 2026';
@@ -65,7 +66,16 @@ const FAQS = [
 
 export default function Landing() {
   const [typed, setTyped] = useState('');
+  const [user, setUser] = useState(null);
+  const [checkingSession, setCheckingSession] = useState(true);
   const heroRef = useRef(null);
+
+  useEffect(() => {
+    userAPI.getMe()
+      .then((res) => setUser(res))
+      .catch(() => setUser(null))
+      .finally(() => setCheckingSession(false));
+  }, []);
 
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -108,8 +118,18 @@ export default function Landing() {
             <a href="#faq">FAQ</a>
           </div>
           <div className="lp-nav-cta">
-            <Link to="/login" className="lp-btn lp-btn-ghost">Masuk</Link>
-            <Link to="/register" className="lp-btn lp-btn-solid">Daftar Tim</Link>
+            {checkingSession ? null : user ? (
+              <Link to="/dashboard" className="lp-nav-user">
+                <span className="lp-nav-user-dot" />
+                {user.username}
+                <span className="lp-nav-user-arrow">→ Dashboard</span>
+              </Link>
+            ) : (
+              <>
+                <Link to="/login" className="lp-btn lp-btn-ghost">Masuk</Link>
+                <Link to="/register" className="lp-btn lp-btn-solid">Daftar Tim</Link>
+              </>
+            )}
           </div>
         </div>
       </nav>

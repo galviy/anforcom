@@ -63,6 +63,42 @@
 .lp-nav-cta {
   display: flex;
   gap: 0.6rem;
+  align-items: center;
+}
+
+.lp-nav-user {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--lp-border);
+  border-radius: 999px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  color: var(--lp-text);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.lp-nav-user:hover {
+  border-color: var(--lp-teal);
+  color: var(--lp-teal);
+}
+
+.lp-nav-user-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #34d399;
+  box-shadow: 0 0 6px #34d399;
+  flex-shrink: 0;
+}
+
+.lp-nav-user-arrow {
+  color: var(--lp-amber);
+}
+
+@media (max-width: 480px) {
+  .lp-nav-user-arrow { display: none; }
 }
 
 @media (max-width: 760px) {

@@ -5,7 +5,9 @@ const handleResponse = async (response) => {
   const contentLength = response.headers.get('content-length');
   if (contentLength === '0' || !response.headers.get('content-type')?.includes('application/json')) {
     if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      const err = new Error(`HTTP ${response.status}: ${response.statusText}`);
+      err.status = response.status;
+      throw err;
     }
     return {};
   }
@@ -13,10 +15,13 @@ const handleResponse = async (response) => {
   try {
     const data = await response.json();
     if (!response.ok) {
-      throw new Error(data.error || data.message || `HTTP ${response.status}`);
+      const err = new Error(data.error || data.message || `HTTP ${response.status}`);
+      err.status = response.status;
+      throw err;
     }
     return data;
   } catch (err) {
+    if (err.status) throw err; // sudah di-throw di atas, jangan dibungkus lagi
     throw new Error(`Gagal parsing response: ${err.message}`);
   }
 };
