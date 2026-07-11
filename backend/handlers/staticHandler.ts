@@ -30,30 +30,31 @@ export class StaticHandler {
   
 
     async handle(req: Request,pathname: string): Promise<Response> {
-        
 
-        console.log(req)
-        
+        const distDir = path.join(this.publicDir, 'dist')
+        const indexPath = path.join(distDir, 'index.html')
+
         if (pathname === '/') {
-            const indexPath = path.join(this.publicDir + "/dist/", 'index.html')
-           // console.log(indexPath)
             return this.serveFile(indexPath)
         }
 
-    
-        if (pathname.startsWith('/dist/') || pathname.startsWith('/assets/')) {
-            const filePath = path.join(this.publicDir, 'dist', pathname.startsWith('/dist/') ? pathname.replace('/dist/', '') : pathname)
-            
-            const safeTargetDir = path.resolve(this.publicDir, "dist");
-            const requestedPath = path.resolve(filePath);
+        // Coba serve sebagai file statis asli dulu (mis. /assets/index-abc.js, /vite.svg)
+        const filePath = path.join(distDir, pathname)
+        const safeTargetDir = path.resolve(distDir)
+        const requestedPath = path.resolve(filePath)
 
-            if (!requestedPath.startsWith(safeTargetDir)) {
-                console.warn(`[WARNING] path traversal: ${pathname}`);
-                return this.notFound;
-            }
-            return this.serveFile(filePath)
+        if (!requestedPath.startsWith(safeTargetDir)) {
+            console.warn(`[WARNING] path traversal: ${pathname}`);
+            return this.notFound;
         }
-    
-        return this.notFound;
+
+        const file = Bun.file(requestedPath)
+        if (await file.exists()) {
+            return this.serveFile(requestedPath)
+        }
+
+        // Bukan file statis -> anggap ini route React Router (/login, /dashboard, dst),
+        // balikin index.html biar client-side routing yang nangani.
+        return this.serveFile(indexPath)
     }
 }
