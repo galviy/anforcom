@@ -59,7 +59,7 @@ export class TeamRepository{
             const diffMs = now.getTime() - createdAt.getTime();
             const diffHours = diffMs / (1000 * 60 * 60);
 
-            if (diffHours > 24) {
+            if (diffHours > 1) {
                 await conn.rollback();
                 return {
                     success: false,

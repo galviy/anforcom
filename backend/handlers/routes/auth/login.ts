@@ -1,8 +1,10 @@
 import {UserRepository} from '../../../DB/repositories'
 import {encryptCookie} from '../../cookies'
-import {email} from "../../../email"
+
 
 const authRepo = new UserRepository()
+
+
 
 export async function handler(req: Request): Promise<Response> {
 
@@ -50,18 +52,10 @@ export async function handler(req: Request): Promise<Response> {
       return Response.json({ success: false, error: "Username atau password salah" }, { status: 401 })
     }
 
-
-    const sessionId = crypto.randomUUID()
     const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,no_tlp:user.no_tlp,tingkat_pendidikan:user.tingkat_pendidikan_id,valid_until:Number(Math.floor(Date.now() / 1000) + 60*30) })
 
      const encrypted = await encryptCookie(payload)
-/*
-      await email.send({
-        to: "galvindoser@gmail.com",
-        subject: "Halo dari Bun!",
-        html: "<b>Ini dikirim pakai class EmailService 🚀</b>",
-      });
-      */
+
      return Response.json({ success: true }, {
       headers: {
         'Set-Cookie': `session=${encrypted}; HttpOnly; Path=/; Max-Age=86400`

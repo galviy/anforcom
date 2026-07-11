@@ -1,5 +1,6 @@
 import {UserRepository} from '../../../DB/repositories'
 import {emailRepositories} from '../../../email/repositories'
+import {encryptCookie} from '../../cookies'
 
 const emailHandler = new emailRepositories();
 const authRepo = new UserRepository()
@@ -37,7 +38,10 @@ export async function handler(req: Request): Promise<Response> {
   const parseinteger = Number(tingkat_pendidikan);
   if (parseinteger >= 0 && parseinteger <= 2){ 
     try {
-      let generate_token = crypto.randomUUID();
+
+      const payload = JSON.stringify({ valid_until:Math.floor(Date.now() / 1000) + 60 * 60})
+      let generate_token = await encryptCookie(payload);
+
       await authRepo.create_dummy_user(username,password,email,no_tlp,tingkat_pendidikan,generate_token); 
       await emailHandler.sendEmailVerification(email,generate_token);
 
