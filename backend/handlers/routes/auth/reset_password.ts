@@ -1,9 +1,12 @@
 import {UserRepository} from '../../../DB/repositories'
+import {encryptCookie,decryptCookie} from '../../cookies'
+import {emailRepositories} from '../../../email/repositories'
 
 
 const authRepo = new UserRepository()
+const emailHandler = new emailRepositories();
 
-
+const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
 export async function handler(req: Request): Promise<Response> {
     if (req.method != 'POST')  return new Response(null, {status:404});
@@ -14,16 +17,19 @@ export async function handler(req: Request): Promise<Response> {
     }
     const { email } = JSON.parse(text)
     if (!email) return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
-    const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if(!emailRegex.test(email)) return Response.json({ success: false, error: "invalid email struct??" }, { status: 400 })
 
-    const check_exist = await authRepo.findEmail(email);
-    const cek_woy = check_exist[0];
 
-    if (cek_woy == null){
-     return Response.json({success:false, error: `If an account with that email address exists, we have sent a password reset link.`},{status:400})
-    }
+    const payload = JSON.stringify({ valid_until:Math.floor(Date.now() / 1000) + 60 * 60})
+    let generate_token = await encryptCookie(payload);
+
+    const sendwoy = await authRepo.createPasswordResetToken(email,generate_token)
     
-    return Response.json({ success: false, error: "Not implemented yet moyai :v" }, { status: 501 })
-
+    if(sendwoy.success) {
+        void emailHandler.sendResetAccountVerification(email,generate_token).catch(err => {
+            console.error(err);
+        });
+    }
+    return Response.json({success:true, error: `If an account with that email address exists, we have sent a password reset link.`},{status:200})
+    
 }

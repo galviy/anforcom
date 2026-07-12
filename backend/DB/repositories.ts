@@ -1,5 +1,7 @@
 import {db} from './connect'
 import path from 'path'; 
+import crypto from "node:crypto";
+
 
 export class TeamRepository{
     private folder_upload: string = path.join(import.meta.dir, "../../data_ktm");
@@ -236,6 +238,41 @@ export class UserRepository{
     }
     async findPhoneNumber(phone_number:string){
         return await db.query("select * from user where no_tlp = ?", [phone_number]);
+    }
+
+   async createPasswordResetToken(email:string, token:string) {
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
+
+            const dikecilinWOk = email.toLowerCase();
+            const rows = await conn.query(
+                `SELECT COUNT(*) as jumlah FROM user WHERE email = ? FOR UPDATE`,
+                [dikecilinWOk]
+            );
+
+            if (rows[0].jumlah == 0) {
+                await conn.rollback();
+                return { success: false, message: `gak nemu jir` };
+            }
+
+            const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+            const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
+
+            await conn.query(
+                `INSERT INTO password_reset_tokens (hashed_token, expires_at, email)
+                VALUES (?, ?, ?)`,
+                [hashedToken, expiresAt, dikecilinWOk]
+            );
+
+            await conn.commit();
+            return { success: true, message: `Password reset token created` };
+        } catch (e) {
+            await conn.rollback();
+            throw e;
+        } finally {
+            conn.release();
+        }
     }
 
     async create_dummy_user(user: string,pass: string,email: string,no_telp: string,pendidikan: number,token_verif: string) {
