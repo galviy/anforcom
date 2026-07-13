@@ -260,7 +260,7 @@ export class UserRepository{
             const expiresAt = new Date(Date.now() + 30 * 60 * 1000);
 
             await conn.query(
-                `INSERT INTO password_reset_tokens (hashed_token, expires_at, email)
+                `INSERT INTO changepass_dummy (hashed_token, expires_at, email)
                 VALUES (?, ?, ?)`,
                 [hashedToken, expiresAt, dikecilinWOk]
             );
@@ -339,7 +339,91 @@ export class UserRepository{
         return result;
        
     }
+    async reset_password(new_password: string, token: string) {
+        const conn = await db.getConnection();
 
+        try {
+            await conn.beginTransaction();
+
+            const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
+            const rows = await conn.query(
+                `SELECT expires_at, email, used
+                FROM changepass_dummy
+                WHERE hashed_token = ?
+                FOR UPDATE`,
+                [hashedToken]
+            );
+
+            if (rows.length === 0) {
+                await conn.rollback();
+                return {
+                    success: false,
+                    error: "Something went wrong. Maybe your token has expired?"
+                };
+            }
+
+            const data = rows[0];
+
+            if (new Date(data.expires_at) < new Date() || data.used !== 0) {
+                await conn.rollback();
+                return {
+                    success: false,
+                    error: "Something went wrong. Maybe your token has expired?"
+                };
+            }
+
+            const hashedPassword = await Bun.password.hash(new_password, {
+                algorithm: "bcrypt",
+                cost: 10,
+            });
+
+            const updateUser = await conn.query(
+                `UPDATE user SET password = ? WHERE email = ?`,
+                [hashedPassword, data.email]
+            );
+
+            if (updateUser.affectedRows !== 1) {
+                await conn.rollback();
+                return {
+                    success: false,
+                    error: "Internal server error."
+                };
+            }
+
+            const updateToken = await conn.query(
+                `UPDATE changepass_dummy SET used = 1 WHERE hashed_token = ?`,
+                [hashedToken]
+            );
+
+            if (updateToken.affectedRows !== 1) {
+                await conn.rollback();
+                return {
+                    success: false,
+                    error: "Internal server error."
+                };
+            }
+
+            await conn.commit();
+
+            return {
+                success: true,
+                message: "Password has been reset successfully."
+            };
+
+        } catch (e) {
+            await conn.rollback();
+            console.error("Gagal reset_password:", e);
+
+            return {
+                success: false,
+                error: "Internal server error."
+            };
+        } finally {
+            conn.release();
+        }
+    }
+    
     async createTeam(pendidikan_id: number, userId: string, nama_tim: string, timLomba: string) {
         const conn = await db.getConnection();
         try {

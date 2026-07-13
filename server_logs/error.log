@@ -61,3 +61,8 @@
 2026-07-01 - 21:02:02 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
     (pool connections: active=0 idle=0 limit=10)
 2026-07-05 - 20:11:21 : undefined is not an object (evaluating 'server.requestIP')
+2026-07-13 - 19:42:54 : (conn:4, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.password_reset_tokens' doesn't exist
+sql: INSERT INTO password_reset_tokens (hashed_token, expires_at, email)
+                VALUES (?, ?, ?) - parameters:['57b39a073542171bcee8358c6b97b278fe20f815eb3b3a135ea5b4c180f10b19','07/13/2026 20:12:54.015','galvindoser@gmail.com']
+2026-07-13 - 20:35:19 : JSON Parse error: Property name must be a string literal
+2026-07-13 - 20:35:41 : authRepo.reset_password is not a function. (In 'authRepo.reset_password(new_password1, token)', 'authRepo.reset_password' is undefined)

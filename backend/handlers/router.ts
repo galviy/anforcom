@@ -16,6 +16,7 @@ import * as view_ktm from './routes/teams/view_ktm'
 import * as logout from './routes/user/logout'
 import * as verification from "./routes/auth/verification"
 import * as reset_pass from "./routes/auth/reset_password"
+import * as reset_confirm from "./routes/auth/reset_confirmation"
 
 const rutercoy = new Map([
     ['/auth/login', login],
@@ -30,7 +31,8 @@ const rutercoy = new Map([
     ['/teams/view_ktm',view_ktm],
     ['/user/me/logout', logout],
     ['/auth/verification',verification],
-    ['/auth/reset_password', reset_pass]
+    ['/auth/reset_password', reset_pass],
+    ['/auth/reset_confirmation',reset_confirm]
 ])
 
 
@@ -53,7 +55,7 @@ export class router {
 
         if(!route) return this.notFound;
         
-        if (url == '/auth/login' || url == '/auth/create_account' || url == '/auth/verification' || url == '/auth/reset_password'){
+        if (url == '/auth/login' || url == '/auth/create_account' || url == '/auth/verification' || url == '/auth/reset_password' || url == '/auth/reset_confirmation'){
            
            return route.handler(req,  "ok");
         }

@@ -226,3 +226,47 @@ Response berhasil
   "nama_file": "a1b2c3d4-uuid.jpg"
 }
 ```
+
+# reset password verification
+
+
+```curl
+curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
+-X POST http://127.0.0.1:1337/api/auth/reset_password \
+-H "Content-Type: application/json" \
+-d '{"email": "galvindoser@gmail.com"}'
+```
+
+```nginx
+Response
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=utf-8
+Date: Mon, 13 Jul 2026 13:39:53 GMT
+Content-Length: 108
+
+{"success":true,"error":"If an account with that email address exists, we have sent a password reset link."}
+
+[INFO] Waktu Total Respons: 0.006958 detik
+```
+
+# Reset password
+
+```curl
+curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
+-X POST http://127.0.0.1:1337/api/auth/reset_confirmation?token=FYinXyMm1Gzzf5UqwCVB-jNvvgoxbPyvxZlJ9rU6HdVm46u9KRa7yXaWfZPVlBDerDx7F3er \
+-H "Content-Type: application/json" \
+-d '{"new_password1": "bjorka","new_password2": "bjorka"}'
+```
+
+Response berhasil
+
+```nginx
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=utf-8
+Date: Mon, 13 Jul 2026 13:40:35 GMT
+Content-Length: 66
+
+{"success":true,"message":"Password has been reset successfully."}
+
+[INFO] Waktu Total Respons: 0.093443 detik
+```
