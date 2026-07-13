@@ -41,9 +41,14 @@ export async function handler(req: Request): Promise<Response> {
 
       const payload = JSON.stringify({ valid_until:Math.floor(Date.now() / 1000) + 60 * 60})
       let generate_token = await encryptCookie(payload);
-
+      /*
+        Anti spam database, biar kalau di spam gak langsung check database
+      */
       await authRepo.create_dummy_user(username,password,email,no_tlp,tingkat_pendidikan,generate_token); 
-      await emailHandler.sendEmailVerification(email,generate_token);
+      
+      void emailHandler.sendEmailVerification(email,generate_token).catch(err => {
+        console.error(err);
+      });
 
       return Response.json({success:true,message: `Sent a verification to your email account (${email})`},{status:200})
     } catch(e){
