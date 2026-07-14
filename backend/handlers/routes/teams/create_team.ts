@@ -15,7 +15,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     if (!team_name || !lomba_id) return Response.json({ success: false, error: "pilih jenis lomba terlebih dahulu!" }, { status: 401 })
   
     if(!json.tingkat_pendidikan) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
-    if(team_name > 60) return Response.json({ success: false, error: "Gk kepanjangan itu broo" }, { status: 401 })
+    if(team_name.length > 30) return Response.json({ success: false, error: "Gk kepanjangan itu broo" }, { status: 401 })
     switch(json.tingkat_pendidikan){
         case 1:{
             if (lomba_id == 2) return Response.json({ success: false, error: "Saat ini kamu terdaftar sebagai Kategori (Sarjana),lomba tersebut hanya tersedia untuk kategori SMA/Sederajat!" }, { status: 401 })
