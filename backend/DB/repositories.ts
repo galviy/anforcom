@@ -119,6 +119,27 @@ export class TeamRepository{
         }
     }
 
+    async update_ktm_file(tim_id: number,user_id:number){
+
+        const conn = await db.getConnection();
+        try {
+            const sql1 = await conn.query(
+                `SELECT COUNT(*) as jumlah FROM isi_tim WHERE tim_id = ? and id = ? FOR UPDATE`,
+                [tim_id,user_id]
+            );
+            if (sql1[0].jumlah == 0) {
+                await conn.rollback();
+                return { success: false, message: `Theres nothing to change on that data?` };
+            }
+
+        } catch(e){
+            await conn.rollback();
+            console.error(e)
+            throw e;
+        } finally{
+            conn.release();
+        }
+    }
 
     async upload_ktm_file(filecoy: File, nama_ktm: string) {
         try {
@@ -186,6 +207,65 @@ export class TeamRepository{
         const result = await db.query(sql,[idUser,idTeam]);
 
         return result;
+    }
+    async update_nomor_induk(idTeam:number,idUser:number,noInduk:string){
+
+        const sql = `
+            UPDATE user 
+            SET nomor_induk = ? 
+            WHERE id = ? and tim_id = ?
+        `
+        
+        const result = await db.query(sql, [noInduk,idUser,idTeam])
+        if (result.affectedRows !== 1) {
+            return {
+                success: false,
+                error: `Unable to change that data?`
+            };
+        }
+        return {
+            success: true,
+            error: `Successfully changed nomor_induk to ${noInduk}`
+        };
+    }
+    async updateAsalInstansi(idTeam:number,idUser:number,namaBaru:string){
+
+        const sql = `
+            UPDATE user 
+            SET asal_instansi = ? 
+            WHERE id = ? and tim_id = ?
+        `
+        
+        const result = await db.query(sql, [namaBaru,idUser,idTeam])
+        if (result.affectedRows !== 1) {
+            return {
+                success: false,
+                error: `Unable to change that data?`
+            };
+        }
+        return {
+            success: true,
+            error: `Successfully changed asal_instansi to ${namaBaru}`
+        };
+    }
+    async updateNama_lengkap(idTeam:number,idUser:number,namaBaru:string){
+        const sql = `
+            UPDATE user 
+            SET nama_lengkap = ? 
+            WHERE id = ? and tim_id = ?
+        `
+        
+        const result = await db.query(sql, [namaBaru,idUser,idTeam])
+        if (result.affectedRows !== 1) {
+            return {
+                success: false,
+                error: `Unable to change that data?`
+            };
+        }
+        return {
+            success: true,
+            error: `Successfully changed nama_lengkap to ${namaBaru}`
+        };
     }
     async deleteTeam(IdTeam: number) {
         const conn = await db.getConnection();
