@@ -270,3 +270,70 @@ Content-Length: 66
 
 [INFO] Waktu Total Respons: 0.093443 detik
 ```
+
+# Edit nama team member
+```curl
+curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
+-X POST http://127.0.0.1:1337/api/teams/edit_user_team \
+-H "Content-Type: application/json" \
+-H "Cookie: session=active_session" \
+-d '{"tim_id": 421,"user_id":16, "editCase": "editNama", "nama_baru": "Galvin Shala"}'
+```
+
+Response berhasil
+
+```nginx
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=utf-8
+Date: Tue, 14 Jul 2026 13:13:00 GMT
+Content-Length: 90
+
+{"gantiNama":{"success":true,"message":"Successfully changed nama_lengkap to Galvin Shala"}}
+
+[INFO] Waktu Total Respons: 0.001996 detik
+```
+
+# Edit asal instansi team member
+
+```curl
+curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
+-X POST http://127.0.0.1:1337/api/teams/edit_user_team \
+-H "Content-Type: application/json" \
+-H "Cookie: session=active_session" \
+-d '{"tim_id": 421,"user_id":16, "editCase": "asal_instansi", "asal_instansi": "Institut Teknologi Bandung"}'
+```
+
+```nginx
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=utf-8
+Date: Tue, 14 Jul 2026 13:15:20 GMT
+Content-Length: 110
+
+{"ganti_instansi":{"success":true,"message":"Successfully changed asal_instansi to Institut Teknologi Bandung"}}
+
+[INFO] Waktu Total Respons: 0.021267 detik
+```
+
+# Edit nomor induk team member
+
+```curl
+curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
+-X POST http://127.0.0.1:1337/api/teams/edit_user_team \
+-H "Content-Type: application/json" \
+-H "Cookie: session=active_session" \
+-d '{"tim_id": 421,"user_id":16, "editCase": "nomor_induk", "nomor_induk_baru": "192921921"}'
+```
+
+```nginx
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=utf-8
+Date: Tue, 14 Jul 2026 13:21:27 GMT
+Content-Length: 93
+
+{"ganti_instansi":{"success":true,"message":"Successfully changed nomor_induk to 192921921"}}
+
+[INFO] Waktu Total Respons: 0.002336 detik
+```
+
+# Edit foto team member
+

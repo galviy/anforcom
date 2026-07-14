@@ -33,7 +33,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     switch(editCase){
        
         case "editNama":{
-            const {nama_baru} = json.parse(text);
+            const {nama_baru} = JSON.parse(text);
             if(!nama_baru) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
             let gantiNama = await authRepo.updateNama_lengkap(tim_id,user_id,nama_baru);
             return Response.json({gantiNama});
@@ -42,7 +42,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
 
         } break;
         case "asal_instansi":{
-            const {asal_instansi_baru} = json.parse(text);
+            const {asal_instansi_baru} = JSON.parse(text);
             if(!asal_instansi_baru) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
             let ganti_instansi = await authRepo.updateAsalInstansi(tim_id,user_id,asal_instansi_baru)
             return Response.json({ganti_instansi});
@@ -50,7 +50,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
         } break;
         
         case "nomor_induk":{
-            const {nomor_induk_baru} = json.parse(text);
+            const {nomor_induk_baru} = JSON.parse(text);
             if(!nomor_induk_baru) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
             let ganti_instansi = await authRepo.update_nomor_induk(tim_id,user_id,nomor_induk_baru)
             return Response.json({ganti_instansi});
@@ -65,7 +65,6 @@ export async function handler(req: Request, json?: any): Promise<Response> {
             return Response.json({ success: false, error: "Invalid editCase struct??" }, { status: 401 })
         }
     }
-    return Response.json({ success: false }, { status: 403 })
     } catch(e){
         console.error(e)
         return Response.json({ success: false, error: "Internal server error" }, { status: 500 })

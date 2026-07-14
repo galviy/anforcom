@@ -119,18 +119,54 @@ export class TeamRepository{
         }
     }
 
-    async update_ktm_file(tim_id: number,user_id:number){
+    async update_ktm_file(tim_id: number,user_id:number,nama_ktm:string,imagebase64:string){
+        const MAX_SIZE = 10 * 1024 * 1024; 
 
         const conn = await db.getConnection();
         try {
+            await conn.beginTransaction();
             const sql1 = await conn.query(
                 `SELECT COUNT(*) as jumlah FROM isi_tim WHERE tim_id = ? and id = ? FOR UPDATE`,
                 [tim_id,user_id]
             );
             if (sql1[0].jumlah == 0) {
                 await conn.rollback();
-                return { success: false, message: `Theres nothing to change on that data?` };
+                return { success: false, message: `Theres nothing to change isnt it???` };
             }
+           const bytes = Buffer.from(imagebase64, "base64");
+            if (bytes.length === 0 || bytes.length > MAX_SIZE) {
+                await conn.rollback();
+                return { success: false, message: "How do you expect me to accept that file my guy? isnt it way to big or small??" };
+            }
+           const filewow = new File([bytes],nama_ktm,
+            {
+                type: "image/jpeg" 
+            });
+
+            let upp_ktm = await this.upload_ktm_file(filewow,nama_ktm);
+            if (!upp_ktm) {
+                await conn.rollback();
+                return { success: false, message: "Failed to upload that file to our internal storage" };
+            }
+
+            const change_ktm_data = await conn.query(
+                `UPDATE isi_tim
+                SET data_image = ?
+                WHERE tim_id = ? AND id = ?`,
+                [nama_ktm, tim_id, user_id]
+            );
+            if (change_ktm_data.affectedRows !== 1) {
+                await conn.rollback();
+                return {
+                    success: false,
+                    error: "Somehow it did not affect anything huh..?"
+                };
+            }
+            await conn.commit();
+            return {
+                success: true,
+                message: "Successfully changed your identity card!"
+            };
 
         } catch(e){
             await conn.rollback();
@@ -211,7 +247,7 @@ export class TeamRepository{
     async update_nomor_induk(idTeam:number,idUser:number,noInduk:string){
 
         const sql = `
-            UPDATE user 
+            UPDATE isi_tim
             SET nomor_induk = ? 
             WHERE id = ? and tim_id = ?
         `
@@ -225,13 +261,13 @@ export class TeamRepository{
         }
         return {
             success: true,
-            error: `Successfully changed nomor_induk to ${noInduk}`
+            message: `Successfully changed nomor_induk to ${noInduk}`
         };
     }
     async updateAsalInstansi(idTeam:number,idUser:number,namaBaru:string){
 
         const sql = `
-            UPDATE user 
+            UPDATE isi_tim 
             SET asal_instansi = ? 
             WHERE id = ? and tim_id = ?
         `
@@ -245,12 +281,12 @@ export class TeamRepository{
         }
         return {
             success: true,
-            error: `Successfully changed asal_instansi to ${namaBaru}`
+            message: `Successfully changed asal_instansi to ${namaBaru}`
         };
     }
     async updateNama_lengkap(idTeam:number,idUser:number,namaBaru:string){
         const sql = `
-            UPDATE user 
+            UPDATE isi_tim 
             SET nama_lengkap = ? 
             WHERE id = ? and tim_id = ?
         `
@@ -264,7 +300,7 @@ export class TeamRepository{
         }
         return {
             success: true,
-            error: `Successfully changed nama_lengkap to ${namaBaru}`
+            message: `Successfully changed nama_lengkap to ${namaBaru}`
         };
     }
     async deleteTeam(IdTeam: number) {
