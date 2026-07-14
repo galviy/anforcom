@@ -11,13 +11,12 @@ export async function handler(req: Request, json?: any): Promise<Response> {
    if (!text) {
     return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
   }
-
- 
   
   try {
     const { tim_id } = JSON.parse(text)
+
     if (!tim_id ) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
-   
+    if(Number(tim_id) > 10000) return Response.json({ success: false, error: "Gk salah kah itu??" }, { status: 400 })
     let result = await authRepo.timIdCheck(json.userId,Number(tim_id));
     
 

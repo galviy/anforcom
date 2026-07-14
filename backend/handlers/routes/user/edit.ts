@@ -22,6 +22,7 @@ export async function handler(req: Request, json: any): Promise<Response> {
       if (!old_pass || !new_pass) {
         return Response.json({ success: false, error: "This action requires your old password and new password!" },{ status: 400 })
       }
+      if(old_pass > 250 || new_pass > 250) return Response.json({ success: false, error: "Gk kepanjangan itu broo" }, { status: 401 })
 
       const check = await authRepo.findByUsername(json.username)
       const user = check?.[0]

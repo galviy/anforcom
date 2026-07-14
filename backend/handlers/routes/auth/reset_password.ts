@@ -17,6 +17,9 @@ export async function handler(req: Request): Promise<Response> {
     }
     const { email } = JSON.parse(text)
     if (!email) return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
+    if (email.length < 5 || email.length > 250) {
+        return Response.json({ success: false, error: "Email harus 5-250 karakter" }, { status: 400 })
+    }
     if(!emailRegex.test(email)) return Response.json({ success: false, error: "invalid email struct??" }, { status: 400 })
 
 

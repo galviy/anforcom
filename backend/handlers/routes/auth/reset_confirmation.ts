@@ -11,7 +11,7 @@ export async function handler(req: Request): Promise<Response> {
     let url = new URL(req.url);
     const token = url.searchParams.get("token");
     if(!token) return new Response(null, {status:404});
-
+    if(token.length > 250)  return Response.json({ success: false, error: "Gak kepanjangan tuh bro?" }, { status: 400 })
     const text = await req.text()
     if (!text) {
         return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })

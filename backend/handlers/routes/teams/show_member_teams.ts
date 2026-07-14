@@ -25,7 +25,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   try {
     const { tim_id } = JSON.parse(text)
     if (!tim_id ) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
-
+    if(tim_id > 10000) return Response.json({ success: false, error: "Gk kepanjangan itu broo" }, { status: 401 })
     let result = await authRepo.timIdCheck(json.userId,Number(tim_id));
     
     if (result.length == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 }) 

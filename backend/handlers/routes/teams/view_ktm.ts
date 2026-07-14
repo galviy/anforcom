@@ -12,7 +12,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   const filename = url.searchParams.get("id");
   if(!filename) return new Response(null, {status:404});
 
-
+  if(filename.length > 250) return Response.json({ success: false, error: "Gk kepanjangan itu broo" }, { status: 401 })
   try {    
     let validasi = await authRepo.check_file_sesuai(json.userId,filename);
     if (!validasi.success){

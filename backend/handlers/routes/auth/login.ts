@@ -18,6 +18,12 @@ export async function handler(req: Request): Promise<Response> {
   if (!username || !password) {
     return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
   }
+  if (username.length < 3 || username.length > 100) {
+    return Response.json({ success: false, error: "Username/password harus 3-100 karakter" }, { status: 400 })
+  }
+  if (password.length < 8 || password.length > 250) {
+    return Response.json({ success: false, error: "Password harus 8-250 karakter" }, { status: 400 })
+  }
   const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
   if(emailRegex.test(username)){

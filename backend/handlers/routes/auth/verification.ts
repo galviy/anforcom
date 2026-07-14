@@ -16,6 +16,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   /*
     Anti spam database, token hanya valid 1 jam :)
   */
+  if (token.length > 255)  return Response.json({ success: false, error: "Gak kepanjangan tuh bro?" }, { status: 400 })
   let decrypted = await decryptCookie(token)
   if (!decrypted) {
     return Response.json({ success: false, error: "Invalid token ??" }, { status: 401 })

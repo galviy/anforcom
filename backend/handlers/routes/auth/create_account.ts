@@ -17,6 +17,19 @@ export async function handler(req: Request): Promise<Response> {
   if (!username || !password || !email || !no_tlp || !tingkat_pendidikan) {
     return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
   }
+  if (username.length < 3 || username.length > 100) {
+    return Response.json({ success: false, error: "Username harus 3-32 karakter" }, { status: 400 })
+  }
+  if (password.length < 8 || password.length > 250) {
+    return Response.json({ success: false, error: "Password harus 8-250 karakter" }, { status: 400 })
+  }
+  if (email.length < 5 || email.length > 250) {
+    return Response.json({ success: false, error: "Email harus 5-250 karakter" }, { status: 400 })
+  }
+  if (no_tlp.length < 8 || no_tlp.length > 15) {
+    return Response.json({ success: false, error: "Nomor telepon harus 8-15 digit" }, { status: 400 })
+  }
+
   const emailRegex: RegExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
   if (!emailRegex.test(email)) return Response.json({success:false,error:"invalid email ???"},{status:400});
 
