@@ -35,7 +35,7 @@ export class Server {
       fetch: (req,server) => this.handleRequest(req,server),
       error: (err) => {
         console.log(err)
-        this.logger.error(err.message)
+        
         return new Response(null, { status: 500 });
       },
     })

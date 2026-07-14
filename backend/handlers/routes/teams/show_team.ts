@@ -11,20 +11,15 @@ interface datar_tim {
 
 export async function handler(req: Request, json?: any): Promise<Response> {
   if (req.method != 'GET')  return new Response(null, {status:404});
+  const result = await authRepo.findByUsername(json.username);
+  let p: datar_tim[] = []; 
 
-  try {
-    const result = await authRepo.findByUsername(json.username);
-    let p: datar_tim[] = []; 
-
-    for(let i = 0; i < result.length; i++){
-        p.push({id:result[i].id,nama_tim:result[i].nama_tim,isVerified:result[i].isVerified});
-    }
-    return Response.json({success:true,data:p},{status:200})
-    
-  } catch(e){
-    console.error(e)
-   return Response.json({ success: false, error: "Internal server error" }, { status: 500 })
+  for(let i = 0; i < result.length; i++){
+      p.push({id:result[i].id,nama_tim:result[i].nama_tim,isVerified:result[i].isVerified});
   }
+  return Response.json({success:true,data:p},{status:200})
+    
+
   
 }
 

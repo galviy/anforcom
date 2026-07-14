@@ -1,68 +1,18 @@
-2026-06-25T08:33:07.716Z - undefined is not an object (evaluating 'rutercoy.get(url).handler')
-2026-06-25T08:35:48.668Z - undefined is not an object (evaluating 'rutercoy.get(url).handler')
-2026-06-27 - 09:28:25 : Unexpected end of JSON input
-2026-06-27 - 09:29:39 : Unexpected end of JSON input
-2026-06-27 - 09:31:45 : Unexpected end of JSON input
-2026-06-27 - 09:43:45 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-27 - 09:44:17 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-27 - 09:56:33 : Password verification failed with error "UnsupportedAlgorithm"
-2026-06-27 - 10:09:31 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-27 - 10:10:50 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-27 - 10:12:21 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 12:41:53 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 12:43:03 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 13:02:59 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 13:13:41 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 13:14:49 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 13:23:07 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 13:41:12 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 14:36:55 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 14:37:18 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 14:46:15 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 14:48:03 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 14:50:27 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 14:55:15 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 15:01:50 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 15:05:39 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 15:21:44 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 15:25:17 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-29 - 15:28:09 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-30 - 14:06:09 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-30 - 14:06:52 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-06-30 - 14:11:16 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-07-01 - 20:57:33 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-07-01 - 21:02:02 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
-    (pool connections: active=0 idle=0 limit=10)
-2026-07-05 - 20:11:21 : undefined is not an object (evaluating 'server.requestIP')
-2026-07-13 - 19:42:54 : (conn:4, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.password_reset_tokens' doesn't exist
-sql: INSERT INTO password_reset_tokens (hashed_token, expires_at, email)
-                VALUES (?, ?, ?) - parameters:['57b39a073542171bcee8358c6b97b278fe20f815eb3b3a135ea5b4c180f10b19','07/13/2026 20:12:54.015','galvindoser@gmail.com']
-2026-07-13 - 20:35:19 : JSON Parse error: Property name must be a string literal
-2026-07-13 - 20:35:41 : authRepo.reset_password is not a function. (In 'authRepo.reset_password(new_password1, token)', 'authRepo.reset_password' is undefined)
+2026-07-15 - 01:12:30 : [ERROR] POST /api/teams/show_member_teams
+Headers   : {"accept":"*/*","content-length":"20","content-type":"application/json","cookie":"session=hmuc4s6bBq_fk49PgKBQMs0-rvxy10unfVEYuyagdmnlp5QTrUyVzf9oRBaHgBm2fBhpUfiqBbxXF5f9p26-bM2Lwdwv-PCtIn2_4ixqWCWThAV6Nr2aT-8lKHyXKoQDphGCG-VwR714EdOW5UkeoNLdOFCF_h0sSj4fqlHGGbcnoOI_cb177uBB7PzjF4_VFALnzW1c14tflsXlBWlRVeo","host":"127.0.0.1:1337","user-agent":"curl/8.21.0"}
+Body      : {"tim_id": "421%27"}
+Error     : SqlError: (conn:34, no: 1054, SQLState: 42S22) Unknown column 'NaN' in 'WHERE'
+sql: 
+            select tim_id 
+            from user_tim
+            where user_id = ? and tim_id = ? 
+         - parameters:[17,NaN]
+    at createError (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:265:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:243:18)
+    at data (node:net:281:52)
+-----------------------------------------

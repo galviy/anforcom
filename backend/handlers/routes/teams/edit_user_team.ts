@@ -24,22 +24,22 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
    }
    
-   try {
+
     const { tim_id, user_id,editCase } = JSON.parse(text)
     if (!tim_id || !editCase || !user_id) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
     let result = await authRepo.timIdCheck(json.userId, Number(tim_id));
     if (result.length == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 });
 
     switch(editCase){
-       
+        
         case "editNama":{
             const {nama_baru} = JSON.parse(text);
             if(!nama_baru) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
             if(nama_baru.length > 250) return Response.json({ success: false, error: "Gk kepanjangan itu broo" }, { status: 401 })
             let gantiNama = await authRepo.updateNama_lengkap(tim_id,user_id,nama_baru);
             return Response.json({gantiNama});
-             
-          //  const {change_}
+                
+            //  const {change_}
 
         } break;
         case "asal_instansi":{
@@ -62,7 +62,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
         case "foto_baru":{
             //const {base64Foto_baru} = JSON.parse(text);
             //let nama_file = `${crypto.randomUUID()}.${ext}`;
-           // let up = await authRepo.update_ktm_file(tim_id,user_id,);
+            // let up = await authRepo.update_ktm_file(tim_id,user_id,);
 
             //async update_ktm_file(tim_id: number,user_id:number,nama_ktm:string,imagebase64:string){
             return Response.json({success:true,message:"Soon to be impemented"});
@@ -73,10 +73,6 @@ export async function handler(req: Request, json?: any): Promise<Response> {
             return Response.json({ success: false, error: "Invalid editCase struct??" }, { status: 401 })
         }
     }
-    } catch(e){
-        console.error(e)
-        return Response.json({ success: false, error: "Internal server error" }, { status: 500 })
-    }
-  
+
 }
 

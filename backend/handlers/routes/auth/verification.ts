@@ -27,18 +27,11 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     return Response.json({ success: false, error: "Expired token??" }, { status: 401 })
   }
   
-
-  try {    
-    let validasi = await authRepo.cek_dummy_user(token);
-    if (!validasi.success){
-         return Response.json({  validasi }, { status: 403 }) 
-    }
-    return Response.json({  validasi }, { status: 200 }) 
-
-  } catch(e){
-    console.error(e)
-    return Response.json({ success: false, error: "Internal server error" }, { status: 500 })
+  let validasi = await authRepo.cek_dummy_user(token);
+  if (!validasi.success){
+        return Response.json({  validasi }, { status: 403 }) 
   }
-  
+  return Response.json({  validasi }, { status: 200 }) 
+
 }
 

@@ -37,6 +37,7 @@ const rutercoy = new Map([
     ['/teams/edit_user_team',edit_user]
 ])
 
+import {logger} from "../logger"
 
 export class router {
     private publicDir: string
@@ -79,9 +80,14 @@ export class router {
             //console.log("Blocked by middleware")
             return json;
         }*/
-       
-
-       
-        return route.handler(req,json);
+        const clonedForLog = req.clone()
+        try {
+            return await route.handler(req,json);
+        } catch(e){
+            await logger.requestError(e, clonedForLog)
+            console.error(e)
+            return Response.json({ success: false, error: "Internal Server Error" }, { status: 500 })
+        }
+        
     }
 }
