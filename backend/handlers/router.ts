@@ -38,7 +38,7 @@ const rutercoy = new Map([
     ['/auth/reset_password', reset_pass],
     ['/auth/reset_confirmation',reset_confirm],
     ['/teams/edit_user_team',edit_user],
-    ['/user/edit',user_edit]
+    ['/user/edit',user_edit],
     ['/teams/add_proposal',up_proposal],
     ['/teams/view_proposal',view_proposal]
 ])

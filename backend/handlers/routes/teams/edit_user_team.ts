@@ -1,105 +1,232 @@
-import {TeamRepository} from "../../../DB/repositories"
+import { TeamRepository } from "../../../DB/repositories";
 
-const authRepo = new TeamRepository()
-
-const allowedTypes = new Set([
-  "image/jpeg",
-  "image/png",
-  "image/webp",
-]);
+const authRepo = new TeamRepository();
 
 const allowedExtensions = new Set([
-  "jpg", 
-  "jpeg", 
+  "jpg",
+  "jpeg",
   "png",
-  "webp"
+  "webp",
 ]);
 
-let folder_upload = "../../../../data_ktm";
-
 export async function handler(req: Request, json?: any): Promise<Response> {
-   if (req.method != 'POST') return new Response(null, {status:404});
-   const text = await req.text()
-   if (!text) {
-    return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
-   }
-   
+  try {
+    if (req.method !== "POST") {
+      return new Response(null, { status: 404 });
+    }
 
-    const { tim_id, user_id,editCase } = JSON.parse(text)
-    if (!tim_id || !editCase || !user_id) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
-    let result = await authRepo.timIdCheck(json.userId, Number(tim_id));
-    if (result.length == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 });
+    const text = await req.text();
 
-    switch(editCase){
-        
-        case "editNama":{
-            const {nama_baru} = JSON.parse(text);
-            if(!nama_baru) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
-            if(nama_baru.length > 250) return Response.json({ success: false, error: "Gk kepanjangan itu broo" }, { status: 401 })
-            let gantiNama = await authRepo.updateNama_lengkap(tim_id,user_id,nama_baru);
-            return Response.json(gantiNama);
-                
-            //  const {change_}
+    if (!text) {
+      return Response.json(
+        { success: false, error: "Invalid data struct??" },
+        { status: 400 }
+      );
+    }
 
-        } break;
-        case "asal_instansi":{
-            const {asal_instansi_baru} = JSON.parse(text);
-            if(!asal_instansi_baru) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
-            if(asal_instansi_baru.length > 250) return Response.json({ success: false, error: "Gk kepanjangan itu broo" }, { status: 401 })
-            let ganti_instansi = await authRepo.updateAsalInstansi(tim_id,user_id,asal_instansi_baru)
-            return Response.json(ganti_instansi);
+    const body = JSON.parse(text);
 
-        } break;
-        
-        case "nomor_induk":{
-            const {nomor_induk_baru} = JSON.parse(text);
-            if(!nomor_induk_baru) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
-            if(nomor_induk_baru.length > 30) return Response.json({ success: false, error: "Gk kepanjangan itu broo" }, { status: 401 })
-            let ganti_instansi = await authRepo.update_nomor_induk(tim_id,user_id,nomor_induk_baru)
-            return Response.json(ganti_instansi);
-        } break;
+    const { tim_id, user_id, editCase } = body;
 
-        case "foto_baru": {
-            const { file_name, foto_base64 } = JSON.parse(text);
+    if (!tim_id || !user_id || !editCase) {
+      return Response.json(
+        { success: false, error: "Invalid data struct??" },
+        { status: 401 }
+      );
+    }
 
-            if (!file_name || !foto_base64) {
-                return Response.json(
-                    { success: false, error: "Invalid data struct??" },
-                    { status: 401 }
-                );
-            }
+    const result = await authRepo.timIdCheck(
+      json.userId,
+      Number(tim_id)
+    );
 
-            const ext = file_name.split(".").pop()?.toLowerCase() ?? "";
-
-            if (!allowedExtensions.has(ext)) {
-                return Response.json(
-                    { success: false, error: "Format foto tidak didukung" },
-                    { status: 400 }
-                );
-            }
-
-            const nama_file = `${crypto.randomUUID()}.${ext}`;
-
-            const result = await authRepo.update_ktm_file(
-                Number(tim_id),
-                Number(user_id),
-                nama_file,
-                foto_base64
-            );
-
-            return Response.json({
-                ...result,
-                nama_file,
-            });
-        } break;
-
-        default:{
-            return Response.json({ success: false, error: "Invalid editCase struct??" }, { status: 401 })
+    if (result.length === 0) {
+      return Response.json(
+        {
+          success: false,
+          error: "hayo pentester kah bang??",
+        },
+        {
+          status: 403,
         }
+      );
     }
-    } catch(e){
-        console.error(e)
-        return Response.json({ success: false, error: "Internal server error" }, { status: 500 })
+
+    switch (editCase) {
+      case "editNama": {
+        const { nama_baru } = body;
+
+        if (!nama_baru) {
+          return Response.json(
+            {
+              success: false,
+              error: "Invalid data struct??",
+            },
+            {
+              status: 401,
+            }
+          );
+        }
+
+        if (nama_baru.length > 250) {
+          return Response.json(
+            {
+              success: false,
+              error: "Gk kepanjangan itu broo",
+            },
+            {
+              status: 401,
+            }
+          );
+        }
+
+        const gantiNama = await authRepo.updateNama_lengkap(
+          Number(tim_id),
+          Number(user_id),
+          nama_baru
+        );
+
+        return Response.json(gantiNama);
+      }
+
+      case "asal_instansi": {
+        const { asal_instansi_baru } = body;
+
+        if (!asal_instansi_baru) {
+          return Response.json(
+            {
+              success: false,
+              error: "Invalid data struct??",
+            },
+            {
+              status: 401,
+            }
+          );
+        }
+
+        if (asal_instansi_baru.length > 250) {
+          return Response.json(
+            {
+              success: false,
+              error: "Gk kepanjangan itu broo",
+            },
+            {
+              status: 401,
+            }
+          );
+        }
+
+        const gantiInstansi = await authRepo.updateAsalInstansi(
+          Number(tim_id),
+          Number(user_id),
+          asal_instansi_baru
+        );
+
+        return Response.json(gantiInstansi);
+      }
+
+      case "nomor_induk": {
+        const { nomor_induk_baru } = body;
+
+        if (!nomor_induk_baru) {
+          return Response.json(
+            {
+              success: false,
+              error: "Invalid data struct??",
+            },
+            {
+              status: 401,
+            }
+          );
+        }
+
+        if (nomor_induk_baru.length > 30) {
+          return Response.json(
+            {
+              success: false,
+              error: "Gk kepanjangan itu broo",
+            },
+            {
+              status: 401,
+            }
+          );
+        }
+
+        const gantiNomorInduk = await authRepo.update_nomor_induk(
+          Number(tim_id),
+          Number(user_id),
+          nomor_induk_baru
+        );
+
+        return Response.json(gantiNomorInduk);
+      }
+
+      case "foto_baru": {
+        const { file_name, foto_base64 } = body;
+
+        if (!file_name || !foto_base64) {
+          return Response.json(
+            {
+              success: false,
+              error: "Invalid data struct??",
+            },
+            {
+              status: 401,
+            }
+          );
+        }
+
+        const ext = file_name.split(".").pop()?.toLowerCase() ?? "";
+
+        if (!allowedExtensions.has(ext)) {
+          return Response.json(
+            {
+              success: false,
+              error: "Format foto tidak didukung",
+            },
+            {
+              status: 400,
+            }
+          );
+        }
+
+        const nama_file = `${crypto.randomUUID()}.${ext}`;
+
+        const uploadResult = await authRepo.update_ktm_file(
+          Number(tim_id),
+          Number(user_id),
+          nama_file,
+          foto_base64
+        );
+
+        return Response.json({
+          ...uploadResult,
+          nama_file,
+        });
+      }
+
+      default:
+        return Response.json(
+          {
+            success: false,
+            error: "Invalid editCase struct??",
+          },
+          {
+            status: 401,
+          }
+        );
     }
-  
+  } catch (e) {
+    console.error(e);
+
+    return Response.json(
+      {
+        success: false,
+        error: "Internal server error",
+      },
+      {
+        status: 500,
+      }
+    );
+  }
 }
