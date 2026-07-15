@@ -129,3 +129,561 @@ sql:
     at readableAddChunkPushByteMode (internal:streams/readable:243:18)
     at data (node:net:281:52)
 -----------------------------------------
+2026-07-15 - 22:53:58 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:66, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:07 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:67, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:07 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:68, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:07 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:69, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:07 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:70, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:07 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:71, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:08 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:72, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:08 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:73, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:08 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:74, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:08 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:65, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:08 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:66, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:08 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:67, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:08 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:68, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:08 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:69, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:09 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:70, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:09 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:71, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:09 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:72, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:09 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:73, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:09 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:74, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:09 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:65, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:09 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:66, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:09 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:67, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:09 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:68, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:09 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:69, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:10 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:70, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:10 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:71, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 22:54:10 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:72, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 23:01:42 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:105, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 23:01:44 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=PYqfgN3S59naZOx0mrKtTS-UlDCPany6WJHzg_3roNV8JXMT-WQhaqS2qKefqsvjmN5203t4Rn8dPJagqDssCZ7_QhfzASo8znb_8yS3b4D8sB-rvsRfDSL-DZNS6jy-FbiK1LoxKYmz4X-R7TUSI-nz07oY2B73_zV6aAXNV2WWqcwm0Evph7DgHfpySoZm9CMl8_9Xl_EJjJA31kXUW-C3","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:106, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 23:01:52 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=g41TXkOG1pOY2YhKD3p0yexdddjgVg6vJmWAqVw3jRBqCuwiJmhG0YF2Xb49HDxI2_91lOs_i0snMG2gjfb6osZNNKodJI2ovVm3Iij-URjmVgWn2tm7mUGvZU2MTtDF3SrucbGhlkbcdpdeSy9uZp3p7uRtQo10_uwa_8dc1AxMPWO5tBMkYXMLGnAKF7RTve4am68Q69SfI7FGRwl4RPGC","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:108, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
+2026-07-15 - 23:02:06 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","accept-encoding":"gzip, deflate, br, zstd","accept-language":"id-ID,id;q=0.6","connection":"keep-alive","content-type":"application/json","cookie":"session=g41TXkOG1pOY2YhKD3p0yexdddjgVg6vJmWAqVw3jRBqCuwiJmhG0YF2Xb49HDxI2_91lOs_i0snMG2gjfb6osZNNKodJI2ovVm3Iij-URjmVgWn2tm7mUGvZU2MTtDF3SrucbGhlkbcdpdeSy9uZp3p7uRtQo10_uwa_8dc1AxMPWO5tBMkYXMLGnAKF7RTve4am68Q69SfI7FGRwl4RPGC","host":"localhost:1337","referer":"http://localhost:1337/dashboard","sec-ch-ua":"\"Not;A=Brand\";v=\"8\", \"Chromium\";v=\"150\", \"Brave\";v=\"150\"","sec-ch-ua-mobile":"?0","sec-ch-ua-platform":"\"Windows\"","sec-fetch-dest":"empty","sec-fetch-mode":"cors","sec-fetch-site":"same-origin","sec-gpc":"1","user-agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"}
+Error     : SqlError: (conn:111, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.data_proposal' doesn't exist
+sql: 
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id...
+    at createError (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at handleErrorPacket (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/cmd/parser.js:92:24)
+    at receivePacketBasic (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:94:9)
+    at onData (/mnt/c/Users/ADVAN/Documents/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:151:20)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:264:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:242:18)
+    at data (node:net:281:72)
+-----------------------------------------
