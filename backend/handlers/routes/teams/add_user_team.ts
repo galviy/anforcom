@@ -64,7 +64,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
         
         return Response.json({ success: true, message: `Uploaded ${photo.name} with size of ${ukuran_foto}`, nama_file: `${nama_file}` }, { status: 200 });
     }
-    return Response.json({ up_data }, { status: 403 })
+    return Response.json(up_data , { status: 403 })
   }
   return Response.json({ success: false }, { status: 403 })
   

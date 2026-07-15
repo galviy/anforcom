@@ -14,9 +14,9 @@ export async function handler(req: Request, json?: any): Promise<Response> {
 
   if(filename.length > 250) return Response.json({ success: false, error: "Gk kepanjangan itu broo" }, { status: 401 })
   
-  let validasi = await authRepo.check_file_sesuai(json.userId,filename);
+  let validasi = await authRepo.check_file_ktm_sesuai(json.userId,filename);
   if (!validasi.success){
-        return Response.json({  validasi }, { status: 404 }) 
+        return Response.json(validasi , { status: 404 }) 
   }
   
   const file = Bun.file(folder_upload + `/${filename}`);

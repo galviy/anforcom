@@ -5,8 +5,11 @@ import crypto from "node:crypto";
 
 export class TeamRepository{
     private folder_upload: string = path.join(import.meta.dir, "../../data_ktm");
+    private folder_upload_proposal: string= path.join(import.meta.dir, "../../data_proposal");
 
-   async check_file_sesuai(idUser: number, nama_file: string) {
+
+
+   async check_file_ktm_sesuai(idUser: number, nama_file: string) {
         const conn = await db.getConnection();
         try {
             const sql = await conn.query(
@@ -21,6 +24,34 @@ export class TeamRepository{
             }
 
             if (Number(idUser) !== Number(sql[0].user_id)) {
+                return { success: false, message: 'pentester kah bang?' };
+            }
+            
+            return { success: true };  
+        } catch (e) {
+            console.error(e);
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+           
+            conn.release();
+        }
+    }
+    async check_file_proposal_sesuai(idUser: number, nama_file: string) {
+        const conn = await db.getConnection();
+        try {
+            const sql = await conn.query(
+                `select u.user_id as pemilik 
+                from user_tim u 
+                join data_proposal dp on u.tim_id = dp.id_tim 
+                where data_proposal = ?`, 
+                [nama_file]
+            );
+            if (sql.length == 0) {
+                return { success: false, message: 'not found' }; 
+            }
+            console.log(idUser)
+            console.log(sql[0])
+            if (Number(idUser) !== Number(sql[0].pemilik)) {
                 return { success: false, message: 'pentester kah bang?' };
             }
             
@@ -189,6 +220,44 @@ export class TeamRepository{
             throw e; 
         }
     }
+    async upload_proposal_file(filecoy:File,nama_proposal:string){
+        try {
+            const filePath = path.join(this.folder_upload_proposal,nama_proposal)
+            await Bun.write(filePath,filecoy);
+        } catch (e){
+            console.error(e)
+            throw e
+        }
+    }
+    async upload_proposal(tim_id: number, filecoy: File,nama_proposal:string) {
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
+
+            const sql1 = await conn.query(
+                `select count(*) as jumlah from data_proposal where id_tim = ?`
+                ,[tim_id]
+            );
+            if(sql1[0].jumlah != 0){
+                await conn.rollback();
+                return { success: false, message: `Tim kamu sudah memiliki proposal sebelumnya, delete terlebih dahulu untuk upload proposal terbaru!` };
+            }
+            await this.upload_proposal_file(filecoy,nama_proposal);
+            const sql2 = await conn.query(
+                `INSERT INTO data_proposal (id_tim, data_proposal) VALUES (?, ?)`,
+                [tim_id,nama_proposal]
+            );
+            await conn.commit();
+            return { success: true, message: `successfully Uploaded prosal` };
+
+        } catch(e){
+            console.error(e);
+            await conn.rollback();
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+            conn.release();
+        }
+    }
     
     async upload_ktm(nama_lengkap: string, asal_instansi: string, user_id: number, tim_id: number, nomor_induk: string, filecoy: File,nama_ktm:string) {
         const conn = await db.getConnection();
@@ -222,18 +291,26 @@ export class TeamRepository{
             conn.release();
         }
     }
+    async ambil_proposal(idTeam:number){
+        const sql = `
+            select data_proposal 
+            from user_tim u 
+            join data_proposal dp on u.tim_id = dp.id_tim 
+            where u.tim_id = ?
+        `
+         return await db.query(sql, [idTeam]);
+    }
     async findByUsername(username: string) {
         const sql = `
-            SELECT t.id, t.nama_tim ,t.isVerified
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
             FROM tim t
             JOIN user_tim ut ON t.id = ut.tim_id
             JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_tim = t.id
             WHERE u.username = ?
         `;
         return await db.query(sql, [username]);
     }
-
-    
 
     async deleteUserTeam(idTeam:number,idUser:number){
         const sql = `
@@ -310,6 +387,7 @@ export class TeamRepository{
             await conn.beginTransaction();
             await conn.query(`DELETE from user_tim where tim_id = ?`, [IdTeam]);
             await conn.query(`DELETE FROM isi_tim WHERE tim_id = ?`, [IdTeam]);
+            await conn.query(`DELETE FROM data_proposal where id_tim =? `, [IdTeam])
             const result = await conn.query(`DELETE FROM tim WHERE id = ?`, [IdTeam]);
             
             await conn.commit();
@@ -330,6 +408,20 @@ export class TeamRepository{
             where user_id = ? and tim_id = ? 
         `;
         return await db.query(sql,[Iduser,Idteam]);
+    }
+
+    async bisaUpProposal(Idteam:number){
+        const sql = `
+            select tim_lomba 
+            from tim 
+            where id = ?
+        `;
+        let result = await db.query(sql,[Idteam])
+        if (result.length == 0){
+             return { success: false, message: `Unable to find??` };
+        } 
+        if (result[0].tim_lomba != 1) return { success: false, message: `Anda tidak perlu proposal untuk kategori tersebut?` };
+        return  { success: true, message: `Valid` };
     }
 
     async isiTimCheck(Idteam:number){
