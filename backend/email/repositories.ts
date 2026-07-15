@@ -1,5 +1,9 @@
 import {email} from "."
 
+// URL frontend tempat halaman /reset-password berjalan.
+// - Dev: frontend jalan terpisah lewat Vite (default port 5173)
+// - Prod: frontend (dist/) di-serve langsung oleh backend ini, jadi origin-nya sama
+const FRONTEND_URL = Bun.env.FRONTEND_URL || "http://localhost:1337"
 
 export class emailRepositories{
   
@@ -11,10 +15,20 @@ export class emailRepositories{
       });
   }
   async sendResetAccountVerification(emailName: string,token:string) {
+    // PENTING: harus mengarah ke halaman reset-password di FRONTEND (yang lalu
+    // memanggil POST /api/auth/reset_confirmation?token=...), BUKAN ke
+    // /api/auth/verification — endpoint itu untuk verifikasi akun baru dan
+    // mengecek tabel `dummy_user`, sedangkan token reset password disimpan di
+    // tabel `changepass_dummy`. Memakai link yang salah selalu menghasilkan
+    // "Token verifikasi tidak valid." walau token reset-nya sendiri valid.
+    const resetLink = `${FRONTEND_URL}/reset-password?token=${token}`
     await email.send({
         to: emailName,
         subject: "Anforcom Reset Account!",
-        html: `<b>Verification Link http://localhost:1337/api/auth/verification?token=${token}</b>`,
+        html: `<p>Kami menerima permintaan reset password untuk akun Anforcom kamu. Klik tombol di bawah untuk membuat password baru (tautan berlaku 30 menit):</p>
+        <p><a href="${resetLink}" style="display:inline-block;padding:10px 20px;background:#f5a623;color:#0a1022;font-weight:bold;text-decoration:none;border-radius:6px;">Reset Password</a></p>
+        <p>Atau salin link ini ke browser: ${resetLink}</p>
+        <p>Kalau kamu tidak merasa meminta ini, abaikan saja email ini.</p>`,
       });
   }
 }

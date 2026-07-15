@@ -300,7 +300,7 @@ curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
 -X POST http://127.0.0.1:1337/api/teams/edit_user_team \
 -H "Content-Type: application/json" \
 -H "Cookie: session=active_session" \
--d '{"tim_id": 421,"user_id":16, "editCase": "asal_instansi", "asal_instansi": "Institut Teknologi Bandung"}'
+-d '{"tim_id": 421,"user_id":16, "editCase": "asal_instansi", "asal_instansi_baru": "Institut Teknologi Bandung"}'
 ```
 
 ```nginx
@@ -336,4 +336,46 @@ Content-Length: 93
 ```
 
 # Edit foto team member
+
+```curl
+curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
+-X POST http://127.0.0.1:1337/api/teams/edit_user_team \
+-H "Content-Type: application/json" \
+-H "Cookie: session=active_session" \
+-d '{"tim_id": 421,"user_id":16, "editCase": "foto_baru", "file_name": "ktm.jpg", "foto_base64": "<base64 encoded file, max 10MB>"}'
+```
+
+file_name hanya dipakai untuk mengambil ekstensi file (jpg/jpeg/png/webp), nama file yang disimpan di server akan di-generate ulang (uuid).
+
+Response berhasil
+
+```nginx
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=utf-8
+
+{"ganti_foto":{"success":true,"message":"Successfully changed your identity card!","nama_file":"a1b2c3d4-uuid.jpg"}}
+```
+
+Gunakan `nama_file` yang dikembalikan untuk membangun URL `GET /api/teams/view_ktm?id=<nama_file>` seperti pada endpoint "view ktm tiap user".
+
+# Edit password user
+
+```curl
+curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
+-X POST http://127.0.0.1:1337/api/user/edit \
+-H "Content-Type: application/json" \
+-H "Cookie: session=active_session" \
+-d '{"password": true, "old_pass": "galvin123", "new_pass": "galvin456"}'
+```
+
+Response berhasil
+
+```nginx
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=utf-8
+
+{"success":true,"message":"Successfully changed your password!"}
+```
+
+Catatan: field `email` dan `no_tlp` pada endpoint ini belum diimplementasikan di backend (akan membalas `501 Not Implemented`).
 

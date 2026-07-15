@@ -66,3 +66,9 @@ sql: INSERT INTO password_reset_tokens (hashed_token, expires_at, email)
                 VALUES (?, ?, ?) - parameters:['57b39a073542171bcee8358c6b97b278fe20f815eb3b3a135ea5b4c180f10b19','07/13/2026 20:12:54.015','galvindoser@gmail.com']
 2026-07-13 - 20:35:19 : JSON Parse error: Property name must be a string literal
 2026-07-13 - 20:35:41 : authRepo.reset_password is not a function. (In 'authRepo.reset_password(new_password1, token)', 'authRepo.reset_password' is undefined)
+2026-07-14 - 22:47:33 : (conn:43, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.changepass_dummy' doesn't exist
+sql: INSERT INTO changepass_dummy (hashed_token, expires_at, email)
+                VALUES (?, ?, ?) - parameters:['6ab47c8edbd4bbe0dc0edbb9d3e97a6741667fccdaac6321d1cfa9407fc9be56','07/14/2026 23:17:33.573','hra174230@gmail.com']
+2026-07-14 - 22:47:38 : (conn:44, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.changepass_dummy' doesn't exist
+sql: INSERT INTO changepass_dummy (hashed_token, expires_at, email)
+                VALUES (?, ?, ?) - parameters:['aee8975431dd5b2a0f2bfc9dca0b6f5fd85bdb28accce97d43f88310c6979900','07/14/2026 23:17:38.695','hra174230@gmail.com']

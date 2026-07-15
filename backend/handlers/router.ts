@@ -18,6 +18,7 @@ import * as verification from "./routes/auth/verification"
 import * as reset_pass from "./routes/auth/reset_password"
 import * as reset_confirm from "./routes/auth/reset_confirmation"
 import * as edit_user from "./routes/teams/edit_user_team"
+import * as user_edit from "./routes/user/edit"
 
 const rutercoy = new Map([
     ['/auth/login', login],
@@ -34,7 +35,8 @@ const rutercoy = new Map([
     ['/auth/verification',verification],
     ['/auth/reset_password', reset_pass],
     ['/auth/reset_confirmation',reset_confirm],
-    ['/teams/edit_user_team',edit_user]
+    ['/teams/edit_user_team',edit_user],
+    ['/user/edit',user_edit]
 ])
 
 

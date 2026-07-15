@@ -67,6 +67,12 @@ export default function Login() {
             <input type="password" name="password" value={form.password} onChange={handleChange} required />
           </div>
 
+          <div style={{ textAlign: 'right', marginBottom: '1rem' }}>
+            <Link to="/forgot-password" style={{ fontSize: '0.85rem', color: 'var(--primary-color)', textDecoration: 'none', fontWeight: 600 }}>
+              Lupa password?
+            </Link>
+          </div>
+
           <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? 'Memproses...' : 'Masuk'}
           </button>

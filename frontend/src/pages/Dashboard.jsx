@@ -23,6 +23,12 @@ export default function Dashboard() {
   const [addingLoading, setAddingLoading] = useState(false);
   const [addingError, setAddingError] = useState('');
 
+  // State untuk form "Edit Anggota" (nama_lengkap/asal_instansi/nomor_induk)
+  const [editingMemberId, setEditingMemberId] = useState(null);
+  const [editForm, setEditForm] = useState({ nama_lengkap: '', asal_instansi: '', nomor_induk: '', photo: null });
+  const [editLoading, setEditLoading] = useState(false);
+  const [editError, setEditError] = useState('');
+
   useEffect(() => {
     // Sesi login dicek lewat cookie (HttpOnly), bukan localStorage.
     const fetchUser = async () => {
@@ -73,6 +79,7 @@ export default function Dashboard() {
   const handleToggleMembers = async (timId) => {
     setActionError('');
     setAddingToTeamId(null);
+    setEditingMemberId(null);
     if (expandedTeamId === timId) {
       setExpandedTeamId(null);
       setMembers([]);
@@ -118,9 +125,78 @@ export default function Dashboard() {
     }
   };
 
+  const openEditMemberForm = (member) => {
+    setEditingMemberId(member.id);
+    setEditError('');
+    setEditForm({
+      nama_lengkap: member.nama_lengkap || '',
+      asal_instansi: member.asal_instansi || '',
+      nomor_induk: member.nomor_induk || '',
+      photo: null,
+    });
+  };
+
+  const closeEditMemberForm = () => {
+    setEditingMemberId(null);
+    setEditError('');
+  };
+
+  const handleEditFormChange = (e) => {
+    const { name, value, files } = e.target;
+    if (name === 'photo') {
+      setEditForm((f) => ({ ...f, photo: files?.[0] || null }));
+      return;
+    }
+    setEditForm((f) => ({ ...f, [name]: value }));
+  };
+
+  const handleEditMemberSubmit = async (e, timId, member) => {
+    e.preventDefault();
+    setEditError('');
+
+    if (!editForm.nama_lengkap.trim() || !editForm.asal_instansi.trim() || !editForm.nomor_induk.trim()) {
+      setEditError('Semua field wajib diisi.');
+      return;
+    }
+
+    // Hanya kirim request untuk field yang benar-benar berubah, biar tidak boros call.
+    const tasks = [];
+    if (editForm.nama_lengkap.trim() !== member.nama_lengkap) {
+      tasks.push(teamAPI.editUserTeamNama(timId, member.id, editForm.nama_lengkap.trim()));
+    }
+    if (editForm.asal_instansi.trim() !== member.asal_instansi) {
+      tasks.push(teamAPI.editUserTeamAsalInstansi(timId, member.id, editForm.asal_instansi.trim()));
+    }
+    if (editForm.nomor_induk.trim() !== member.nomor_induk) {
+      tasks.push(teamAPI.editUserTeamNomorInduk(timId, member.id, editForm.nomor_induk.trim()));
+    }
+
+    if (editForm.photo) {
+      tasks.push(teamAPI.editUserTeamFoto(timId, member.id, editForm.photo));
+    }
+
+    if (tasks.length === 0) {
+      closeEditMemberForm();
+      return;
+    }
+
+    try {
+      setEditLoading(true);
+      await Promise.all(tasks);
+      closeEditMemberForm();
+      const res = await teamAPI.getTeamMembers(timId);
+      setMembers(res?.data || []);
+    } catch (err) {
+      setEditError(err.message || 'Gagal menyimpan perubahan anggota.');
+    } finally {
+      setEditLoading(false);
+    }
+  };
+
   const openAddMemberForm = (timId) => {
     setAddingToTeamId(timId);
     setAddingError('');
+    setEditingMemberId(null);
     setMemberForm({ nama_lengkap: '', asal_instansi: '', nomor_induk: '', photo: null });
   };
 
@@ -280,23 +356,71 @@ export default function Dashboard() {
                       ) : (
                         <ul style={{ listStyle: 'none', padding: 0 }}>
                           {members.map((m) => (
-                            <li key={m.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem', gap: '0.75rem' }}>
-                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                <img
-                                  src={teamAPI.getKtmUrl(m.data_image)}
-                                  alt={`KTM ${m.nama_lengkap}`}
-                                  style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 6, border: '1px solid #ddd' }}
-                                />
-                                <span>
-                                  {m.nama_lengkap} — {m.asal_instansi} ({m.nomor_induk})
-                                </span>
+                            <li key={m.id} style={{ marginBottom: '0.75rem' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                  <img
+                                    src={teamAPI.getKtmUrl(m.data_image)}
+                                    alt={`KTM ${m.nama_lengkap}`}
+                                    style={{ width: 48, height: 48, objectFit: 'cover', borderRadius: 6, border: '1px solid #ddd' }}
+                                  />
+                                  <span>
+                                    {m.nama_lengkap} — {m.asal_instansi} ({m.nomor_induk})
+                                  </span>
+                                </div>
+                                <div style={{ display: 'flex', gap: '0.5rem', flexShrink: 0 }}>
+                                  <button
+                                    style={{ width: 'auto', padding: '0.25rem 0.75rem', background: 'transparent', color: 'var(--primary-color)', border: '2px solid var(--primary-color)', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
+                                    onClick={() => (editingMemberId === m.id ? closeEditMemberForm() : openEditMemberForm(m))}
+                                  >
+                                    {editingMemberId === m.id ? 'Batal' : 'Edit'}
+                                  </button>
+                                  <button
+                                    style={{ width: 'auto', padding: '0.25rem 0.75rem', background: '#dc2626', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
+                                    onClick={() => handleRemoveMember(t.id, m.id)}
+                                  >
+                                    Keluarkan
+                                  </button>
+                                </div>
                               </div>
-                              <button
-                                style={{ width: 'auto', padding: '0.25rem 0.75rem', background: '#dc2626', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
-                                onClick={() => handleRemoveMember(t.id, m.id)}
-                              >
-                                Keluarkan
-                              </button>
+
+                              {editingMemberId === m.id && (
+                                <form
+                                  onSubmit={(e) => handleEditMemberSubmit(e, t.id, m)}
+                                  style={{ marginTop: '0.5rem', padding: '0.75rem', border: '1px solid #eee', borderRadius: 8 }}
+                                >
+                                  {editError && <div className="alert-error">{editError}</div>}
+                                  <div className="form-group">
+                                    <label>Nama Lengkap</label>
+                                    <input type="text" name="nama_lengkap" value={editForm.nama_lengkap} onChange={handleEditFormChange} required />
+                                  </div>
+                                  <div className="form-group">
+                                    <label>Asal Instansi</label>
+                                    <input type="text" name="asal_instansi" value={editForm.asal_instansi} onChange={handleEditFormChange} required />
+                                  </div>
+                                  <div className="form-group">
+                                    <label>Nomor Induk (NIM/NISN)</label>
+                                    <input type="text" name="nomor_induk" value={editForm.nomor_induk} onChange={handleEditFormChange} required />
+                                  </div>
+                                  <div className="form-group">
+                                    <label>Foto KTM / Kartu Pelajar</label>
+                                    <input type="file" name="photo" accept="image/jpeg,image/png,image/webp" onChange={handleEditFormChange} />
+                                    <small>Kosongkan jika tidak ingin mengganti foto.</small>
+                                  </div>
+                                  <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                    <button type="submit" className="btn-primary" style={{ width: 'auto', padding: '0.5rem 1.5rem' }} disabled={editLoading}>
+                                      {editLoading ? 'Menyimpan...' : 'Simpan Perubahan'}
+                                    </button>
+                                    <button
+                                      type="button"
+                                      style={{ width: 'auto', padding: '0.5rem 1.5rem', background: '#f3f4f6', border: 'none', borderRadius: 6, cursor: 'pointer' }}
+                                      onClick={closeEditMemberForm}
+                                    >
+                                      Batal
+                                    </button>
+                                  </div>
+                                </form>
+                              )}
                             </li>
                           ))}
                         </ul>
