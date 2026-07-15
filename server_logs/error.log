@@ -1,9 +1,20 @@
-2026-06-25T08:33:07.716Z - undefined is not an object (evaluating 'rutercoy.get(url).handler')
-2026-06-25T08:35:48.668Z - undefined is not an object (evaluating 'rutercoy.get(url).handler')
-2026-06-27 - 09:28:25 : Unexpected end of JSON input
-2026-06-27 - 09:29:39 : Unexpected end of JSON input
-2026-06-27 - 09:31:45 : Unexpected end of JSON input
-2026-06-27 - 09:43:45 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+2026-07-15 - 17:01:43 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","cookie":"session=TDRqO1tNsOIKqlEwyzgXWTUKPfuquZY60Pgf3oiQ5GinpaBBX1k9CRDRwSp6LfUXwd1YvSlzPZC_RYhYHL637pd-MKOSvmfEIdEmc_WOso7HX2M2FDz7GD_vVF0Wa6OPLY6CUYgYqEy6v-kpoKgIz7KjeqpMfp2_qJr2UPUckRAWm9FyQMbVA0e5fGAbZIIC6tKnECl-kUd6Jon8hQ35wBA","host":"127.0.0.1:1337","user-agent":"curl/8.21.0"}
+Error     : TypeError: authRepo.ambil_proposal is not a function. (In 'authRepo.ambil_proposal(result[i])', 'authRepo.ambil_proposal' is undefined)
+    at handler (/home/shala/Desktop/project/anforcom/backend/handlers/routes/teams/show_team.ts:21:44)
+    at async handle (/home/shala/Desktop/project/anforcom/backend/handlers/router.ts:87:32)
+    at processTicksAndRejections (native:7:39)
+-----------------------------------------
+2026-07-15 - 17:02:12 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","cookie":"session=TDRqO1tNsOIKqlEwyzgXWTUKPfuquZY60Pgf3oiQ5GinpaBBX1k9CRDRwSp6LfUXwd1YvSlzPZC_RYhYHL637pd-MKOSvmfEIdEmc_WOso7HX2M2FDz7GD_vVF0Wa6OPLY6CUYgYqEy6v-kpoKgIz7KjeqpMfp2_qJr2UPUckRAWm9FyQMbVA0e5fGAbZIIC6tKnECl-kUd6Jon8hQ35wBA","host":"127.0.0.1:1337","user-agent":"curl/8.21.0"}
+Error     : TypeError: authRepo.ambil_proposal is not a function. (In 'authRepo.ambil_proposal(result[i].id)', 'authRepo.ambil_proposal' is undefined)
+    at handler (/home/shala/Desktop/project/anforcom/backend/handlers/routes/teams/show_team.ts:21:44)
+    at async handle (/home/shala/Desktop/project/anforcom/backend/handlers/router.ts:87:32)
+    at processTicksAndRejections (native:7:39)
+-----------------------------------------
+2026-07-15 - 17:25:40 : [ERROR] GET /api/teams/view_proposal?id=381021c5-7a1d-40b4-b8e6-f08bcdf3daea.pdf
+Headers   : {"accept":"*/*","cookie":"session=DgGYndt_AEd7F8Ra7BsanY5ER_X5fShHuJHAc8V76eX8cDh0tcWoE8XfQ5wTfJ9tu-v8jeg7wiw-gRPlEF9nRX0PoDaw9htGDjwZrXOuJEyxw88pClI66yB6J1dqtL6mUea7nV_GY_o-RjWwkuT0Ofq9NFi13Gro-mTJI1nBF52zDW8F5NrYAgwMwubLXF9Py9S3BYLTSwdnYHHxbP-2g3Y","host":"127.0.0.1:1337","user-agent":"curl/8.21.0"}
+Error     : SqlError: (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
     (pool connections: active=0 idle=0 limit=10)
 2026-06-27 - 09:44:17 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
     (pool connections: active=0 idle=0 limit=10)
@@ -72,3 +83,49 @@ sql: INSERT INTO changepass_dummy (hashed_token, expires_at, email)
 2026-07-14 - 22:47:38 : (conn:44, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.changepass_dummy' doesn't exist
 sql: INSERT INTO changepass_dummy (hashed_token, expires_at, email)
                 VALUES (?, ?, ?) - parameters:['aee8975431dd5b2a0f2bfc9dca0b6f5fd85bdb28accce97d43f88310c6979900','07/14/2026 23:17:38.695','hra174230@gmail.com']
+    at createError (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/misc/errors.js:65:25)
+    at _rejectTimedOutRequest (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/pool.js:366:22)
+    at _checkRequestTimeouts (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/pool.js:334:14)
+-----------------------------------------
+2026-07-15 - 17:40:19 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","cookie":"session=OlxUeiZvu4rqKoIqmQiWLeKA-MWPNr1Z5TYvW35YxLS8NCEM1uQ8UyiR5ZBlT3ShHSIxYz-MKn0T3NfN_cJwKwaYrx7rJy_YuEmr0T6eSeh3gy19ePxxh0mAB4mTcMwetG_BrES5Oz8sUaDA0CUtmlPK-WvhcZbzzMur9T4u5LHVmNpsWQ6NEohn1SJnNR5uCf395OjJemWUUcrvE_mrM5U","host":"127.0.0.1:1337","user-agent":"curl/8.21.0"}
+Error     : SqlError: Error in results, duplicate field name `tim_lomba`.
+(see option `checkDuplicate`)
+sql: 
+            SELECT t.id,t.tim_lomba, t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp....
+    at createError (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at throwUnexpectedError (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/cmd/command.js:39:24)
+    at checkDuplicates (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/cmd/parser.js:445:16)
+    at setParser (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/cmd/parser.js:412:14)
+    at readColumn (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/cmd/parser.js:370:12)
+    at onData (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:168:27)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:265:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:243:18)
+    at data (node:net:281:52)
+-----------------------------------------
+2026-07-15 - 17:41:13 : [ERROR] GET /api/teams/show_team
+Headers   : {"accept":"*/*","cookie":"session=OlxUeiZvu4rqKoIqmQiWLeKA-MWPNr1Z5TYvW35YxLS8NCEM1uQ8UyiR5ZBlT3ShHSIxYz-MKn0T3NfN_cJwKwaYrx7rJy_YuEmr0T6eSeh3gy19ePxxh0mAB4mTcMwetG_BrES5Oz8sUaDA0CUtmlPK-WvhcZbzzMur9T4u5LHVmNpsWQ6NEohn1SJnNR5uCf395OjJemWUUcrvE_mrM5U","host":"127.0.0.1:1337","user-agent":"curl/8.21.0"}
+Error     : SqlError: Error in results, duplicate field name `tim_lomba`.
+(see option `checkDuplicate`)
+sql: 
+            SELECT t.id,tim_lomba,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            FROM tim t
+            JOIN user_tim ut ON t.id = ut.tim_id
+            JOIN user u ON ut.user_id = u.id
+            LEFT JOIN data_proposal dp ON dp.id_...
+    at createError (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/misc/errors.js:66:14)
+    at throwUnexpectedError (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/cmd/command.js:39:24)
+    at checkDuplicates (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/cmd/parser.js:445:16)
+    at setParser (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/cmd/parser.js:412:14)
+    at readColumn (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/cmd/parser.js:370:12)
+    at onData (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/io/packet-input-stream.js:168:27)
+    at emit (node:events:95:22)
+    at addChunk (internal:streams/readable:265:47)
+    at readableAddChunkPushByteMode (internal:streams/readable:243:18)
+    at data (node:net:281:52)
+-----------------------------------------

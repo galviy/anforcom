@@ -117,8 +117,7 @@ Content-Type: application/json;charset=utf-8
 Date: Wed, 01 Jul 2026 14:33:42 GMT
 Content-Length: 76
 
-{"success":true,"data":[{"id":408,"nama_tim":"Jangan lupa join arkavidia"}]}
-
+{"success":true,"data":[{"id":421,"nama_tim":"swag123","tipe_lomba":3,"isVerified":0,"proposal":""},{"id":422,"nama_tim":"galvin2","tipe_lomba":1,"isVerified":0,"proposal":"381021c5-7a1d-40b4-b8e6-f08bcdf3daea.pdf"}]}
 [INFO] Waktu Total Respons: 0.009535 detik
 ```
 
@@ -335,7 +334,32 @@ Content-Length: 93
 [INFO] Waktu Total Respons: 0.002336 detik
 ```
 
-# Edit foto team member
+
+# add proposal tim (hanya untuk UI/UX)
+```curl
+curl -X POST http://127.0.0.1:1337/api/teams/add_proposal \
+-H "Cookie: session=active_session" \
+-F "tim_id=422" \
+-F "data_proposal=@$HOME/Downloads/terbaik.pdf;type=image/jpeg"
+```
+
+```nginx
+{"success":true,"message":"Uploaded terbaik.pdf with size of 0.04825","nama_file":"381021c5-7a1d-40b4-b8e6-f08bcdf3daea.pdf"}⏎    
+```
+
+# view proposal tim
+
+```curl
+curl -X GET http://127.0.0.1:1337/api/teams/view_proposal?id=381021c5-7a1d-40b4-b8e6-f08bcdf3daea.pdf \
+-H "Cookie: session=active_session"
+```
+
+```nginx
+embed pdf dari pdf nya
+```
+ 
+
+
 
 ```curl
 curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \

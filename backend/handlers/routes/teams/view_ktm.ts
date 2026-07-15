@@ -13,23 +13,17 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   if(!filename) return new Response(null, {status:404});
 
   if(filename.length > 250) return Response.json({ success: false, error: "Gk kepanjangan itu broo" }, { status: 401 })
-  try {    
-    let validasi = await authRepo.check_file_sesuai(json.userId,filename);
-    if (!validasi.success){
-         return Response.json({  validasi }, { status: 404 }) 
-    }
-   
-    const file = Bun.file(folder_upload + `/${filename}`);
-    const fileExists = await file.exists();
-    if (!fileExists) {
-      return new Response("Internal corruption??", { status: 500 });
-    }
-    return new Response(file);
-
-  } catch(e){
-    console.error(e)
-    return Response.json({ success: false, error: "Internal server error" }, { status: 500 })
+  
+  let validasi = await authRepo.check_file_ktm_sesuai(json.userId,filename);
+  if (!validasi.success){
+        return Response.json(validasi , { status: 404 }) 
   }
   
+  const file = Bun.file(folder_upload + `/${filename}`);
+  const fileExists = await file.exists();
+  if (!fileExists) {
+    return new Response("Internal corruption??", { status: 500 });
+  }
+  return new Response(file);
 }
 

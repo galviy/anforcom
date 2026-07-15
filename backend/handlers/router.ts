@@ -19,6 +19,8 @@ import * as reset_pass from "./routes/auth/reset_password"
 import * as reset_confirm from "./routes/auth/reset_confirmation"
 import * as edit_user from "./routes/teams/edit_user_team"
 import * as user_edit from "./routes/user/edit"
+import * as up_proposal from "./routes/teams/add_proposal"
+import * as view_proposal from "./routes/teams/view_proposal"
 
 const rutercoy = new Map([
     ['/auth/login', login],
@@ -37,8 +39,11 @@ const rutercoy = new Map([
     ['/auth/reset_confirmation',reset_confirm],
     ['/teams/edit_user_team',edit_user],
     ['/user/edit',user_edit]
+    ['/teams/add_proposal',up_proposal],
+    ['/teams/view_proposal',view_proposal]
 ])
 
+import {logger} from "../logger"
 
 export class router {
     private publicDir: string
@@ -81,9 +86,14 @@ export class router {
             //console.log("Blocked by middleware")
             return json;
         }*/
-       
-
-       
-        return route.handler(req,json);
+        const clonedForLog = req.clone()
+        try {
+            return await route.handler(req,json);
+        } catch(e){
+            await logger.requestError(e, clonedForLog)
+            console.error(e)
+            return Response.json({ success: false, error: "Internal Server Error" }, { status: 500 })
+        }
+        
     }
 }

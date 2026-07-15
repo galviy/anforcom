@@ -24,22 +24,22 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
    }
    
-   try {
+
     const { tim_id, user_id,editCase } = JSON.parse(text)
     if (!tim_id || !editCase || !user_id) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
     let result = await authRepo.timIdCheck(json.userId, Number(tim_id));
     if (result.length == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 });
 
     switch(editCase){
-       
+        
         case "editNama":{
             const {nama_baru} = JSON.parse(text);
             if(!nama_baru) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
             if(nama_baru.length > 250) return Response.json({ success: false, error: "Gk kepanjangan itu broo" }, { status: 401 })
             let gantiNama = await authRepo.updateNama_lengkap(tim_id,user_id,nama_baru);
-            return Response.json({gantiNama});
-             
-          //  const {change_}
+            return Response.json(gantiNama);
+                
+            //  const {change_}
 
         } break;
         case "asal_instansi":{
@@ -47,7 +47,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
             if(!asal_instansi_baru) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
             if(asal_instansi_baru.length > 250) return Response.json({ success: false, error: "Gk kepanjangan itu broo" }, { status: 401 })
             let ganti_instansi = await authRepo.updateAsalInstansi(tim_id,user_id,asal_instansi_baru)
-            return Response.json({ganti_instansi});
+            return Response.json(ganti_instansi);
 
         } break;
         
@@ -56,7 +56,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
             if(!nomor_induk_baru) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
             if(nomor_induk_baru.length > 30) return Response.json({ success: false, error: "Gk kepanjangan itu broo" }, { status: 401 })
             let ganti_instansi = await authRepo.update_nomor_induk(tim_id,user_id,nomor_induk_baru)
-            return Response.json({ganti_instansi});
+            return Response.json(ganti_instansi);
         } break;
 
         case "foto_baru": {
