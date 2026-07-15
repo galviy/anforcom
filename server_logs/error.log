@@ -16,6 +16,73 @@ Error     : TypeError: authRepo.ambil_proposal is not a function. (In 'authRepo.
 Headers   : {"accept":"*/*","cookie":"session=DgGYndt_AEd7F8Ra7BsanY5ER_X5fShHuJHAc8V76eX8cDh0tcWoE8XfQ5wTfJ9tu-v8jeg7wiw-gRPlEF9nRX0PoDaw9htGDjwZrXOuJEyxw88pClI66yB6J1dqtL6mUea7nV_GY_o-RjWwkuT0Ofq9NFi13Gro-mTJI1nBF52zDW8F5NrYAgwMwubLXF9Py9S3BYLTSwdnYHHxbP-2g3Y","host":"127.0.0.1:1337","user-agent":"curl/8.21.0"}
 Error     : SqlError: (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
     (pool connections: active=0 idle=0 limit=10)
+2026-06-27 - 09:44:17 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-27 - 09:56:33 : Password verification failed with error "UnsupportedAlgorithm"
+2026-06-27 - 10:09:31 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-27 - 10:10:50 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-27 - 10:12:21 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 12:41:53 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 12:43:03 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 13:02:59 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 13:13:41 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 13:14:49 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 13:23:07 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 13:41:12 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 14:36:55 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 14:37:18 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 14:46:15 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 14:48:03 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 14:50:27 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 14:55:15 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 15:01:50 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 15:05:39 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 15:21:44 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 15:25:17 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-29 - 15:28:09 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-30 - 14:06:09 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-30 - 14:06:52 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-06-30 - 14:11:16 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-07-01 - 20:57:33 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-07-01 - 21:02:02 : (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+2026-07-05 - 20:11:21 : undefined is not an object (evaluating 'server.requestIP')
+2026-07-13 - 19:42:54 : (conn:4, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.password_reset_tokens' doesn't exist
+sql: INSERT INTO password_reset_tokens (hashed_token, expires_at, email)
+                VALUES (?, ?, ?) - parameters:['57b39a073542171bcee8358c6b97b278fe20f815eb3b3a135ea5b4c180f10b19','07/13/2026 20:12:54.015','galvindoser@gmail.com']
+2026-07-13 - 20:35:19 : JSON Parse error: Property name must be a string literal
+2026-07-13 - 20:35:41 : authRepo.reset_password is not a function. (In 'authRepo.reset_password(new_password1, token)', 'authRepo.reset_password' is undefined)
+2026-07-14 - 22:47:33 : (conn:43, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.changepass_dummy' doesn't exist
+sql: INSERT INTO changepass_dummy (hashed_token, expires_at, email)
+                VALUES (?, ?, ?) - parameters:['6ab47c8edbd4bbe0dc0edbb9d3e97a6741667fccdaac6321d1cfa9407fc9be56','07/14/2026 23:17:33.573','hra174230@gmail.com']
+2026-07-14 - 22:47:38 : (conn:44, no: 1146, SQLState: 42S02) Table 'anforcom_dummy.changepass_dummy' doesn't exist
+sql: INSERT INTO changepass_dummy (hashed_token, expires_at, email)
+                VALUES (?, ?, ?) - parameters:['aee8975431dd5b2a0f2bfc9dca0b6f5fd85bdb28accce97d43f88310c6979900','07/14/2026 23:17:38.695','hra174230@gmail.com']
     at createError (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/misc/errors.js:65:25)
     at _rejectTimedOutRequest (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/pool.js:366:22)
     at _checkRequestTimeouts (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/pool.js:334:14)

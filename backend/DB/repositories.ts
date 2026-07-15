@@ -149,7 +149,7 @@ export class TeamRepository{
             conn.release();
         }
     }
-    /*
+    
     async update_ktm_file(tim_id: number,user_id:number,nama_ktm:string,imagebase64:string){
         const MAX_SIZE = 10 * 1024 * 1024; 
 
@@ -207,7 +207,7 @@ export class TeamRepository{
             conn.release();
         }
     }
-        */
+        
 
     async upload_ktm_file(filecoy: File, nama_ktm: string) {
         try {

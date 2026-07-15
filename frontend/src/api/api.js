@@ -47,16 +47,34 @@ export const authAPI = {
   },
 
   // GET /api/user/me/logout -> backend balas 302 redirect + Set-Cookie penghapus cookie.
-  // PERHATIAN (bug backend): logout.ts menghapus cookie bernama "token", padahal
-  // cookie sesi yang sebenarnya dipakai bernama "session" (lihat login.ts).
-  // Akibatnya cookie "session" TIDAK terhapus oleh endpoint ini. Selama backend
-  // belum diperbaiki, logout di frontend tidak akan benar-benar mengakhiri sesi
-  // di server (walau UI akan tetap kembali ke halaman login).
+  // Sudah diperbaiki di backend: logout.ts sekarang menghapus cookie "session"
+  // (sesuai nama cookie sesi yang dipakai login.ts), jadi logout benar-benar
+  // mengakhiri sesi di server.
   logout: () => {
     return fetch(`${API_BASE}/user/me/logout`, {
       method: 'GET',
       redirect: 'follow',
     });
+  },
+
+  // POST minta link reset password. Selalu balas success:true walau email
+  // tidak terdaftar (mencegah enumerasi email).
+  resetPassword: (email) => {
+    return fetch(`${API_BASE}/auth/reset_password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email }),
+    }).then(handleResponse);
+  },
+
+  // POST konfirmasi reset password pakai token dari link email.
+  // token dikirim lewat query string, bukan body.
+  resetConfirmation: (token, newPassword1, newPassword2) => {
+    return fetch(`${API_BASE}/auth/reset_confirmation?token=${encodeURIComponent(token)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ new_password1: newPassword1, new_password2: newPassword2 }),
+    }).then(handleResponse);
   },
 };
 
@@ -67,6 +85,18 @@ export const userAPI = {
       headers: { 'Content-Type': 'application/json' },
     }).then(handleResponse);
   },
+
+  // POST ganti password user yang sedang login.
+  // NOTE: baru bisa dipakai sekarang, sebelumnya handler-nya (/user/edit) belum
+  // didaftarkan di backend router jadi selalu 404.
+  updatePassword: (oldPassword, newPassword) => {
+    return fetch(`${API_BASE}/user/edit`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: true, old_pass: oldPassword, new_pass: newPassword }),
+    }).then(handleResponse);
+  },
+  // NOTE: ganti email & no_tlp masih 501 Not Implemented di backend, belum ada wrapper-nya di sini.
 };
 
 // API untuk fitur tim
@@ -143,4 +173,55 @@ export const teamAPI = {
   // URL untuk menampilkan foto KTM anggota (dipakai langsung sebagai <img src=...>,
   // cookie sesi otomatis terkirim karena same-origin)
   getKtmUrl: (filename) => `${API_BASE}/teams/view_ktm?id=${encodeURIComponent(filename)}`,
+
+  // POST edit data anggota tim (nama_lengkap/asal_instansi/nomor_induk/foto), satu
+  // panggilan mengubah satu field lewat parameter editCase. `memberId` sama seperti
+  // di deleteUserTeam (id baris di tabel isi_tim).
+  editUserTeamNama: (timId, memberId, namaBaru) => {
+    return fetch(`${API_BASE}/teams/edit_user_team`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tim_id: timId, user_id: memberId, editCase: 'editNama', nama_baru: namaBaru }),
+    }).then(handleResponse);
+  },
+
+  editUserTeamAsalInstansi: (timId, memberId, asalInstansiBaru) => {
+    return fetch(`${API_BASE}/teams/edit_user_team`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tim_id: timId, user_id: memberId, editCase: 'asal_instansi', asal_instansi_baru: asalInstansiBaru }),
+    }).then(handleResponse);
+  },
+
+  editUserTeamNomorInduk: (timId, memberId, nomorIndukBaru) => {
+    return fetch(`${API_BASE}/teams/edit_user_team`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tim_id: timId, user_id: memberId, editCase: 'nomor_induk', nomor_induk_baru: nomorIndukBaru }),
+    }).then(handleResponse);
+  },
+
+  // Ganti foto KTM anggota. Endpoint ini JSON (bukan multipart seperti addUserTeam),
+  // jadi file di-encode ke base64 dulu. Tipe file: jpg/jpeg/png/webp, maks ~10MB.
+  // Response berisi `nama_file` baru, pakai getKtmUrl(nama_file) untuk tampilkan ulang.
+  editUserTeamFoto: async (timId, memberId, photoFile) => {
+    const base64 = await new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = () => reject(new Error('Gagal membaca file'));
+      reader.readAsDataURL(photoFile);
+    });
+
+    return fetch(`${API_BASE}/teams/edit_user_team`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        tim_id: timId,
+        user_id: memberId,
+        editCase: 'foto_baru',
+        file_name: photoFile.name,
+        foto_base64: base64,
+      }),
+    }).then(handleResponse);
+  },
 };

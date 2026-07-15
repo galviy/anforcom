@@ -34,10 +34,12 @@ export default function CreateTeam() {
         setLombaOptions(options);
       } catch (err) {
         console.error('Failed to fetch user:', err);
-        setError('Gagal memuat data pengguna. Pastikan kamu sudah login.');
-        if (err.message.includes('401')) {
-          navigate('/login');
+        if (err.status === 401) {
+          // Belum login -> lempar ke landing page, bukan /login
+          navigate('/', { replace: true });
+          return;
         }
+        setError('Gagal memuat data pengguna.');
       } finally {
         setLoadingUser(false);
       }

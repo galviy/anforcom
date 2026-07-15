@@ -59,20 +59,47 @@ export async function handler(req: Request, json?: any): Promise<Response> {
             return Response.json(ganti_instansi);
         } break;
 
-        case "foto_baru":{
-            //const {base64Foto_baru} = JSON.parse(text);
-            //let nama_file = `${crypto.randomUUID()}.${ext}`;
-            // let up = await authRepo.update_ktm_file(tim_id,user_id,);
+        case "foto_baru": {
+            const { file_name, foto_base64 } = JSON.parse(text);
 
-            //async update_ktm_file(tim_id: number,user_id:number,nama_ktm:string,imagebase64:string){
-            return Response.json({success:true,message:"Soon to be impemented"});
-            
+            if (!file_name || !foto_base64) {
+                return Response.json(
+                    { success: false, error: "Invalid data struct??" },
+                    { status: 401 }
+                );
+            }
+
+            const ext = file_name.split(".").pop()?.toLowerCase() ?? "";
+
+            if (!allowedExtensions.has(ext)) {
+                return Response.json(
+                    { success: false, error: "Format foto tidak didukung" },
+                    { status: 400 }
+                );
+            }
+
+            const nama_file = `${crypto.randomUUID()}.${ext}`;
+
+            const result = await authRepo.update_ktm_file(
+                Number(tim_id),
+                Number(user_id),
+                nama_file,
+                foto_base64
+            );
+
+            return Response.json({
+                ...result,
+                nama_file,
+            });
         } break;
 
         default:{
             return Response.json({ success: false, error: "Invalid editCase struct??" }, { status: 401 })
         }
     }
-
+    } catch(e){
+        console.error(e)
+        return Response.json({ success: false, error: "Internal server error" }, { status: 500 })
+    }
+  
 }
-
