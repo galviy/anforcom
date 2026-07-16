@@ -27,6 +27,7 @@ export async function handler(req: Request): Promise<Response> {
     
     }
     const { new_password1,new_password2 } = JSON.parse(text)
+    if(new_password1 > 250 || new_password2 > 250) return Response.json({ success: false, error: "Gak kepanjangan tuh bro?" }, { status: 400 })
     if (!new_password1 || !new_password2) return Response.json({ success: false, error: "you need to fill down the password confirmation" }, { status: 400 })
     if (new_password1 != new_password2)  return Response.json({ success: false, error: "Password you have typed does not match" }, { status: 400 })
     const changepewe = await authRepo.reset_password(new_password1,token)
