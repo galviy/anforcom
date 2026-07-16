@@ -29,6 +29,19 @@ export default function Dashboard() {
   const [editLoading, setEditLoading] = useState(false);
   const [editError, setEditError] = useState('');
 
+  // Tab sidebar: 'profile' (info akun) atau 'teams' (daftar tim & anggota)
+  const [activeTab, setActiveTab] = useState('profile');
+
+  // Dropdown "Pengaturan" di kartu Profil Saya
+  const [showSettingsMenu, setShowSettingsMenu] = useState(false);
+
+  // Form ganti password (dibuka dari dropdown Pengaturan)
+  const [showPasswordForm, setShowPasswordForm] = useState(false);
+  const [passwordForm, setPasswordForm] = useState({ old_pass: '', new_pass: '', confirm_pass: '' });
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
+
   useEffect(() => {
     // Sesi login dicek lewat cookie (HttpOnly), bukan localStorage.
     const fetchUser = async () => {
@@ -237,6 +250,47 @@ export default function Dashboard() {
     }
   };
 
+  const openPasswordForm = () => {
+    setShowSettingsMenu(false);
+    setShowPasswordForm(true);
+    setPasswordError('');
+    setPasswordSuccess('');
+    setPasswordForm({ old_pass: '', new_pass: '', confirm_pass: '' });
+  };
+
+  const handlePasswordFormChange = (e) => {
+    const { name, value } = e.target;
+    setPasswordForm((f) => ({ ...f, [name]: value }));
+  };
+
+  const handlePasswordSubmit = async (e) => {
+    e.preventDefault();
+    setPasswordError('');
+    setPasswordSuccess('');
+
+    if (!passwordForm.old_pass || !passwordForm.new_pass || !passwordForm.confirm_pass) {
+      setPasswordError('Semua field wajib diisi.');
+      return;
+    }
+    if (passwordForm.new_pass !== passwordForm.confirm_pass) {
+      setPasswordError('Konfirmasi password baru tidak cocok.');
+      return;
+    }
+
+    try {
+      setPasswordLoading(true);
+      // Backend: POST /api/user/edit {password:true, old_pass, new_pass}
+      const res = await userAPI.updatePassword(passwordForm.old_pass, passwordForm.new_pass);
+      setPasswordSuccess(res?.message || 'Password berhasil diganti.');
+      setPasswordForm({ old_pass: '', new_pass: '', confirm_pass: '' });
+    } catch (err) {
+      // Pesan error persis dari backend, misal "Password anda salah"
+      setPasswordError(err.message || 'Gagal mengganti password.');
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
   const avatarInitial = (user?.username || 'U').trim().charAt(0).toUpperCase();
 
   if (loading) {
@@ -282,16 +336,58 @@ export default function Dashboard() {
             </div>
           </div>
           <nav className="sidebar-nav">
-            <button className="sidebar-nav-item active">👤 Profil Saya</button>
-            <button className="sidebar-nav-item" onClick={() => navigate('/create-team')}>🚩 Buat Tim Baru</button>
+            <button
+              className={`sidebar-nav-item${activeTab === 'profile' ? ' active' : ''}`}
+              onClick={() => setActiveTab('profile')}
+            >
+              👤 Profil Saya
+            </button>
+            <button
+              className={`sidebar-nav-item${activeTab === 'teams' ? ' active' : ''}`}
+              onClick={() => setActiveTab('teams')}
+            >
+              🚩 Tim Saya
+            </button>
+            <div className="my-2 border-t border-white/10" />
+            <button className="sidebar-nav-item" onClick={() => navigate('/create-team')}>➕ Buat Tim Baru</button>
             <button className="sidebar-nav-item danger" onClick={handleLogout}>🚪 Keluar</button>
           </nav>
         </aside>
 
         <main className="dashboard-main">
+          {activeTab === 'profile' && (
           <div className="dashboard-card">
-            <div className="dashboard-card-head">
+            <div className="dashboard-card-head relative">
               <h2>Profil Saya</h2>
+              <div className="relative">
+                <button
+                  className="app-btn app-btn-ghost app-btn-sm"
+                  onClick={() => setShowSettingsMenu((v) => !v)}
+                >
+                  ⚙️ Pengaturan
+                </button>
+
+                {showSettingsMenu && (
+                  <>
+                    <div className="fixed inset-0 z-40" onClick={() => setShowSettingsMenu(false)} />
+                    <div className="absolute right-0 z-50 mt-2 w-56 overflow-hidden rounded-xl border border-white/10 bg-[#101832] shadow-xl">
+                      <button
+                        className="block w-full px-4 py-2.5 text-left text-sm text-white/40 cursor-not-allowed"
+                        disabled
+                        title="Fitur belum tersedia (backend belum diimplementasikan)"
+                      >
+                        Ganti Username
+                      </button>
+                      <button
+                        className="block w-full px-4 py-2.5 text-left text-sm text-[var(--app-text)] hover:bg-white/5"
+                        onClick={openPasswordForm}
+                      >
+                        Ganti Password
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
             <div className="user-info-grid">
               <div className="info-item">
@@ -311,8 +407,44 @@ export default function Dashboard() {
                 <span className="info-value">{user?.pendidikan_id === 1 ? 'Sarjana' : user?.pendidikan_id === 2 ? 'SMA/Sederajat' : 'Belum diatur'}</span>
               </div>
             </div>
-          </div>
 
+            {showPasswordForm && (
+              <form onSubmit={handlePasswordSubmit} className="member-form">
+                <div className="dashboard-card-head" style={{ marginBottom: '1rem' }}>
+                  <h3>Ganti Password</h3>
+                  <button
+                    type="button"
+                    className="app-btn app-btn-ghost app-btn-sm"
+                    onClick={() => setShowPasswordForm(false)}
+                  >
+                    Tutup
+                  </button>
+                </div>
+
+                {passwordError && <div className="alert-error">{passwordError}</div>}
+                {passwordSuccess && <div className="alert-success">✅ {passwordSuccess}</div>}
+
+                <div className="form-group">
+                  <label>Password Lama</label>
+                  <input type="password" name="old_pass" value={passwordForm.old_pass} onChange={handlePasswordFormChange} required />
+                </div>
+                <div className="form-group">
+                  <label>Password Baru</label>
+                  <input type="password" name="new_pass" value={passwordForm.new_pass} onChange={handlePasswordFormChange} required minLength={6} />
+                </div>
+                <div className="form-group">
+                  <label>Konfirmasi Password Baru</label>
+                  <input type="password" name="confirm_pass" value={passwordForm.confirm_pass} onChange={handlePasswordFormChange} required minLength={6} />
+                </div>
+                <button type="submit" className="app-btn app-btn-solid app-btn-sm" disabled={passwordLoading}>
+                  {passwordLoading ? 'Menyimpan...' : 'Simpan Password Baru'}
+                </button>
+              </form>
+            )}
+          </div>
+          )}
+
+          {activeTab === 'teams' && (
           <div className="dashboard-card">
             <div className="dashboard-card-head">
               <h3>Tim Saya</h3>
@@ -487,6 +619,7 @@ export default function Dashboard() {
               </ul>
             )}
           </div>
+          )}
         </main>
       </div>
     </div>
