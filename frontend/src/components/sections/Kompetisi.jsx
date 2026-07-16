@@ -86,7 +86,6 @@ export default function Kompetisi() {
   return (
     <section id="kompetisi" className="relative overflow-hidden px-6 py-24 sm:py-32">
       <div className="mx-auto max-w-7xl">
-        {/* Title */}
         <div className="mb-10 sm:mb-16 text-center">
           <h2 className="text-4xl font-extrabold tracking-wide text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.7)] sm:text-5xl">
             {typedPart1}
@@ -102,7 +101,6 @@ export default function Kompetisi() {
           </h2>
         </div>
 
-        {/* Carousel Container */}
         <div className="relative">
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex touch-pan-y pt-4 pb-12 -ml-6">
@@ -120,7 +118,6 @@ export default function Kompetisi() {
                         ${isActive ? 'scale-105 shadow-[0_0_30px_rgba(255,255,255,0.15)] opacity-100' : 'scale-95 opacity-50 hover:opacity-100'}
                       `}
                     >
-                      {/* Hexagon/Icon */}
                       <div className="mb-8 flex h-32 w-32 items-center justify-center rounded-2xl bg-gradient-to-br from-white/10 to-white/20 shadow-lg rotate-12 transition-transform duration-500 group-hover:rotate-0">
                         <comp.icon className="h-14 w-14 -rotate-12 text-[#EAB308] transition-transform duration-500 group-hover:rotate-0" />
                       </div>
@@ -134,7 +131,6 @@ export default function Kompetisi() {
             </div>
           </div>
 
-          {/* Controls */}
           <div className="mt-8 flex items-center justify-center gap-6">
             <button
               onClick={scrollPrev}
