@@ -46,7 +46,6 @@ export default function NavBar({ user, checkingSession }) {
         `}
       >
         <div className="flex items-center justify-between px-5 py-3 sm:px-7 sm:py-3.5">
-          {/* Logo */}
           <a
             href="#"
             onClick={(e) => {
@@ -60,7 +59,6 @@ export default function NavBar({ user, checkingSession }) {
             </span>
           </a>
 
-          {/* Desktop nav links — centered */}
           <div className="hidden items-center gap-6 md:flex">
             {NAV_LINKS.map((link) => (
               <a
@@ -79,7 +77,6 @@ export default function NavBar({ user, checkingSession }) {
             ))}
           </div>
 
-          {/* Desktop CTA */}
           <div className="hidden shrink-0 items-center gap-3 md:flex">
             {checkingSession ? null : user ? (
               <Link
@@ -113,7 +110,6 @@ export default function NavBar({ user, checkingSession }) {
             )}
           </div>
 
-          {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen((prev) => !prev)}
             className="
@@ -144,7 +140,6 @@ export default function NavBar({ user, checkingSession }) {
           </button>
         </div>
 
-        {/* Mobile menu */}
         <div
           className={`
             overflow-hidden transition-all duration-300 ease-in-out md:hidden bg-black/10
