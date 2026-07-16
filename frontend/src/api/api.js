@@ -174,6 +174,55 @@ export const teamAPI = {
   // cookie sesi otomatis terkirim karena same-origin)
   getKtmUrl: (filename) => `${API_BASE}/teams/view_ktm?id=${encodeURIComponent(filename)}`,
 
+  // Upload/ganti proposal PDF tim. Backend HANYA menerima ekstensi + MIME
+  // application/pdf, maks 50MB, dan cuma boleh untuk tim yang lolos cek
+  // `bisaUpProposal` di server (mis. kategori lomba tertentu) — pesan errornya
+  // ditampilkan apa adanya dari backend.
+  //
+  // PENTING (kuirk backend): beberapa kegagalan (tim tidak eligible / upload
+  // gagal / file >=50MB) dibalas dengan HTTP 200 tapi body-nya `success:false`
+  // (kadang di top-level, kadang dibungkus di `apakahbisaup`). Makanya endpoint
+  // ini TIDAK pakai handleResponse generik, body-nya dicek manual.
+  addProposal: async (timId, pdfFile) => {
+    const formData = new FormData();
+    formData.append('tim_id', timId);
+    formData.append('data_proposal', pdfFile);
+
+    const response = await fetch(`${API_BASE}/teams/add_proposal`, {
+      method: 'POST',
+      body: formData, // JANGAN set Content-Type manual, browser yang isi boundary-nya
+    });
+
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error(`HTTP ${response.status}: gagal membaca response`);
+    }
+
+    // Status HTTP non-2xx (401/400/403/dst) -> pesan error ada di data.error
+    if (!response.ok) {
+      const err = new Error(data?.error || data?.message || `HTTP ${response.status}`);
+      err.status = response.status;
+      throw err;
+    }
+
+    // Kegagalan bisnis yang tetap dibalas 200 OK, dibungkus di `apakahbisaup`
+    if (data?.apakahbisaup && data.apakahbisaup.success === false) {
+      throw new Error(data.apakahbisaup.message || 'Tim kamu tidak bisa upload proposal.');
+    }
+
+    // Kegagalan bisnis lain (mis. file kegedean, gagal simpan) balas 200 tapi success:false
+    if (data?.success === false) {
+      throw new Error(data.error || data.message || 'Gagal upload proposal.');
+    }
+
+    return data; // { success:true, message, nama_file }
+  },
+
+  // URL PDF proposal tim, langsung dipakai sebagai src <embed>/<iframe> untuk preview.
+  getProposalUrl: (filename) => `${API_BASE}/teams/view_proposal?id=${encodeURIComponent(filename)}`,
+
   // POST edit data anggota tim (nama_lengkap/asal_instansi/nomor_induk/foto), satu
   // panggilan mengubah satu field lewat parameter editCase. `memberId` sama seperti
   // di deleteUserTeam (id baris di tabel isi_tim).
