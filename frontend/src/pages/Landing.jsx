@@ -26,7 +26,7 @@ export default function Landing() {
       <NavBar user={user} checkingSession={checkingSession} />
       <Hero />
       <Tentang />
-      <Kompetisi />
+      <Kompetisi /> 
       <Linimasa />
       <Rewards />
       <FAQ />
