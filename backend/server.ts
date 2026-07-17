@@ -32,6 +32,7 @@ export class Server {
   start() {
     Bun.serve({
       port: this.port,
+      hostname: "127.0.0.1",
       fetch: (req,server) => this.handleRequest(req,server),
       error: (err) => {
         console.log(err)
