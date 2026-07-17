@@ -451,9 +451,9 @@ export default function CompetitionDetail() {
               
               <div className="flex flex-col sm:flex-row items-center justify-center md:justify-end gap-4 sm:gap-5 w-full md:w-auto shrink-0">
                 <a
-                  href={`/guidebook-${comp.slug}.pdf`}
+                  href="https://instagram.com/anforcom"
                   target="_blank"
-                  rel="noreferrer"
+                  rel="noopener noreferrer"
                   className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-black/40 border border-white/20 px-8 py-4 text-sm font-bold text-white transition-all hover:bg-black/60 hover:border-white/40 shadow-lg"
                 >
                   Hubungi Kami
