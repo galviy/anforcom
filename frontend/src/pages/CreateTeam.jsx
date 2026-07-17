@@ -78,7 +78,7 @@ export default function CreateTeam() {
 
       setSuccess(true);
       setTimeout(() => {
-        navigate('/dashboard');
+        navigate('/dashboard?tab=teams');
       }, 1500);
     } catch (err) {
       // Ini menangkap error validasi (HTTP 401/400), pesannya datang dari field `error`

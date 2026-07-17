@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { userAPI, teamAPI, authAPI } from '../api/api';
 
 const MAX_MEMBERS_PER_TEAM = 3;
 
 export default function Dashboard() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [user, setUser] = useState(null);
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -29,8 +30,20 @@ export default function Dashboard() {
   const [editLoading, setEditLoading] = useState(false);
   const [editError, setEditError] = useState('');
 
-  // Tab sidebar: 'profile' (info akun) atau 'teams' (daftar tim & anggota)
-  const [activeTab, setActiveTab] = useState('profile');
+  // Tab sidebar: 'profile' (info akun) atau 'teams' (daftar tim & anggota).
+  // Default ke 'teams' kalau datang dari redirect setelah membuat tim baru
+  // (CreateTeam.jsx -> navigate('/dashboard?tab=teams')).
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') === 'teams' ? 'teams' : 'profile');
+
+  // State untuk upload/preview proposal PDF tim.
+  // Backend tidak punya endpoint untuk mengambil nama file proposal yang SUDAH
+  // ada, jadi nama file cuma kita ingat di state selama sesi ini (hasil upload).
+  const [proposalOpenTeamId, setProposalOpenTeamId] = useState(null);
+  const [proposalFile, setProposalFile] = useState(null);
+  const [proposalUploading, setProposalUploading] = useState(false);
+  const [proposalError, setProposalError] = useState('');
+  const [teamProposals, setTeamProposals] = useState({}); // { [timId]: nama_file }
+  const [viewingProposalTeamId, setViewingProposalTeamId] = useState(null);
 
   // Dropdown "Pengaturan" di kartu Profil Saya
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
@@ -90,6 +103,7 @@ export default function Dashboard() {
     setActionError('');
     setAddingToTeamId(null);
     setEditingMemberId(null);
+    setProposalOpenTeamId(null);
     if (expandedTeamId === timId) {
       setExpandedTeamId(null);
       setMembers([]);
@@ -117,6 +131,13 @@ export default function Dashboard() {
         setExpandedTeamId(null);
         setMembers([]);
       }
+      if (proposalOpenTeamId === timId) setProposalOpenTeamId(null);
+      if (viewingProposalTeamId === timId) setViewingProposalTeamId(null);
+      setTeamProposals((p) => {
+        const next = { ...p };
+        delete next[timId];
+        return next;
+      });
       await refreshTeams();
     } catch (err) {
       setActionError(err.message || 'Gagal menghapus tim.');
@@ -288,6 +309,40 @@ export default function Dashboard() {
       setPasswordError(err.message || 'Gagal mengganti password.');
     } finally {
       setPasswordLoading(false);
+    }
+  };
+
+  const openProposalForm = (timId) => {
+    setProposalOpenTeamId(timId);
+    setProposalError('');
+    setProposalFile(null);
+    setViewingProposalTeamId(null);
+  };
+
+  const handleProposalSubmit = async (e, timId) => {
+    e.preventDefault();
+    setProposalError('');
+
+    if (!proposalFile) {
+      setProposalError('Pilih file PDF terlebih dahulu.');
+      return;
+    }
+    if (proposalFile.type !== 'application/pdf') {
+      setProposalError('File harus berformat PDF.');
+      return;
+    }
+
+    try {
+      setProposalUploading(true);
+      const res = await teamAPI.addProposal(timId, proposalFile);
+      setTeamProposals((p) => ({ ...p, [timId]: res.nama_file }));
+      setProposalOpenTeamId(null);
+      setProposalFile(null);
+    } catch (err) {
+      // Pesan persis dari backend, mis. alasan tim tidak eligible upload proposal
+      setProposalError(err.message || 'Gagal upload proposal.');
+    } finally {
+      setProposalUploading(false);
     }
   };
 
@@ -473,6 +528,12 @@ export default function Dashboard() {
                           {expandedTeamId === t.id ? 'Tutup' : 'Lihat Anggota'}
                         </button>
                         <button
+                          className="app-btn app-btn-ghost app-btn-sm"
+                          onClick={() => (proposalOpenTeamId === t.id ? setProposalOpenTeamId(null) : openProposalForm(t.id))}
+                        >
+                          📄 Proposal
+                        </button>
+                        <button
                           className="app-btn app-btn-danger app-btn-sm"
                           onClick={() => handleDeleteTeam(t.id)}
                         >
@@ -480,6 +541,61 @@ export default function Dashboard() {
                         </button>
                       </div>
                     </div>
+
+                    {proposalOpenTeamId === t.id && (
+                      <div className="member-form">
+                        <div className="dashboard-card-head" style={{ marginBottom: '0.75rem' }}>
+                          <h3 style={{ fontSize: '1rem' }}>Proposal Tim (PDF)</h3>
+                          <button
+                            type="button"
+                            className="app-btn app-btn-ghost app-btn-sm"
+                            onClick={() => setProposalOpenTeamId(null)}
+                          >
+                            Tutup
+                          </button>
+                        </div>
+
+                        {proposalError && <div className="alert-error">{proposalError}</div>}
+                        <p style={{ fontSize: '0.82rem', color: 'var(--app-text-muted)', marginBottom: '0.75rem' }}>
+                          Fitur ini hanya tersedia untuk tim yang eligible di sisi server (mis. kategori lomba tertentu) — kalau tim kamu tidak eligible, pesan penolakannya akan muncul di sini setelah submit.
+                        </p>
+
+                        <form onSubmit={(e) => handleProposalSubmit(e, t.id)}>
+                          <div className="form-group">
+                            <label>File Proposal</label>
+                            <input
+                              type="file"
+                              accept="application/pdf"
+                              onChange={(e) => setProposalFile(e.target.files?.[0] || null)}
+                              required
+                            />
+                            <small>Format PDF, maks 50MB.</small>
+                          </div>
+                          <div style={{ display: 'flex', gap: '0.5rem' }}>
+                            <button type="submit" className="app-btn app-btn-solid app-btn-sm" disabled={proposalUploading}>
+                              {proposalUploading ? 'Mengupload...' : 'Upload Proposal'}
+                            </button>
+                            {teamProposals[t.id] && (
+                              <button
+                                type="button"
+                                className="app-btn app-btn-ghost app-btn-sm"
+                                onClick={() => setViewingProposalTeamId(viewingProposalTeamId === t.id ? null : t.id)}
+                              >
+                                {viewingProposalTeamId === t.id ? 'Sembunyikan Preview' : 'Lihat Proposal'}
+                              </button>
+                            )}
+                          </div>
+                        </form>
+
+                        {viewingProposalTeamId === t.id && teamProposals[t.id] && (
+                          <embed
+                            src={teamAPI.getProposalUrl(teamProposals[t.id])}
+                            type="application/pdf"
+                            style={{ width: '100%', height: '480px', marginTop: '1rem', borderRadius: '10px', border: '1px solid var(--app-border)' }}
+                          />
+                        )}
+                      </div>
+                    )}
 
                     {expandedTeamId === t.id && (
                       <div>
