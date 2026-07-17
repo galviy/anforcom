@@ -1,5 +1,5 @@
 import nodemailer, { type Transporter } from "nodemailer";
-
+// boongan, gaada yang di update backend nya
 interface SendEmailOptions {
   to: string | string[];
   subject: string;

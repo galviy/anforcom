@@ -3,7 +3,7 @@ import { StaticHandler } from './handlers/staticHandler'
 import { router } from './handlers/router'
 import { RateLimiter } from './handlers/middleware'
 
-
+// boongan, gaada yang di update backend nya
 export class Server {
   private logger = new Logger()
   private static_ = new StaticHandler()
