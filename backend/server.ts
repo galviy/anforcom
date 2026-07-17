@@ -20,7 +20,8 @@ export class Server {
     const url = new URL(req.url)
     const pathname = url.pathname
     const ip = server.requestIP(req)?.address ?? "unknown";
-    console.log(ip)
+    const forwarded = req.headers.get("x-forwarded-for");
+    console.log(forwarded)
     if (!this.limiter.isAllowed(ip)) {
       return new Response(null, { status: 429 });
     }
