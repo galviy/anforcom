@@ -306,7 +306,7 @@ export default function CompetitionDetail() {
       </section>
 
       {/* ══════════════════════════════════════════
-          TIMELINE (identical to Landing Linimasa)
+          TIMELINE (identical style to Landing Linimasa)
       ══════════════════════════════════════════ */}
       <section
         id="section-timeline"
@@ -318,38 +318,87 @@ export default function CompetitionDetail() {
         <div className="mx-auto max-w-6xl">
           <div className="rounded-[40px] border border-white/20 bg-[#F5F5DC]/10 p-8 sm:p-16 backdrop-blur-md shadow-2xl shadow-black/20">
 
-            <div className="mb-12 sm:mb-24 md:mb-32 text-center">
+            <div className="mb-12 sm:mb-16 text-center">
               <h2 className="text-4xl font-extrabold tracking-wide text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.7)] sm:text-5xl">
                 Timeline <span className="text-[#EAB308]">{comp.code}!</span>
               </h2>
+              {comp.timeline.length > 5 && (
+                <p className="hidden md:block mt-4 text-sm text-white/40">← Geser untuk melihat selengkapnya →</p>
+              )}
             </div>
 
-            {/* Desktop timeline — diamond markers */}
-            <div className="hidden md:block relative pb-16">
-              <div className="absolute top-1/2 left-[5%] w-[90%] h-[2px] bg-white/40 -translate-y-1/2" />
-              <div className="flex justify-between relative z-10 w-full px-4">
-                {comp.timeline.map((t, idx) => {
-                  const isTop = idx % 2 === 1;
-                  const isYellow = idx % 2 === 0;
-                  return (
-                    <div key={idx} className="relative flex flex-col items-center flex-1">
-                      <div
-                        className={`
-                          absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rotate-45 border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.2)]
-                          ${isYellow ? 'bg-gradient-to-br from-[#FDE047] via-[#EAB308] to-[#854d0e]' : 'bg-gradient-to-br from-white via-gray-300 to-gray-500'}
-                        `}
-                      />
-                      <div className={`absolute w-48 text-center ${isTop ? 'bottom-12' : 'top-12'} left-1/2 -translate-x-1/2`}>
-                        <h3 className="text-lg font-bold text-white mb-1 drop-shadow-md">{t.window}</h3>
-                        <p className="text-sm text-white/90 font-medium drop-shadow-md">{t.label}</p>
-                      </div>
+            {/* Desktop timeline — scrollable with drag */}
+            <div
+              className="hidden md:block overflow-x-auto cursor-grab active:cursor-grabbing select-none"
+              onMouseDown={(e) => {
+                const el = e.currentTarget;
+                el.dataset.dragging = 'true';
+                el.dataset.startX = String(e.pageX);
+                el.dataset.scrollLeft = String(el.scrollLeft);
+              }}
+              onMouseMove={(e) => {
+                const el = e.currentTarget;
+                if (el.dataset.dragging !== 'true') return;
+                e.preventDefault();
+                const walk = (e.pageX - Number(el.dataset.startX)) * 1.5;
+                el.scrollLeft = Number(el.dataset.scrollLeft) - walk;
+              }}
+              onMouseUp={(e) => { e.currentTarget.dataset.dragging = 'false'; }}
+              onMouseLeave={(e) => { e.currentTarget.dataset.dragging = 'false'; }}
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+            >
+              <div style={{ minWidth: `${Math.max(comp.timeline.length * 170, 800)}px` }}>
+                {/* Top labels (odd indices) */}
+                <div className="flex h-20 mb-4">
+                  {comp.timeline.map((t, idx) => (
+                    <div key={idx} className="flex-1 flex flex-col items-center justify-end" style={{ minWidth: '170px' }}>
+                      {idx % 2 === 1 && (
+                        <div className="text-center px-2">
+                          <h3 className="text-base font-bold text-white drop-shadow-md leading-tight">{t.window}</h3>
+                          <p className="text-xs text-white/90 font-medium drop-shadow-md mt-1">{t.label}</p>
+                        </div>
+                      )}
                     </div>
-                  );
-                })}
+                  ))}
+                </div>
+
+                {/* Diamond line */}
+                <div className="relative h-10">
+                  <div className="absolute top-1/2 left-[85px] right-[85px] h-[2px] bg-white/40 -translate-y-1/2" />
+                  <div className="flex h-full relative z-10">
+                    {comp.timeline.map((t, idx) => {
+                      const isYellow = idx % 2 === 0;
+                      return (
+                        <div key={idx} className="flex-1 flex items-center justify-center" style={{ minWidth: '170px' }}>
+                          <div
+                            className={`
+                              w-8 h-8 rotate-45 border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.2)]
+                              ${isYellow ? 'bg-gradient-to-br from-[#FDE047] via-[#EAB308] to-[#854d0e]' : 'bg-gradient-to-br from-white via-gray-300 to-gray-500'}
+                            `}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Bottom labels (even indices) */}
+                <div className="flex mt-4 h-20">
+                  {comp.timeline.map((t, idx) => (
+                    <div key={idx} className="flex-1 flex flex-col items-center justify-start" style={{ minWidth: '170px' }}>
+                      {idx % 2 === 0 && (
+                        <div className="text-center px-2">
+                          <h3 className="text-base font-bold text-white drop-shadow-md leading-tight">{t.window}</h3>
+                          <p className="text-xs text-white/90 font-medium drop-shadow-md mt-1">{t.label}</p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
 
-            {/* Mobile timeline — diamond markers */}
+            {/* Mobile timeline — diamond markers (vertical) */}
             <div className="md:hidden relative border-l-2 border-white/30 ml-4 py-4">
               {comp.timeline.map((t, idx) => {
                 const isYellow = idx % 2 === 0;

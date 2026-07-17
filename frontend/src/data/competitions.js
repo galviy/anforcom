@@ -17,10 +17,11 @@ export const COMPETITIONS = [
       biayaNote: 'per tim',
     },
     timeline: [
-      { label: 'Gelombang 1', window: '15 Jul - 3 Agu 2026' },
-      { label: 'Gelombang 2', window: '10 Agu - 30 Agu 2026' },
+      { label: 'Pendaftaran Gelombang 1', window: '15 Jul - 3 Agu 2026' },
+      { label: 'Pendaftaran Gelombang 2', window: '10 Agu - 30 Agu 2026' },
       { label: 'Pengumuman Finalis', window: '16 Sep 2026' },
-      { label: 'Tahap Final & Pemenang', window: '26 Sep 2026' },
+      { label: 'Technical Meeting Finalis', window: '22 Sep 2026' },
+      { label: 'Tahap Final & Pengumuman Pemenang', window: '26 Sep 2026' },
     ],
     prizes: [
       { place: '1st', reward: 'Rp 2.500.000', extras: 'Medali + Sertifikat' },
@@ -44,11 +45,13 @@ export const COMPETITIONS = [
       biayaNote: 'per tim',
     },
     timeline: [
-      { label: 'Gelombang 1', window: '15 Jul - 3 Agu 2026' },
-      { label: 'Gelombang 2', window: '10 Agu - 30 Agu 2026' },
-      { label: 'Babak Penyisihan', window: '12 Sep 2026' },
+      { label: 'Registration Batch 1', window: '15 Jul - 3 Agu 2026' },
+      { label: 'Registration Batch 2', window: '10 Agu - 30 Agu 2026' },
+      { label: 'Technical Meeting Penyisihan', window: '9 Sep 2026' },
+      { label: 'Warmup & Penyisihan', window: '11 Sep - 12 Sep 2026' },
       { label: 'Pengumuman Finalis', window: '16 Sep 2026' },
-      { label: 'Babak Final & Pemenang', window: '26 Sep 2026' },
+      { label: 'Technical Meeting Final', window: '22 Sep 2026' },
+      { label: 'Babak Final & Pengumuman Pemenang', window: '26 Sep 2026' },
     ],
     prizes: [
       { place: '1st', reward: 'Rp 2.500.000', extras: 'Medali + Sertifikat' },
