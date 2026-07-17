@@ -20,6 +20,7 @@ export class Server {
     const url = new URL(req.url)
     const pathname = url.pathname
     const ip = server.requestIP(req)?.address ?? "unknown";
+    console.log(ip)
     if (!this.limiter.isAllowed(ip)) {
       return new Response(null, { status: 429 });
     }
