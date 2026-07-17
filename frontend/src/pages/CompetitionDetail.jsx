@@ -15,7 +15,7 @@ export default function CompetitionDetail() {
   const [typedName, setTypedName] = useState('');
 
   /* ── Countdown ── */
-  const DEADLINE = new Date('2026-03-30T23:59:59');
+  const DEADLINE = new Date('2026-08-30T23:59:59');
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
 
   /* ── Scroll-triggered fade-in ── */
@@ -140,12 +140,6 @@ export default function CompetitionDetail() {
           <div className="flex flex-col gap-16 lg:flex-row lg:items-center lg:justify-between">
             {/* Left: Title + Description */}
             <div className="max-w-2xl">
-              {/* Badge */}
-              <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-[#EAB308]/25 bg-[#EAB308]/10 px-5 py-2 backdrop-blur-sm">
-                <div className="h-2 w-2 rounded-full bg-[#EAB308] animate-pulse" />
-                <span className="text-xs font-bold tracking-[0.2em] text-[#EAB308] uppercase">{comp.code}</span>
-              </div>
-
               {/* Typed title */}
               <h1 className="mb-8 text-4xl font-extrabold uppercase tracking-wide text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.12)] sm:text-5xl lg:text-6xl leading-[1.1]">
                 {typedName}
@@ -156,10 +150,15 @@ export default function CompetitionDetail() {
 
               {/* Buttons */}
               <div className="mt-10 flex flex-wrap gap-4">
-                <button className="group inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/10 hover:shadow-lg hover:shadow-white/5">
+                <a
+                  href={`/guidebook-${comp.slug}.pdf`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/10 hover:shadow-lg hover:shadow-white/5"
+                >
                   <Download className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5" />
                   Guidebook
-                </button>
+                </a>
                 <Link
                   to="/register"
                   className="group inline-flex items-center gap-2 rounded-full bg-[#EAB308] px-8 py-3.5 text-sm font-bold text-[#14532D] shadow-lg shadow-[#EAB308]/20 transition-all duration-300 hover:-translate-y-1 hover:bg-[#FACC15] hover:shadow-xl hover:shadow-[#EAB308]/30"
@@ -170,7 +169,7 @@ export default function CompetitionDetail() {
               </div>
             </div>
 
-            {/* Right: Countdown + Icon */}
+            {/* Right: Countdown */}
             <div className="flex flex-col items-center gap-8">
               {/* Countdown box */}
               <div className="rounded-[28px] border border-white/10 bg-white/[0.04] px-8 py-8 backdrop-blur-xl shadow-2xl shadow-black/30 sm:px-10">
@@ -194,14 +193,6 @@ export default function CompetitionDetail() {
                     </div>
                   ))}
                 </div>
-              </div>
-
-              {/* Floating icon orb */}
-              <div
-                className="flex h-32 w-32 items-center justify-center rounded-full border border-white/10 bg-gradient-to-br from-white/[0.06] to-white/[0.02] shadow-2xl shadow-black/40 backdrop-blur-sm"
-                style={{ animation: 'float 6s ease-in-out infinite' }}
-              >
-                <Icon className="h-14 w-14 text-[#EAB308] drop-shadow-[0_0_15px_rgba(234,179,8,0.5)]" />
               </div>
             </div>
           </div>
@@ -311,16 +302,122 @@ export default function CompetitionDetail() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
 
-          {/* CTA Button */}
-          <div className="mt-16 flex justify-center">
-            <Link
-              to="/register"
-              className="group inline-flex items-center gap-2 rounded-md bg-gradient-to-r from-[#FACC15] to-[#EAB308] px-10 py-4 text-sm font-bold tracking-widest text-[#14532D] shadow-[0_0_20px_rgba(234,179,8,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(234,179,8,0.5)]"
-            >
-              DAFTAR SEKARANG
-              <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-            </Link>
+      {/* ══════════════════════════════════════════
+          TIMELINE (identical to Landing Linimasa)
+      ══════════════════════════════════════════ */}
+      <section
+        id="section-timeline"
+        data-animate
+        className={`relative px-6 pb-20 sm:pb-28 transition-all duration-1000 ${
+          visibleSections.has('section-timeline') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
+        <div className="mx-auto max-w-6xl">
+          <div className="rounded-[40px] border border-white/20 bg-[#F5F5DC]/10 p-8 sm:p-16 backdrop-blur-md shadow-2xl shadow-black/20">
+
+            <div className="mb-12 sm:mb-24 md:mb-32 text-center">
+              <h2 className="text-4xl font-extrabold tracking-wide text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.7)] sm:text-5xl">
+                Timeline <span className="text-[#EAB308]">{comp.code}!</span>
+              </h2>
+            </div>
+
+            {/* Desktop timeline — diamond markers */}
+            <div className="hidden md:block relative pb-16">
+              <div className="absolute top-1/2 left-[5%] w-[90%] h-[2px] bg-white/40 -translate-y-1/2" />
+              <div className="flex justify-between relative z-10 w-full px-4">
+                {comp.timeline.map((t, idx) => {
+                  const isTop = idx % 2 === 1;
+                  const isYellow = idx % 2 === 0;
+                  return (
+                    <div key={idx} className="relative flex flex-col items-center flex-1">
+                      <div
+                        className={`
+                          absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rotate-45 border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.2)]
+                          ${isYellow ? 'bg-gradient-to-br from-[#FDE047] via-[#EAB308] to-[#854d0e]' : 'bg-gradient-to-br from-white via-gray-300 to-gray-500'}
+                        `}
+                      />
+                      <div className={`absolute w-48 text-center ${isTop ? 'bottom-12' : 'top-12'} left-1/2 -translate-x-1/2`}>
+                        <h3 className="text-lg font-bold text-white mb-1 drop-shadow-md">{t.window}</h3>
+                        <p className="text-sm text-white/90 font-medium drop-shadow-md">{t.label}</p>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Mobile timeline — diamond markers */}
+            <div className="md:hidden relative border-l-2 border-white/30 ml-4 py-4">
+              {comp.timeline.map((t, idx) => {
+                const isYellow = idx % 2 === 0;
+                return (
+                  <div key={idx} className="mb-12 pl-10 relative last:mb-0">
+                    <div
+                      className={`
+                        absolute -left-[17px] top-1 w-8 h-8 rotate-45 border border-white/20 shadow-md
+                        ${isYellow ? 'bg-gradient-to-br from-[#FDE047] via-[#EAB308] to-[#854d0e]' : 'bg-gradient-to-br from-white via-gray-300 to-gray-500'}
+                      `}
+                    />
+                    <h3 className="text-lg font-bold text-white mb-1">{t.window}</h3>
+                    <p className="text-sm text-white/80">{t.label}</p>
+                  </div>
+                );
+              })}
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════
+          CTA - Grand Glassmorphism (Rectangular)
+      ══════════════════════════════════════════ */}
+      <section className="relative px-6 pb-24 sm:pb-32 mt-10">
+        {/* Glow Effects Behind the Card */}
+        <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] max-w-full h-[300px] bg-gradient-to-t from-[#EAB308]/20 to-transparent rounded-[100%] blur-[100px]" />
+        
+        <div className="relative mx-auto max-w-6xl">
+          <div className="rounded-[32px] border border-white/20 bg-[#14532D]/40 backdrop-blur-2xl py-12 px-8 sm:py-14 sm:px-16 shadow-2xl shadow-black/40 text-center relative overflow-hidden">
+            
+            {/* Pattern overlay from Hero */}
+            <div
+              className="absolute inset-0 opacity-10 pointer-events-none"
+              style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              }}
+            />
+            {/* Inner subtle glow */}
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-40" />
+            
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10 text-left">
+              <div className="flex-1 text-center md:text-left">
+                <h2 className="text-3xl md:text-5xl lg:text-6xl font-black drop-shadow-[0_0_25px_rgba(234,179,8,0.3)] leading-[1.1] tracking-wide uppercase">
+                  <span className="text-[#EAB308] block mb-1">BUKTIKAN</span>
+                  <span className="text-white block">POTENSIMU<br className="hidden md:block" /> SEKARANG!</span>
+                </h2>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row items-center justify-center md:justify-end gap-4 sm:gap-5 w-full md:w-auto shrink-0">
+                <a
+                  href={`/guidebook-${comp.slug}.pdf`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-black/40 border border-white/20 px-8 py-4 text-sm font-bold text-white transition-all hover:bg-black/60 hover:border-white/40 shadow-lg"
+                >
+                  Hubungi Kami
+                </a>
+                <Link
+                  to="/register"
+                  className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FACC15] to-[#EAB308] px-10 py-4 text-sm font-bold tracking-widest text-[#14532D] shadow-[0_0_20px_rgba(234,179,8,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_35px_rgba(234,179,8,0.6)]"
+                >
+                  DAFTAR SEKARANG
+                  <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </section>
