@@ -52,4 +52,4 @@ class EmailService {
   }
 }
 
-export const email  = new EmailService( Bun.env.email_username!,Bun.env.email_password!);
+export const email = new EmailService(Bun.env.email_username!, Bun.env.email_password!);
