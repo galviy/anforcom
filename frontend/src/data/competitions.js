@@ -24,9 +24,9 @@ export const COMPETITIONS = [
       { label: 'Tahap Final & Pengumuman Pemenang', window: '26 Sep 2026' },
     ],
     prizes: [
-      { place: '1st', reward: 'Rp 2.500.000', extras: 'Medali + Sertifikat' },
-      { place: '2nd', reward: 'Rp 1.500.000', extras: 'Medali + Sertifikat' },
-      { place: '3rd', reward: 'Rp 1.000.000', extras: 'Medali + Sertifikat' },
+      { place: '1st', reward: 'Rp 2.500.000', extras: 'Sertifikat Nasional' },
+      { place: '2nd', reward: 'Rp 1.500.000', extras: 'Sertifikat Nasional' },
+      { place: '3rd', reward: 'Rp 1.000.000', extras: 'Sertifikat Nasional' },
     ],
   },
   {
@@ -54,9 +54,9 @@ export const COMPETITIONS = [
       { label: 'Babak Final & Pengumuman Pemenang', window: '26 Sep 2026' },
     ],
     prizes: [
-      { place: '1st', reward: 'Rp 2.500.000', extras: 'Medali + Sertifikat' },
-      { place: '2nd', reward: 'Rp 1.500.000', extras: 'Medali + Sertifikat' },
-      { place: '3rd', reward: 'Rp 1.000.000', extras: 'Medali + Sertifikat' },
+      { place: '1st', reward: 'Rp 2.500.000', extras: 'Sertifikat Nasional' },
+      { place: '2nd', reward: 'Rp 1.500.000', extras: 'Sertifikat Nasional' },
+      { place: '3rd', reward: 'Rp 1.000.000', extras: 'Sertifikat Nasional' },
     ],
   },
   {
@@ -81,9 +81,9 @@ export const COMPETITIONS = [
       { label: 'Presentasi Final', window: '16 Mei' },
     ],
     prizes: [
-      { place: '1st', reward: 'Rp 2.500.000', extras: 'Medali + Sertifikat' },
-      { place: '2nd', reward: 'Rp 1.500.000', extras: 'Medali + Sertifikat' },
-      { place: '3rd', reward: 'Rp 1.000.000', extras: 'Medali + Sertifikat' },
+      { place: '1st', reward: 'Rp 2.500.000', extras: 'Sertifikat Nasional' },
+      { place: '2nd', reward: 'Rp 1.500.000', extras: 'Sertifikat Nasional' },
+      { place: '3rd', reward: 'Rp 1.000.000', extras: 'Sertifikat Nasional' },
     ],
   },
 ];
