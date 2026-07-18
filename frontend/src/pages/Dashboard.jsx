@@ -36,13 +36,13 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') === 'teams' ? 'teams' : 'profile');
 
   // State untuk upload/preview proposal PDF tim.
-  // Backend tidak punya endpoint untuk mengambil nama file proposal yang SUDAH
-  // ada, jadi nama file cuma kita ingat di state selama sesi ini (hasil upload).
+  // Backend sekarang mengembalikan field `proposal` & `tipe_lomba` langsung dari
+  // getMyTeams() (lihat show_team.ts), jadi tidak perlu state terpisah untuk
+  // "mengingat" nama file — cukup refresh daftar tim setelah upload berhasil.
   const [proposalOpenTeamId, setProposalOpenTeamId] = useState(null);
   const [proposalFile, setProposalFile] = useState(null);
   const [proposalUploading, setProposalUploading] = useState(false);
   const [proposalError, setProposalError] = useState('');
-  const [teamProposals, setTeamProposals] = useState({}); // { [timId]: nama_file }
   const [viewingProposalTeamId, setViewingProposalTeamId] = useState(null);
 
   // Dropdown "Pengaturan" di kartu Profil Saya
@@ -133,11 +133,6 @@ export default function Dashboard() {
       }
       if (proposalOpenTeamId === timId) setProposalOpenTeamId(null);
       if (viewingProposalTeamId === timId) setViewingProposalTeamId(null);
-      setTeamProposals((p) => {
-        const next = { ...p };
-        delete next[timId];
-        return next;
-      });
       await refreshTeams();
     } catch (err) {
       setActionError(err.message || 'Gagal menghapus tim.');
@@ -334,10 +329,11 @@ export default function Dashboard() {
 
     try {
       setProposalUploading(true);
-      const res = await teamAPI.addProposal(timId, proposalFile);
-      setTeamProposals((p) => ({ ...p, [timId]: res.nama_file }));
+      await teamAPI.addProposal(timId, proposalFile);
+      await refreshTeams();
       setProposalOpenTeamId(null);
       setProposalFile(null);
+      setViewingProposalTeamId(timId);
     } catch (err) {
       // Pesan persis dari backend, mis. alasan tim tidak eligible upload proposal
       setProposalError(err.message || 'Gagal upload proposal.');
@@ -527,12 +523,14 @@ export default function Dashboard() {
                         >
                           {expandedTeamId === t.id ? 'Tutup' : 'Lihat Anggota'}
                         </button>
-                        <button
-                          className="app-btn app-btn-ghost app-btn-sm"
-                          onClick={() => (proposalOpenTeamId === t.id ? setProposalOpenTeamId(null) : openProposalForm(t.id))}
-                        >
-                          📄 Proposal
-                        </button>
+                        {t.tipe_lomba === 1 && (
+                          <button
+                            className="app-btn app-btn-ghost app-btn-sm"
+                            onClick={() => (proposalOpenTeamId === t.id ? setProposalOpenTeamId(null) : openProposalForm(t.id))}
+                          >
+                            📄 Proposal
+                          </button>
+                        )}
                         <button
                           className="app-btn app-btn-danger app-btn-sm"
                           onClick={() => handleDeleteTeam(t.id)}
@@ -556,9 +554,11 @@ export default function Dashboard() {
                         </div>
 
                         {proposalError && <div className="alert-error">{proposalError}</div>}
-                        <p style={{ fontSize: '0.82rem', color: 'var(--app-text-muted)', marginBottom: '0.75rem' }}>
-                          Fitur ini hanya tersedia untuk tim yang eligible di sisi server (mis. kategori lomba tertentu) — kalau tim kamu tidak eligible, pesan penolakannya akan muncul di sini setelah submit.
-                        </p>
+                        {t.proposal && (
+                          <p style={{ fontSize: '0.82rem', color: 'var(--app-text-muted)', marginBottom: '0.75rem' }}>
+                            Proposal sudah pernah diupload. Upload file baru untuk menggantinya.
+                          </p>
+                        )}
 
                         <form onSubmit={(e) => handleProposalSubmit(e, t.id)}>
                           <div className="form-group">
@@ -575,7 +575,7 @@ export default function Dashboard() {
                             <button type="submit" className="app-btn app-btn-solid app-btn-sm" disabled={proposalUploading}>
                               {proposalUploading ? 'Mengupload...' : 'Upload Proposal'}
                             </button>
-                            {teamProposals[t.id] && (
+                            {t.proposal && (
                               <button
                                 type="button"
                                 className="app-btn app-btn-ghost app-btn-sm"
@@ -587,9 +587,9 @@ export default function Dashboard() {
                           </div>
                         </form>
 
-                        {viewingProposalTeamId === t.id && teamProposals[t.id] && (
+                        {viewingProposalTeamId === t.id && t.proposal && (
                           <embed
-                            src={teamAPI.getProposalUrl(teamProposals[t.id])}
+                            src={teamAPI.getProposalUrl(t.proposal)}
                             type="application/pdf"
                             style={{ width: '100%', height: '480px', marginTop: '1rem', borderRadius: '10px', border: '1px solid var(--app-border)' }}
                           />
