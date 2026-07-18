@@ -34,13 +34,14 @@ export async function handler(req: Request): Promise<Response> {
     if (!valid) {
       return Response.json({ success: false, error: "email atau password salah" }, { status: 401 })
     }
+   
 
     const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,no_tlp:user.no_tlp,tingkat_pendidikan:user.tingkat_pendidikan_id,valid_until:Math.floor(Date.now() / 1000) + 60 * 60})
 
     const encrypted = await encryptCookie(payload)
 
-
-    return Response.json({ success: true }, {
+    const token = Bun.CSRF.generate(Bun.env.SECRET_CSRF);
+    return Response.json({ success: true,csrf_token: token}, {
       headers: {
         'Set-Cookie': `session=${encrypted}; HttpOnly; Path=/; Max-Age=86400`
       }
@@ -61,8 +62,8 @@ export async function handler(req: Request): Promise<Response> {
     const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,no_tlp:user.no_tlp,tingkat_pendidikan:user.tingkat_pendidikan_id,valid_until:Number(Math.floor(Date.now() / 1000) + 60*30) })
 
      const encrypted = await encryptCookie(payload)
-
-     return Response.json({ success: true }, {
+      const token = Bun.CSRF.generate(Bun.env.SECRET_CSRF);
+     return Response.json({ success: true ,csrf_token: token}, {
       headers: {
         'Set-Cookie': `session=${encrypted}; HttpOnly; Path=/; Max-Age=86400`
       }

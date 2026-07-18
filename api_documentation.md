@@ -72,6 +72,7 @@ curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
 -X POST http://127.0.0.1:1337/api/teams/create_team \
 -H "Content-Type: application/json" \
 -H "Cookie: session=valid_session" \
+-H "X-CSRF-Token: valid_csrftoken" \  
 -d '{"team_name": "Jangan lupa join arkavidia","lomba_id":2}'
 ```
 
@@ -152,6 +153,7 @@ curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
       -X POST http://127.0.0.1:1337/api/teams/delete_team \
       -H "Content-Type: application/json" \
       -H "Cookie: session=valid_session" \
+      -H "X-CSRF-Token: valid_csrftoken" \  
       -d '{"tim_id": 123}'
 ```
 
@@ -176,6 +178,7 @@ curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
 -X POST http://127.0.0.1:1337/api/teams/delete_user_team \
 -H "Content-Type: application/json" \
 -H "Cookie: session=valid_session" \
+-H "X-CSRF-Token: valid_csrftoken" \  
 -d '{"tim_id": 409,"user_id": 3}'
 ```
 
@@ -209,6 +212,7 @@ file dati data_ktm
 ```curl
 curl -X POST http://127.0.0.1:1337/api/teams/add_user_team \
 -H "Cookie: session=active_session" \
+-H "X-CSRF-Token: valid_csrftoken" \  
 -F "nama_lengkap=Galvin Shala" \
 -F "asal_instansi=Universitas Diponegoro" \
 -F "tim_id=409" \
@@ -276,6 +280,7 @@ curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
 -X POST http://127.0.0.1:1337/api/teams/edit_user_team \
 -H "Content-Type: application/json" \
 -H "Cookie: session=active_session" \
+-H "X-CSRF-Token: valid_csrftoken" \ 
 -d '{"tim_id": 421,"user_id":16, "editCase": "editNama", "nama_baru": "Galvin Shala"}'
 ```
 
@@ -339,6 +344,7 @@ Content-Length: 93
 ```curl
 curl -X POST http://127.0.0.1:1337/api/teams/add_proposal \
 -H "Cookie: session=active_session" \
+-H "X-CSRF-Token: valid_csrftoken" \  
 -F "tim_id=422" \
 -F "data_proposal=@$HOME/Downloads/terbaik.pdf;type=image/jpeg"
 ```
@@ -389,6 +395,7 @@ curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
 -X POST http://127.0.0.1:1337/api/user/edit \
 -H "Content-Type: application/json" \
 -H "Cookie: session=active_session" \
+-H "X-CSRF-Token: valid_csrftoken" \
 -d '{"password": true, "old_pass": "galvin123", "new_pass": "galvin456"}'
 ```
 
