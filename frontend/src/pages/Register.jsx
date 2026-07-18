@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { LogIn } from 'lucide-react';
 import { authAPI, userAPI } from '../api/api';
+import Turnstile from '../components/Turnstile';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ export default function Register() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [checkingSession, setCheckingSession] = useState(true);
+  const [cfToken, setCfToken] = useState('');
+  const resetTurnstile = useRef(null);
 
   // Kalau cookie session masih valid, jangan tampilkan form register lagi —
   // langsung lempar ke dashboard.
@@ -32,10 +35,15 @@ export default function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
     setSuccess('');
 
+    if (!cfToken) {
+      setError('Selesaikan verifikasi captcha dulu ya.');
+      return;
+    }
+
+    setLoading(true);
     try {
       // Kirim data dengan field yang sesuai
       const res = await authAPI.register({
@@ -43,7 +51,8 @@ export default function Register() {
         password: form.password,
         email: form.email,
         no_tlp: form.no_tlp,           // ← Field ini
-        tingkat_pendidikan: parseInt(form.tingkat_pendidikan) // ← Harus angka 1 atau 2
+        tingkat_pendidikan: parseInt(form.tingkat_pendidikan), // ← Harus angka 1 atau 2
+        cf_turnstile_token: cfToken,
       });
       // PENTING: akun BELUM aktif setelah register. Backend hanya menyimpan
       // pendaftaran sementara dan mengirim link verifikasi ke email (berlaku
@@ -52,6 +61,8 @@ export default function Register() {
       setSuccess(res?.message || 'Link verifikasi telah dikirim ke email kamu.');
     } catch (err) {
       setError(err.message || 'Gagal mendaftar. Coba lagi.');
+      setCfToken('');
+      resetTurnstile.current?.(); // token Turnstile sekali pakai, minta yang baru
     } finally {
       setLoading(false);
     }
@@ -259,6 +270,15 @@ export default function Register() {
                       outline-none transition-all duration-200
                       focus:border-[#EAB308]/50 focus:bg-white/[0.08] focus:ring-1 focus:ring-[#EAB308]/30
                     "
+                  />
+                </div>
+
+                {/* Verifikasi captcha */}
+                <div className="flex justify-center">
+                  <Turnstile
+                    onVerify={setCfToken}
+                    onExpire={() => setCfToken('')}
+                    resetRef={resetTurnstile}
                   />
                 </div>
 

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { UserPlus } from 'lucide-react';
 import { authAPI, userAPI } from '../api/api';
+import Turnstile from '../components/Turnstile';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -9,12 +10,16 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [checkingSession, setCheckingSession] = useState(true);
+  const [cfToken, setCfToken] = useState('');
+  const resetTurnstile = useRef(null);
 
   // Form "lupa password" (inline, toggle di bawah form login)
   const [showForgot, setShowForgot] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotMessage, setForgotMessage] = useState('');
+  const [forgotCfToken, setForgotCfToken] = useState('');
+  const resetForgotTurnstile = useRef(null);
 
   // Kalau cookie session masih valid, jangan tampilkan form login lagi —
   // langsung lempar ke dashboard.
@@ -31,17 +36,24 @@ export default function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
     setError('');
 
+    if (!cfToken) {
+      setError('Selesaikan verifikasi captcha dulu ya.');
+      return;
+    }
+
+    setLoading(true);
     try {
       // Login berhasil -> backend set-cookie session (HttpOnly), tidak ada token di body
-      await authAPI.login(form);
+      await authAPI.login({ ...form, cf_turnstile_token: cfToken });
 
       // Redirect ke dashboard seperti yang diminta Galvin
       window.location.href = '/dashboard'; // Hard redirect biar state reset
     } catch (err) {
       setError(err.message || 'Username atau password salah');
+      setCfToken('');
+      resetTurnstile.current?.();
     } finally {
       setLoading(false);
     }
@@ -49,15 +61,23 @@ export default function Login() {
 
   const handleForgotSubmit = async (e) => {
     e.preventDefault();
-    setForgotLoading(true);
     setForgotMessage('');
+
+    if (!forgotCfToken) {
+      setForgotMessage('Selesaikan verifikasi captcha dulu ya.');
+      return;
+    }
+
+    setForgotLoading(true);
     try {
-      await authAPI.resetPassword(forgotEmail);
+      await authAPI.resetPassword(forgotEmail, forgotCfToken);
       // Backend selalu balas success:true walau email tidak terdaftar (anti email-enumeration)
       setForgotMessage('Jika email terdaftar, link reset password sudah dikirim. Cek inbox/spam kamu.');
     } catch (err) {
       setForgotMessage(err.message || 'Gagal mengirim link reset. Coba lagi.');
     } finally {
+      setForgotCfToken('');
+      resetForgotTurnstile.current?.();
       setForgotLoading(false);
     }
   };
@@ -224,6 +244,13 @@ export default function Login() {
                           "
                         />
                       </div>
+                      <div className="mb-3 flex justify-center">
+                        <Turnstile
+                          onVerify={setForgotCfToken}
+                          onExpire={() => setForgotCfToken('')}
+                          resetRef={resetForgotTurnstile}
+                        />
+                      </div>
                       <button
                         type="button"
                         onClick={handleForgotSubmit}
@@ -242,6 +269,15 @@ export default function Login() {
                   )}
                 </div>
               )}
+
+              {/* Verifikasi captcha */}
+              <div className="flex justify-center">
+                <Turnstile
+                  onVerify={setCfToken}
+                  onExpire={() => setCfToken('')}
+                  resetRef={resetTurnstile}
+                />
+              </div>
 
               {/* Submit */}
               <button

@@ -1,4 +1,3 @@
-
 interface TurnstileResponse {
     success: boolean;
     'error-codes'?: string[];
@@ -35,7 +34,8 @@ class cloudflare {
         return {success:true, message:"valid boy"}
        
         } catch (e) {
-            console.log(e);
+            console.error(e);
+            return {success:false, error: "Gagal menghubungi layanan verifikasi Cloudflare"};
         }
     }
  

@@ -119,11 +119,11 @@ export const authAPI = {
 
   // POST minta link reset password. Selalu balas success:true walau email
   // tidak terdaftar (mencegah enumerasi email).
-  resetPassword: (email) => {
+  resetPassword: (email, cfToken) => {
     return fetch(`${API_BASE}/auth/reset_password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, cf_turnstile_token: cfToken }),
     }).then(handleResponse);
   },
 

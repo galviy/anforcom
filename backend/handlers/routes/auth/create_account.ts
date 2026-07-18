@@ -1,6 +1,7 @@
 import {UserRepository} from '../../../DB/repositories'
 import {emailRepositories} from '../../../email/repositories'
 import {encryptCookie} from '../../cookies'
+import {Cloudflare} from '../../cloudflare'
 
 const emailHandler = new emailRepositories();
 const authRepo = new UserRepository()
@@ -12,10 +13,15 @@ export async function handler(req: Request): Promise<Response> {
     return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
   }
 
-  const { username, password,email,no_tlp,tingkat_pendidikan } = JSON.parse(text)
+  const { username, password,email,no_tlp,tingkat_pendidikan,cf_turnstile_token } = JSON.parse(text)
  
-  if (!username || !password || !email || !no_tlp || !tingkat_pendidikan) {
+  if (!username || !password || !email || !no_tlp || !tingkat_pendidikan || !cf_turnstile_token) {
     return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
+  }
+
+  const cfCheck = await Cloudflare.validate_token(cf_turnstile_token);
+  if (!cfCheck?.success) {
+    return Response.json({ success: false, error: "Verifikasi captcha gagal, coba lagi" }, { status: 403 })
   }
   if (username.length < 3 || username.length > 100) {
     return Response.json({ success: false, error: "Username harus 3-32 karakter" }, { status: 400 })
