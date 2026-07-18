@@ -687,3 +687,16 @@ sql:
     at readableAddChunkPushByteMode (internal:streams/readable:242:18)
     at data (node:net:281:72)
 -----------------------------------------
+2026-07-18 - 12:40:42 : [ERROR] POST /api/user/edit
+Headers   : {"accept":"*/*","content-length":"78","content-type":"application/json","cookie":"session=VOXiuUIpzy32V21DvxlwBXRZ7EG8q8KGUNIqwASVNhkO25AcZ6UDnOyYeMsPwmEXjdooDcrF4UznYqRtTh6x3k9bba5N0SEgmSGb16Tyr7DBi4NPJPiilHs_N9VSI0TLCtAGYpjfmcQ71L8P4VdJAKM0wK9TfFSGJTyQ864LJ7VcgGKUBJHDsOjflKjkTNXoCKNoDg0yQtYwGvEnv2nHCeQ","host":"127.0.0.1:1337","user-agent":"curl/8.21.0","x-csrf-token":"AAABn3Oy594ijPLPnVAIKfs0DLarnMrnAAAAAAUmXACVAu8vxx7cTTKH-NhDtArTmxg2K9tx_21cHVzNlovxVg"}
+Body      : {
+    "password": true,
+    "old_pass": "bjorka",
+    "new_pass": "bjorka"
+  }
+Error     : SqlError: (conn:-1, no: 45028, SQLState: HY000) pool failed to retrieve a connection from pool
+    (pool connections: active=0 idle=0 limit=10)
+    at createError (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/misc/errors.js:65:25)
+    at _rejectTimedOutRequest (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/pool.js:366:22)
+    at _checkRequestTimeouts (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/pool.js:334:14)
+-----------------------------------------

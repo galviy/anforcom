@@ -54,7 +54,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     if (up_proposal.success) {
         return Response.json({ success: true, message: `Uploaded ${proposal.name} with size of ${ukuran_proposal}`, nama_file: `${nama_file}` }, { status: 200 });
     }
-    return Response.json( up_proposal )
+    return Response.json(up_proposal)
   }
   return Response.json({ success: false }, { status: 403 })
   

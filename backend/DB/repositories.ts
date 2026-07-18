@@ -545,6 +545,7 @@ export class UserRepository{
             WHERE id = ?;`,
             [hashedPassword, userId]
         );
+        console.log(userId)
         return result;
        
     }

@@ -60,6 +60,16 @@ export async function decryptCookie(cookie: string): Promise<string | false> {
   }
 }
 
+export function verifyCSRF(req: Request): boolean {
+    const token = req.headers.get("X-CSRF-Token");
+
+    if (!token) return false;
+
+    return Bun.CSRF.verify(token, {
+        secret: Bun.env.SECRET_CSRF,
+    });
+}
+
 
 export function parseCookie(cookie: string): Record<string, string> {
   return Object.fromEntries(
