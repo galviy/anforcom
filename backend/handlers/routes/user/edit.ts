@@ -41,7 +41,7 @@ export async function handler(req: Request, json: any): Promise<Response> {
       cost: 10,
     })
 
-    const result = await authRepo.updatePassword(json.id, hashedPassword)
+    const result = await authRepo.updatePassword(json.userId, hashedPassword)
     if (result.affectedRows === 0) {
       return Response.json({ success: false, error: "Something went wrong?" }, { status: 500 })
     }
