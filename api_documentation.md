@@ -39,7 +39,7 @@ Content-Type: application/json;charset=utf-8
 Date: Sun, 28 Jun 2026 08:40:53 GMT
 Content-Length: 16
 
-{"success":true}
+{"success":true,"csrf_token":"AAABn3PEyJWpntozVFUxIcOmCNxn3ukeAAAAAAUmXAC7OKZTptt1zWlOQtPB6uab7wDqAXbD2ye_Rw3pVdqIfA"}
 
 [INFO] Waktu Total Respons: 0.094432 detik
 ```
