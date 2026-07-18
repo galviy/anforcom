@@ -136,6 +136,37 @@ export const authAPI = {
       body: JSON.stringify({ new_password1: newPassword1, new_password2: newPassword2 }),
     }).then(handleResponse);
   },
+
+  // GET verifikasi email dari link yang dikirim saat registrasi (create_account).
+  // Dipanggil dari halaman /verify-success.
+  //
+  // PENTING (kuirk backend): verification.ts TIDAK konsisten soal di mana pesan
+  // errornya ditaruh — kadang di top-level (`data.error`), kadang dibungkus di
+  // `data.validasi.message` (lihat cek_dummy_user di repositories.ts). Makanya
+  // endpoint ini tidak pakai handleResponse generik, biar pesan aslinya selalu
+  // kebaca di UI, bukan cuma "HTTP 403".
+  verifyEmail: async (token) => {
+    const response = await fetch(`${API_BASE}/auth/verification?token=${encodeURIComponent(token)}`, {
+      method: 'GET',
+    });
+
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error(`HTTP ${response.status}: gagal membaca response`);
+    }
+
+    if (!response.ok) {
+      const message = data?.error || data?.message || data?.validasi?.message || `HTTP ${response.status}`;
+      const err = new Error(message);
+      err.status = response.status;
+      throw err;
+    }
+
+    // Sukses: { validasi: { success:true, message } }
+    return data?.validasi ?? data;
+  },
 };
 
 export const userAPI = {

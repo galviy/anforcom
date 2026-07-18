@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { LogIn, ShieldCheck, CheckCircle, AlertCircle } from 'lucide-react';
 import { authAPI } from '../api/api';
+import PasswordInput from '../components/PasswordInput';
 
 export default function ResetPassword() {
   const navigate = useNavigate();
@@ -189,8 +190,7 @@ export default function ResetPassword() {
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#F5F5DC]/50">
                 Password Baru
               </label>
-              <input
-                type="password"
+              <PasswordInput
                 name="new_password1"
                 value={form.new_password1}
                 onChange={handleChange}
@@ -211,8 +211,7 @@ export default function ResetPassword() {
               <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#F5F5DC]/50">
                 Konfirmasi Password Baru
               </label>
-              <input
-                type="password"
+              <PasswordInput
                 name="new_password2"
                 value={form.new_password2}
                 onChange={handleChange}
@@ -259,4 +258,3 @@ export default function ResetPassword() {
     </Shell>
   );
 }
-

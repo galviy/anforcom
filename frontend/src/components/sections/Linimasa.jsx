@@ -4,10 +4,10 @@ const TITLE_PART_1 = 'Timeline ';
 const TITLE_PART_2 = 'ANFORCOM!';
 
 const TIMELINE = [
-  { label: 'Pendaftaran Batch 1', window: '9 Feb - 10 Mar' },
-  { label: 'Pendaftaran Batch 2', window: '11 Mar - 30 Mar' },
-  { label: 'Babak Penyisihan', window: 'April - Mei' },
-  { label: 'Final & Awarding', window: '16 Mei' },
+  { label: 'Pendaftaran Batch 1', window: '19 Jul - 2 Agu' },
+  { label: 'Pendaftaran Batch 2', window: '10 Agu - 24 Agu' },
+  { label: 'Babak Penyisihan', window: 'Agu - Sep' },
+  { label: 'Final & Awarding', window: '26 Sep' },
 ];
 
 export default function Linimasa() {

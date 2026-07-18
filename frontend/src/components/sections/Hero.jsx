@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import heroBg from '../../../assets/HERO_bg.jpg';
+import RegistrationCountdown from '../RegistrationCountdown';
 
 const HEADING_LINE_1 = 'RANCANG. PECAHKAN.';
 const HEADING_LINE_2 = 'NAIK PAPAN PERINGKAT.';
@@ -84,6 +85,8 @@ export default function Hero() {
             </span>
           )}
         </h1>
+
+        <RegistrationCountdown />
 
         <div className="flex flex-wrap items-center justify-center gap-4">
           <button

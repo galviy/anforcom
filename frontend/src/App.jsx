@@ -7,6 +7,7 @@ import CreateTeam from './pages/CreateTeam';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import CompetitionDetail from './pages/CompetitionDetail'; // <==============
+import VerifySuccess from './pages/VerifySuccess';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         <Route path="/create-team" element={<CreateTeam />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/verify-success" element={<VerifySuccess />} />
       </Routes>
     </BrowserRouter>
   );
