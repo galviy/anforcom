@@ -1,25 +1,36 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { LogIn, CheckCircle, Mail } from 'lucide-react';
 import { authAPI } from '../api/api';
+import Turnstile from '../components/Turnstile';
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [sent, setSent] = useState(false);
+  const [cfToken, setCfToken] = useState('');
+  const resetTurnstile = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    if (!cfToken) {
+      setError('Selesaikan verifikasi captcha dulu ya.');
+      return;
+    }
+
     setLoading(true);
     try {
       // Backend selalu balas success:true walau email tidak terdaftar
       // (mencegah enumerasi email), jadi cukup tampilkan pesan generik.
-      await authAPI.resetPassword(email);
+      await authAPI.resetPassword(email, cfToken);
       setSent(true);
     } catch (err) {
       setError(err.message || 'Gagal mengirim permintaan reset password.');
+      setCfToken('');
+      resetTurnstile.current?.();
     } finally {
       setLoading(false);
     }
@@ -137,6 +148,15 @@ export default function ForgotPassword() {
                     outline-none transition-all duration-200
                     focus:border-[#EAB308]/50 focus:bg-white/[0.08] focus:ring-1 focus:ring-[#EAB308]/30
                   "
+                />
+              </div>
+
+              {/* Verifikasi captcha */}
+              <div className="flex justify-center">
+                <Turnstile
+                  onVerify={setCfToken}
+                  onExpire={() => setCfToken('')}
+                  resetRef={resetTurnstile}
                 />
               </div>
 

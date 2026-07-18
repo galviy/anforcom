@@ -22,6 +22,11 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
 
+    // baseUrl is deprecated (removed in TS 7.0) but still needed for the "paths"
+    // alias below under moduleResolution: "bundler". Silence the warning until
+    // TS ships a baseUrl-free way to do path aliases.
+    "ignoreDeprecations": "6.0",
+
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
     "noUnusedParameters": false,

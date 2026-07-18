@@ -1,5 +1,6 @@
 import {UserRepository} from '../../../DB/repositories'
 import {encryptCookie} from '../../cookies'
+import {Cloudflare} from '../../cloudflare'
 
 
 const authRepo = new UserRepository()
@@ -13,10 +14,15 @@ export async function handler(req: Request): Promise<Response> {
     return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
   }
 
-  const { username, password } = JSON.parse(text)
+  const { username, password, cf_turnstile_token } = JSON.parse(text)
 
-  if (!username || !password) {
+  if (!username || !password || !cf_turnstile_token) {
     return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
+  }
+
+  const cfCheck = await Cloudflare.validate_token(cf_turnstile_token);
+  if (!cfCheck?.success) {
+    return Response.json({ success: false, error: "Verifikasi captcha gagal, coba lagi" }, { status: 403 })
   }
   if (username.length < 3 || username.length > 100) {
     return Response.json({ success: false, error: "Username/password harus 3-100 karakter" }, { status: 400 })

@@ -1,6 +1,60 @@
 // const API_BASE = import.meta.env.VITE_API_URL;
 const API_BASE = '/api';
 
+// --- CSRF token ---
+// Backend hanya menerbitkan csrf_token sekali, di response body /auth/login
+// (lihat login.ts: `Response.json({ success: true, csrf_token: token })`).
+// Endpoint lain TIDAK ada yang menerbitkan ulang token ini. Makanya token
+// disimpan di localStorage (bukan cuma React state) supaya tetap ada walau
+// halaman di-refresh atau tab ditutup-buka lagi selama cookie session masih
+// hidup (Max-Age 86400 / 24 jam) — cocok dengan siklus hidup cookie sesinya.
+//
+// CATATAN: kalau nanti localStorage kosong tapi cookie session masih valid
+// (misal: buka tab baru di browser lain, atau localStorage ke-clear), semua
+// request ke endpoint yang protected CSRF (termasuk GET /user/me) akan
+// dibalas 403 "Invalid CSRF token" walau sesi login-nya sendiri valid. Ini
+// keterbatasan dari kontrak backend saat ini karena tidak ada endpoint untuk
+// menerbitkan ulang csrf_token untuk sesi yang sudah ada — satu-satunya jalan
+// keluar saat ini adalah login ulang. Kalau mau UX yang lebih baik, backend
+// perlu endpoint tambahan (mis. GET /auth/csrf yang men-generate token baru
+// untuk siapa pun yang cookie session-nya masih valid).
+const CSRF_STORAGE_KEY = 'anforcom_csrf_token';
+
+function getCsrfToken() {
+  try {
+    return localStorage.getItem(CSRF_STORAGE_KEY) || '';
+  } catch {
+    return '';
+  }
+}
+
+function setCsrfToken(token) {
+  try {
+    if (token) localStorage.setItem(CSRF_STORAGE_KEY, token);
+  } catch {
+    // localStorage tidak tersedia (mis. private mode) — CSRF-protected request
+    // akan gagal, tapi biarkan gagal secara natural lewat 403 dari backend
+    // daripada dari sini.
+  }
+}
+
+function clearCsrfToken() {
+  try {
+    localStorage.removeItem(CSRF_STORAGE_KEY);
+  } catch {
+    // no-op
+  }
+}
+
+// Helper buat gabungin header lain dengan X-CSRF-Token. Dipakai di SEMUA
+// endpoint yang ada di daftar CSRF-protected pada backend/handlers/router.ts:
+// /user/me, /user/edit, /teams/create_team, /teams/delete_team,
+// /teams/delete_user_team, /teams/add_user_team, /teams/edit_user_team,
+// /teams/add_proposal.
+function withCsrf(extraHeaders = {}) {
+  return { ...extraHeaders, 'X-CSRF-Token': getCsrfToken() };
+}
+
 const handleResponse = async (response) => {
   const contentLength = response.headers.get('content-length');
   if (contentLength === '0' || !response.headers.get('content-type')?.includes('application/json')) {
@@ -43,7 +97,12 @@ export const authAPI = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials),
-    }).then(handleResponse);
+    }).then(handleResponse).then((data) => {
+      // Simpan csrf_token yang dikembalikan login untuk dipakai di request
+      // berikutnya ke endpoint yang CSRF-protected.
+      if (data?.csrf_token) setCsrfToken(data.csrf_token);
+      return data;
+    });
   },
 
   // GET /api/user/me/logout -> backend balas 302 redirect + Set-Cookie penghapus cookie.
@@ -51,6 +110,7 @@ export const authAPI = {
   // (sesuai nama cookie sesi yang dipakai login.ts), jadi logout benar-benar
   // mengakhiri sesi di server.
   logout: () => {
+    clearCsrfToken();
     return fetch(`${API_BASE}/user/me/logout`, {
       method: 'GET',
       redirect: 'follow',
@@ -59,11 +119,11 @@ export const authAPI = {
 
   // POST minta link reset password. Selalu balas success:true walau email
   // tidak terdaftar (mencegah enumerasi email).
-  resetPassword: (email) => {
+  resetPassword: (email, cfToken) => {
     return fetch(`${API_BASE}/auth/reset_password`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email }),
+      body: JSON.stringify({ email, cf_turnstile_token: cfToken }),
     }).then(handleResponse);
   },
 
@@ -82,7 +142,7 @@ export const userAPI = {
   getMe: () => {
     return fetch(`${API_BASE}/user/me`, {
       method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
+      headers: withCsrf({ 'Content-Type': 'application/json' }),
     }).then(handleResponse);
   },
 
@@ -92,7 +152,7 @@ export const userAPI = {
   updatePassword: (oldPassword, newPassword) => {
     return fetch(`${API_BASE}/user/edit`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: withCsrf({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ password: true, old_pass: oldPassword, new_pass: newPassword }),
     }).then(handleResponse);
   },
@@ -110,7 +170,7 @@ export const teamAPI = {
   createTeam: (teamData) => {
     return fetch(`${API_BASE}/teams/create_team`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: withCsrf({ 'Content-Type': 'application/json' }),
       body: JSON.stringify(teamData),
     }).then(handleResponse);
   },
@@ -137,7 +197,7 @@ export const teamAPI = {
   deleteTeam: (timId) => {
     return fetch(`${API_BASE}/teams/delete_team`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: withCsrf({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ tim_id: timId }),
     }).then(handleResponse);
   },
@@ -149,7 +209,7 @@ export const teamAPI = {
   deleteUserTeam: (timId, memberId) => {
     return fetch(`${API_BASE}/teams/delete_user_team`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: withCsrf({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ tim_id: timId, user_id: memberId }),
     }).then(handleResponse);
   },
@@ -166,7 +226,8 @@ export const teamAPI = {
 
     return fetch(`${API_BASE}/teams/add_user_team`, {
       method: 'POST',
-      body: formData, // JANGAN set Content-Type manual, browser yang isi boundary-nya
+      headers: withCsrf(), // JANGAN tambah Content-Type manual, browser yang isi boundary-nya
+      body: formData,
     }).then(handleResponse);
   },
 
@@ -190,7 +251,8 @@ export const teamAPI = {
 
     const response = await fetch(`${API_BASE}/teams/add_proposal`, {
       method: 'POST',
-      body: formData, // JANGAN set Content-Type manual, browser yang isi boundary-nya
+      headers: withCsrf(), // JANGAN tambah Content-Type manual, browser yang isi boundary-nya
+      body: formData,
     });
 
     let data;
@@ -229,7 +291,7 @@ export const teamAPI = {
   editUserTeamNama: (timId, memberId, namaBaru) => {
     return fetch(`${API_BASE}/teams/edit_user_team`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: withCsrf({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ tim_id: timId, user_id: memberId, editCase: 'editNama', nama_baru: namaBaru }),
     }).then(handleResponse);
   },
@@ -237,7 +299,7 @@ export const teamAPI = {
   editUserTeamAsalInstansi: (timId, memberId, asalInstansiBaru) => {
     return fetch(`${API_BASE}/teams/edit_user_team`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: withCsrf({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ tim_id: timId, user_id: memberId, editCase: 'asal_instansi', asal_instansi_baru: asalInstansiBaru }),
     }).then(handleResponse);
   },
@@ -245,7 +307,7 @@ export const teamAPI = {
   editUserTeamNomorInduk: (timId, memberId, nomorIndukBaru) => {
     return fetch(`${API_BASE}/teams/edit_user_team`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: withCsrf({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({ tim_id: timId, user_id: memberId, editCase: 'nomor_induk', nomor_induk_baru: nomorIndukBaru }),
     }).then(handleResponse);
   },
@@ -263,7 +325,7 @@ export const teamAPI = {
 
     return fetch(`${API_BASE}/teams/edit_user_team`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: withCsrf({ 'Content-Type': 'application/json' }),
       body: JSON.stringify({
         tim_id: timId,
         user_id: memberId,
