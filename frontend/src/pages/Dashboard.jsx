@@ -2,8 +2,17 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { User, Users, Plus, LogOut, Settings, FileText, Trash2, Edit, X, AlertCircle, CheckCircle } from 'lucide-react';
 import { userAPI, teamAPI, authAPI } from '../api/api';
+import PasswordInput from '../components/PasswordInput';
 
 const MAX_MEMBERS_PER_TEAM = 3;
+
+function getGreeting() {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 11) return 'Selamat pagi';
+  if (hour >= 11 && hour < 15) return 'Selamat siang';
+  if (hour >= 15 && hour < 18) return 'Selamat sore';
+  return 'Selamat malam';
+}
 
 export default function Dashboard() {
   const navigate = useNavigate();
@@ -490,6 +499,18 @@ export default function Dashboard() {
         {/* ── Main content ── */}
         <main className="flex flex-col gap-6">
 
+          {/* ── Welcome message ── */}
+          <div className="px-1">
+            <h1 className="text-2xl font-bold text-[#F5F5DC] sm:text-3xl">
+              {getGreeting()}, <span className="text-[#EAB308]">{user?.username || 'Sobat Anforcom'}</span> 👋
+            </h1>
+            <p className="mt-1 text-sm text-[#F5F5DC]/50">
+              {teams.length === 0
+                ? 'Kamu belum tergabung di tim manapun — yuk buat tim untuk mulai ikut kompetisi.'
+                : `Kamu tergabung di ${teams.length} tim. Semoga sukses di Anforcom 2026!`}
+            </p>
+          </div>
+
           {/* ====== PROFILE TAB ====== */}
           {activeTab === 'profile' && (
           <div className="rounded-[24px] border border-white/15 bg-[#F5F5DC]/[0.06] backdrop-blur-md p-6 sm:p-8 shadow-xl shadow-black/10">
@@ -567,15 +588,15 @@ export default function Dashboard() {
                 <div className="space-y-4">
                   <div>
                     <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#F5F5DC]/50">Password Lama</label>
-                    <input type="password" name="old_pass" value={passwordForm.old_pass} onChange={handlePasswordFormChange} required className="w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 py-3 text-sm text-[#F5F5DC] outline-none transition-all duration-200 focus:border-[#EAB308]/50 focus:bg-white/[0.08] focus:ring-1 focus:ring-[#EAB308]/30" />
+                    <PasswordInput name="old_pass" value={passwordForm.old_pass} onChange={handlePasswordFormChange} required className="w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 py-3 text-sm text-[#F5F5DC] outline-none transition-all duration-200 focus:border-[#EAB308]/50 focus:bg-white/[0.08] focus:ring-1 focus:ring-[#EAB308]/30" />
                   </div>
                   <div>
                     <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#F5F5DC]/50">Password Baru</label>
-                    <input type="password" name="new_pass" value={passwordForm.new_pass} onChange={handlePasswordFormChange} required minLength={6} className="w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 py-3 text-sm text-[#F5F5DC] outline-none transition-all duration-200 focus:border-[#EAB308]/50 focus:bg-white/[0.08] focus:ring-1 focus:ring-[#EAB308]/30" />
+                    <PasswordInput name="new_pass" value={passwordForm.new_pass} onChange={handlePasswordFormChange} required minLength={6} className="w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 py-3 text-sm text-[#F5F5DC] outline-none transition-all duration-200 focus:border-[#EAB308]/50 focus:bg-white/[0.08] focus:ring-1 focus:ring-[#EAB308]/30" />
                   </div>
                   <div>
                     <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#F5F5DC]/50">Konfirmasi Password Baru</label>
-                    <input type="password" name="confirm_pass" value={passwordForm.confirm_pass} onChange={handlePasswordFormChange} required minLength={6} className="w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 py-3 text-sm text-[#F5F5DC] outline-none transition-all duration-200 focus:border-[#EAB308]/50 focus:bg-white/[0.08] focus:ring-1 focus:ring-[#EAB308]/30" />
+                    <PasswordInput name="confirm_pass" value={passwordForm.confirm_pass} onChange={handlePasswordFormChange} required minLength={6} className="w-full rounded-xl border border-white/15 bg-white/[0.05] px-4 py-3 text-sm text-[#F5F5DC] outline-none transition-all duration-200 focus:border-[#EAB308]/50 focus:bg-white/[0.08] focus:ring-1 focus:ring-[#EAB308]/30" />
                   </div>
                 </div>
                 <button type="submit" className="mt-4 rounded-full bg-[#EAB308] px-6 py-2.5 text-sm font-bold text-[#14532D] shadow-lg shadow-[#EAB308]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#FACC15] hover:shadow-xl hover:shadow-[#EAB308]/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0" disabled={passwordLoading}>

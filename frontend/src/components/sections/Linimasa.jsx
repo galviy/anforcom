@@ -4,11 +4,119 @@ const TITLE_PART_1 = 'Timeline ';
 const TITLE_PART_2 = 'ANFORCOM!';
 
 const TIMELINE = [
-  { label: 'Pendaftaran Batch 1', window: '9 Feb - 10 Mar' },
-  { label: 'Pendaftaran Batch 2', window: '11 Mar - 30 Mar' },
-  { label: 'Babak Penyisihan', window: 'April - Mei' },
-  { label: 'Final & Awarding', window: '16 Mei' },
+  { label: 'Pendaftaran Batch 1', window: '19 Jul - 2 Agu' },
+  { label: 'Pendaftaran Batch 2', window: '10 Agu - 24 Agu' },
+  { label: 'Babak Penyisihan', window: 'Agu - Sep' },
+  { label: 'Final & Awarding', window: '26 Sep' },
 ];
+
+// Tanggal asli tiap batch pendaftaran, dipakai buat hitung countdown.
+// PENTING: kalau tanggal di TIMELINE di atas berubah, sinkronkan juga di sini.
+const REGISTRATION_BATCHES = [
+  { label: 'Pendaftaran Batch 1', start: new Date(2026, 6, 19, 0, 0, 0), end: new Date(2026, 7, 2, 23, 59, 59) },
+  { label: 'Pendaftaran Batch 2', start: new Date(2026, 7, 10, 0, 0, 0), end: new Date(2026, 7, 24, 23, 59, 59) },
+];
+
+function useNow(intervalMs = 1000) {
+  const [now, setNow] = useState(() => new Date());
+  useEffect(() => {
+    const id = setInterval(() => setNow(new Date()), intervalMs);
+    return () => clearInterval(id);
+  }, [intervalMs]);
+  return now;
+}
+
+function getBatchStatus(batch, now) {
+  if (now < batch.start) return 'upcoming';
+  if (now > batch.end) return 'closed';
+  return 'open';
+}
+
+function formatCountdown(targetDate, now) {
+  const diffMs = targetDate - now;
+  if (diffMs <= 0) return null;
+  const totalSeconds = Math.floor(diffMs / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
+  return { days, hours, minutes, seconds };
+}
+
+function RegistrationCountdown() {
+  const now = useNow();
+  const allClosed = REGISTRATION_BATCHES.every((b) => getBatchStatus(b, now) === 'closed');
+
+  if (allClosed) {
+    return (
+      <div className="mb-12 sm:mb-16 rounded-3xl border border-white/20 bg-white/[0.04] px-6 py-8 text-center">
+        <p className="text-lg font-bold text-white sm:text-xl">Pendaftaran Anforcom 2026 telah selesai</p>
+        <p className="mt-1 text-sm text-white/60">Sampai jumpa di babak penyisihan &amp; final!</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mb-12 sm:mb-16 grid gap-4 sm:grid-cols-2">
+      {REGISTRATION_BATCHES.map((batch) => {
+        const status = getBatchStatus(batch, now);
+        const target = status === 'upcoming' ? batch.start : batch.end;
+        const countdown = formatCountdown(target, now);
+
+        return (
+          <div
+            key={batch.label}
+            className={`rounded-3xl border p-6 text-center backdrop-blur-md ${
+              status === 'closed'
+                ? 'border-white/10 bg-white/[0.03]'
+                : 'border-[#EAB308]/30 bg-[#EAB308]/[0.06]'
+            }`}
+          >
+            <div className="mb-2 flex items-center justify-center gap-2">
+              <span className="text-sm font-semibold text-white">{batch.label}</span>
+              <span
+                className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                  status === 'open'
+                    ? 'bg-[#EAB308] text-[#14532D]'
+                    : status === 'upcoming'
+                    ? 'border border-white/30 text-white/70'
+                    : 'border border-white/10 text-white/40'
+                }`}
+              >
+                {status === 'open' ? 'Dibuka' : status === 'upcoming' ? 'Segera' : 'Ditutup'}
+              </span>
+            </div>
+
+            {status === 'closed' || !countdown ? (
+              <p className="text-sm text-white/50">Batch ini sudah ditutup</p>
+            ) : (
+              <>
+                <p className="mb-2 text-xs text-white/60">
+                  {status === 'upcoming' ? 'Dibuka dalam' : 'Ditutup dalam'}
+                </p>
+                <div className="flex justify-center gap-3 font-mono">
+                  {[
+                    ['Hari', countdown.days],
+                    ['Jam', countdown.hours],
+                    ['Menit', countdown.minutes],
+                    ['Detik', countdown.seconds],
+                  ].map(([unitLabel, value]) => (
+                    <div key={unitLabel} className="flex flex-col items-center">
+                      <span className="text-2xl font-bold text-[#EAB308] sm:text-3xl">
+                        {String(value).padStart(2, '0')}
+                      </span>
+                      <span className="text-[10px] uppercase tracking-wider text-white/50">{unitLabel}</span>
+                    </div>
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 export default function Linimasa() {
   const [typedPart1, setTypedPart1] = useState('');
@@ -57,6 +165,8 @@ export default function Linimasa() {
               )}
             </h2>
           </div>
+
+          <RegistrationCountdown />
 
           <div className="hidden md:block relative pb-16">
 

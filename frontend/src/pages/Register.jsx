@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { LogIn } from 'lucide-react';
 import { authAPI, userAPI } from '../api/api';
 import Turnstile from '../components/Turnstile';
+import PasswordInput from '../components/PasswordInput';
 
 export default function Register() {
   const navigate = useNavigate();
@@ -256,8 +257,7 @@ export default function Register() {
                   <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#F5F5DC]/50">
                     Password
                   </label>
-                  <input
-                    type="password"
+                  <PasswordInput
                     name="password"
                     value={form.password}
                     onChange={handleChange}
