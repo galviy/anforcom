@@ -619,13 +619,14 @@ export default function Dashboard() {
                         >
                           {expandedTeamId === t.id ? 'Tutup' : 'Lihat Anggota'}
                         </button>
-                        <button
-                          className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-xs font-semibold text-[#F5F5DC]/80 transition-all duration-200 hover:border-[#EAB308]/40 hover:text-[#EAB308]"
-                          onClick={() => (proposalOpenTeamId === t.id ? setProposalOpenTeamId(null) : openProposalForm(t.id))}
-                        >
-                          <FileText className="h-3.5 w-3.5" />
-                          <span>Proposal</span>
-                        </button>
+                        {t.tipe_lomba === 1 && (
+                          <button
+                            className="app-btn app-btn-ghost app-btn-sm"
+                            onClick={() => (proposalOpenTeamId === t.id ? setProposalOpenTeamId(null) : openProposalForm(t.id))}
+                          >
+                            📄 Proposal
+                          </button>
+                        )}
                         <button
                           className="inline-flex items-center gap-1 rounded-full border border-red-400/25 bg-red-500/10 px-3.5 py-1.5 text-xs font-semibold text-red-400 transition-all duration-200 hover:bg-red-500/20"
                           onClick={() => handleDeleteTeam(t.id)}
@@ -649,10 +650,12 @@ export default function Dashboard() {
                           </button>
                         </div>
 
-                        {proposalError && <div className="mb-3 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{proposalError}</div>}
-                        <p className="text-xs text-[#F5F5DC]/40 mb-3">
-                          Fitur ini hanya tersedia untuk tim yang eligible di sisi server (mis. kategori lomba tertentu) — kalau tim kamu tidak eligible, pesan penolakannya akan muncul di sini setelah submit.
-                        </p>
+                        {proposalError && <div className="alert-error">{proposalError}</div>}
+                        {t.proposal && (
+                          <p style={{ fontSize: '0.82rem', color: 'var(--app-text-muted)', marginBottom: '0.75rem' }}>
+                            Proposal sudah pernah diupload. Upload file baru untuk menggantinya.
+                          </p>
+                        )}
 
                         <form onSubmit={(e) => handleProposalSubmit(e, t.id)}>
                           <div className="mb-3">
