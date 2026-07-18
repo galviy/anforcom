@@ -73,11 +73,27 @@ export default function Tentang() {
             </div>
 
             <div className="rounded-3xl border border-[#F5F5DC]/20 bg-[#F5F5DC]/10 p-8 backdrop-blur-md sm:p-10 shadow-xl shadow-black/20">
+              <h3 className="mb-4 text-xl font-bold text-[#F5F5DC] sm:text-2xl">
+                Satu Wadah, <span className="text-[#EAB308]">Tiga</span> Bidang Teknologi
+              </h3>
               <p className="text-base leading-relaxed text-[#F5F5DC]/90 sm:text-lg">
                 Anforcom mempertemukan pelajar dan mahasiswa dari seluruh Indonesia untuk
                 berkompetisi sekaligus berkolaborasi di bidang teknologi — mulai dari merancang
                 pengalaman pengguna, menyelesaikan tantangan pemrograman kompetitif, sampai
                 membangun solusi data science dari studi kasus nyata.
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-[#F5F5DC]/20 bg-[#F5F5DC]/10 p-8 backdrop-blur-md sm:p-10 shadow-xl shadow-black/20">
+              <h3 className="mb-4 text-xl font-bold text-[#F5F5DC] sm:text-2xl">
+                Bukan Cuma Kompetisi — Ada <span className="text-[#EAB308]">Seminar</span> Juga
+              </h3>
+              <p className="text-base leading-relaxed text-[#F5F5DC]/90 sm:text-lg">
+                Anforcom juga menghadirkan seminar teknologi yang terbuka untuk semua peserta —
+                bukan cuma finalis. Ngobrol bareng praktisi & profesional industri soal tren
+                teknologi terkini, cerita nyata dunia kerja, sampai insight buat kamu yang mau
+                terjun ke industri teknologi. Momen tepat buat nambah wawasan sekaligus healing
+                santai setelah berkompetisi.
               </p>
             </div>
           </div>

@@ -8,10 +8,13 @@ const FRONTEND_URL = Bun.env.FRONTEND_URL || "http://localhost:1337"
 export class emailRepositories{
   
   async sendEmailVerification(emailName: string,token:string) {
+    const verifyLink = `${FRONTEND_URL}/verify-success?token=${token}`
     await email.send({
         to: emailName,
         subject: "Anforcom Account Creation!",
-        html: `<b>Verification Link http://localhost:1337/api/auth/verification?token=${token}</b>`,
+        html: `<p>Terima kasih sudah mendaftar di Anforcom! Klik tombol di bawah untuk mengaktifkan akun kamu:</p>
+        <p><a href="${verifyLink}" style="display:inline-block;padding:10px 20px;background:#f5a623;color:#0a1022;font-weight:bold;text-decoration:none;border-radius:6px;">Verifikasi Email</a></p>
+        <p>Atau salin link ini ke browser: ${verifyLink}</p>`,
       });
   }
   async sendResetAccountVerification(emailName: string,token:string) {
