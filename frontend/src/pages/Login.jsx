@@ -254,7 +254,7 @@ export default function Login() {
                       <button
                         type="button"
                         onClick={handleForgotSubmit}
-                        disabled={forgotLoading || !forgotEmail}
+                        disabled={forgotLoading || !forgotEmail || !forgotCfToken}
                         className="
                           w-full rounded-full bg-[#EAB308]/20 border border-[#EAB308]/30
                           py-2.5 text-sm font-semibold text-[#EAB308]
@@ -282,7 +282,7 @@ export default function Login() {
               {/* Submit */}
               <button
                 type="submit"
-                disabled={loading}
+                disabled={loading || !cfToken}
                 className="
                   mt-2 w-full rounded-full bg-[#EAB308] py-3.5
                   text-sm font-bold text-[#14532D]

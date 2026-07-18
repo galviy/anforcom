@@ -226,7 +226,7 @@ export default function Register() {
                     <button
                       type="button"
                       onClick={handleResend}
-                      disabled={resendState === 'loading'}
+                      disabled={resendState === 'loading' || !resendCfToken}
                       className="
                         w-full rounded-full bg-[#EAB308] py-2.5
                         text-sm font-bold text-[#14532D]
@@ -368,7 +368,7 @@ export default function Register() {
                 {/* Submit */}
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !cfToken}
                   className="
                     mt-2 w-full rounded-full bg-[#EAB308] py-3.5
                     text-sm font-bold text-[#14532D]

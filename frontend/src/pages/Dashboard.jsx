@@ -6,6 +6,15 @@ import PasswordInput from '../components/PasswordInput';
 
 const MAX_MEMBERS_PER_TEAM = 3;
 
+// tipe_lomba (kolom `tim_lomba` di DB) -> emoji & nama singkat, biar user
+// langsung tau tim itu ikut bidang apa cuma dari sekilas lihat daftar tim.
+// Harus sinkron sama ALL_LOMBA di CreateTeam.jsx (id 1=DUC, 2=DCPC, 3=DDSC).
+const LOMBA_INFO = {
+  1: { emoji: '🎨', label: 'DUC — UI/UX' },
+  2: { emoji: '💻', label: 'DCPC — Competitive Programming' },
+  3: { emoji: '📊', label: 'DDSC — Data Science' },
+};
+
 function getGreeting() {
   const hour = new Date().getHours();
   if (hour >= 5 && hour < 11) return 'Selamat pagi';
@@ -76,8 +85,10 @@ export default function Dashboard() {
         await refreshTeams();
       } catch (err) {
         console.error('Failed to fetch user:', err);
-        // Jika gagal fetch user (belum login / sesi habis), arahkan kembali ke login
-        navigate('/login');
+        // refreshTeams() menelan errornya sendiri, jadi kalau sampai ke sini
+        // pasti getMe() yang gagal (belum login / sesi habis) -> landing page.
+        navigate('/', { replace: true });
+        return;
       } finally {
         setLoading(false);
       }
@@ -612,6 +623,13 @@ export default function Dashboard() {
                   <li key={t.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
                     <div className="flex items-center justify-between flex-wrap gap-3">
                       <span className="flex items-center gap-2 flex-wrap">
+                        <span
+                          className="text-lg leading-none"
+                          title={LOMBA_INFO[t.tipe_lomba]?.label || 'Cabang lomba tidak diketahui'}
+                          aria-label={LOMBA_INFO[t.tipe_lomba]?.label || 'Cabang lomba tidak diketahui'}
+                        >
+                          {LOMBA_INFO[t.tipe_lomba]?.emoji || '🏆'}
+                        </span>
                         <span className="font-semibold text-[#F5F5DC]">{t.nama_tim}</span>
                         <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
                           t.isVerified
