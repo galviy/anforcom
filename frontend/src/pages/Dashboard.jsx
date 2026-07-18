@@ -37,13 +37,13 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState(searchParams.get('tab') === 'teams' ? 'teams' : 'profile');
 
   // State untuk upload/preview proposal PDF tim.
-  // Backend tidak punya endpoint untuk mengambil nama file proposal yang SUDAH
-  // ada, jadi nama file cuma kita ingat di state selama sesi ini (hasil upload).
+  // Backend sekarang mengembalikan field `proposal` & `tipe_lomba` langsung dari
+  // getMyTeams() (lihat show_team.ts), jadi tidak perlu state terpisah untuk
+  // "mengingat" nama file — cukup refresh daftar tim setelah upload berhasil.
   const [proposalOpenTeamId, setProposalOpenTeamId] = useState(null);
   const [proposalFile, setProposalFile] = useState(null);
   const [proposalUploading, setProposalUploading] = useState(false);
   const [proposalError, setProposalError] = useState('');
-  const [teamProposals, setTeamProposals] = useState({}); // { [timId]: nama_file }
   const [viewingProposalTeamId, setViewingProposalTeamId] = useState(null);
 
   // Dropdown "Pengaturan" di kartu Profil Saya
@@ -143,11 +143,6 @@ export default function Dashboard() {
       }
       if (proposalOpenTeamId === timId) setProposalOpenTeamId(null);
       if (viewingProposalTeamId === timId) setViewingProposalTeamId(null);
-      setTeamProposals((p) => {
-        const next = { ...p };
-        delete next[timId];
-        return next;
-      });
       await refreshTeams();
     } catch (err) {
       setActionError(err.message || 'Gagal menghapus tim.');
@@ -344,10 +339,11 @@ export default function Dashboard() {
 
     try {
       setProposalUploading(true);
-      const res = await teamAPI.addProposal(timId, proposalFile);
-      setTeamProposals((p) => ({ ...p, [timId]: res.nama_file }));
+      await teamAPI.addProposal(timId, proposalFile);
+      await refreshTeams();
       setProposalOpenTeamId(null);
       setProposalFile(null);
+      setViewingProposalTeamId(timId);
     } catch (err) {
       // Pesan persis dari backend, mis. alasan tim tidak eligible upload proposal
       setProposalError(err.message || 'Gagal upload proposal.');
@@ -674,7 +670,7 @@ export default function Dashboard() {
                             <button type="submit" className="rounded-full bg-[#EAB308] px-5 py-2 text-xs font-bold text-[#14532D] shadow-lg shadow-[#EAB308]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#FACC15] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0" disabled={proposalUploading}>
                               {proposalUploading ? 'Mengupload...' : 'Upload Proposal'}
                             </button>
-                            {teamProposals[t.id] && (
+                            {t.proposal && (
                               <button
                                 type="button"
                                 className="rounded-full border border-white/15 bg-white/[0.06] px-4 py-2 text-xs font-semibold text-[#F5F5DC]/80 transition-all hover:border-[#EAB308]/40 hover:text-[#EAB308]"
@@ -686,9 +682,9 @@ export default function Dashboard() {
                           </div>
                         </form>
 
-                        {viewingProposalTeamId === t.id && teamProposals[t.id] && (
+                        {viewingProposalTeamId === t.id && t.proposal && (
                           <embed
-                            src={teamAPI.getProposalUrl(teamProposals[t.id])}
+                            src={teamAPI.getProposalUrl(t.proposal)}
                             type="application/pdf"
                             style={{ width: '100%', height: '480px', marginTop: '1rem', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}
                           />
