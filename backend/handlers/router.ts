@@ -21,6 +21,8 @@ import * as edit_user from "./routes/teams/edit_user_team"
 import * as user_edit from "./routes/user/edit"
 import * as up_proposal from "./routes/teams/add_proposal"
 import * as view_proposal from "./routes/teams/view_proposal"
+import * as resend_verif from "./routes/auth/resend_verification"
+import * as resend_verif_token from "./routes/auth/resend_verification_by_token"
 
 const rutercoy = new Map([
     ['/auth/login', login],
@@ -40,7 +42,9 @@ const rutercoy = new Map([
     ['/teams/edit_user_team',edit_user],
     ['/user/edit',user_edit],
     ['/teams/add_proposal',up_proposal],
-    ['/teams/view_proposal',view_proposal]
+    ['/teams/view_proposal',view_proposal],
+    ['/auth/resend_verification',resend_verif],
+    ['/auth/resend_verification_by_token',resend_verif_token]
 ])
 
 import {logger} from "../logger"
@@ -63,13 +67,13 @@ export class router {
         
 
         if(!route) return this.notFound;
-        if ( url == "/user/edit" || url == "/teams/edit_user_team" || url == "/teams/delete_user_team" || url == "/teams/delete_team" || url == "/teams/create_team" || url == "/teams/add_user_team" || url == "/teams/add_proposal"){
+        if (url == "/user/me" || url == "/user/edit" || url == "/teams/edit_user_team" || url == "/teams/delete_user_team" || url == "/teams/delete_team" || url == "/teams/create_team" || url == "/teams/add_user_team" || url == "/teams/add_proposal"){
              if (!verifyCSRF(req)) {
                 return Response.json({ success: false, message: "Invalid CSRF token" }, { status: 403 });
             }
         }
         
-        if (url == '/auth/login' || url == '/auth/create_account' || url == '/auth/verification' || url == '/auth/reset_password' || url == '/auth/reset_confirmation'){
+        if (url == '/auth/login' || url == '/auth/create_account' || url == '/auth/verification' || url == '/auth/reset_password' || url == '/auth/reset_confirmation' || url == '/auth/resend_verification' || url == '/auth/resend_verification_by_token'){
            
            return route.handler(req,  "ok");
         }

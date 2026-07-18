@@ -10,6 +10,9 @@ export default function VerifySuccess() {
   const [status, setStatus] = useState('loading'); // 'loading' | 'success' | 'error'
   const [message, setMessage] = useState('');
 
+  const [resendState, setResendState] = useState('idle'); // 'idle' | 'loading' | 'sent' | 'error'
+  const [resendMessage, setResendMessage] = useState('');
+
   useEffect(() => {
     if (!token) {
       setStatus('error');
@@ -28,6 +31,19 @@ export default function VerifySuccess() {
         setMessage(err.message || 'Gagal memverifikasi email.');
       });
   }, [token]);
+
+  const handleResend = async () => {
+    setResendState('loading');
+    setResendMessage('');
+    try {
+      const res = await authAPI.resendVerificationByToken(token);
+      setResendState('sent');
+      setResendMessage(res?.message || 'Link verifikasi baru sudah dikirim ke email kamu.');
+    } catch (err) {
+      setResendState('error');
+      setResendMessage(err.message || 'Gagal mengirim ulang link verifikasi.');
+    }
+  };
 
   return (
     <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#14532D] px-6 py-24">
@@ -113,24 +129,58 @@ export default function VerifySuccess() {
             <h1 className="mb-6 text-4xl font-bold leading-[1.08] tracking-tight text-[#F5F5DC] drop-shadow-[0_0_15px_rgba(255,255,255,0.5)] sm:text-5xl">
               Email Gagal Diverifikasi
             </h1>
-            <p className="mb-10 text-base leading-relaxed text-[#F5F5DC]/80 sm:text-lg">
+            <p className="mb-6 text-base leading-relaxed text-[#F5F5DC]/80 sm:text-lg">
               {message}
             </p>
 
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <Link
-                to="/register"
-                className="inline-flex items-center gap-2 rounded-full bg-[#EAB308] px-8 py-3.5 text-base font-semibold text-[#14532D] shadow-lg shadow-[#EAB308]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#FACC15] hover:shadow-xl hover:shadow-[#EAB308]/30"
-              >
-                Daftar Ulang
-              </Link>
-              <Link
-                to="/"
-                className="inline-flex items-center gap-2 rounded-full border border-[#F5F5DC]/30 px-8 py-3.5 text-base font-semibold text-[#F5F5DC] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#F5F5DC]/60 hover:bg-[#F5F5DC]/5"
-              >
-                Kembali ke Beranda
-              </Link>
-            </div>
+            {resendState === 'sent' ? (
+              <div className="mx-auto mb-8 max-w-md rounded-xl border border-[#EAB308]/30 bg-[#EAB308]/10 px-5 py-4 text-sm leading-relaxed text-[#EAB308]">
+                {resendMessage} Silakan cek inbox (dan folder spam) Anda.
+              </div>
+            ) : (
+              <>
+                {resendState === 'error' && (
+                  <div className="mx-auto mb-4 max-w-md rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+                    {resendMessage}
+                  </div>
+                )}
+
+                <div className="flex flex-wrap items-center justify-center gap-4">
+                  {token && (
+                    <button
+                      type="button"
+                      onClick={handleResend}
+                      disabled={resendState === 'loading'}
+                      className="inline-flex items-center gap-2 rounded-full bg-[#EAB308] px-8 py-3.5 text-base font-semibold text-[#14532D] shadow-lg shadow-[#EAB308]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#FACC15] hover:shadow-xl hover:shadow-[#EAB308]/30 disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0"
+                    >
+                      {resendState === 'loading' ? 'Mengirim...' : 'Kirim Ulang Link Verifikasi'}
+                    </button>
+                  )}
+                  <Link
+                    to="/"
+                    className="inline-flex items-center gap-2 rounded-full border border-[#F5F5DC]/30 px-8 py-3.5 text-base font-semibold text-[#F5F5DC] transition-all duration-200 hover:-translate-y-0.5 hover:border-[#F5F5DC]/60 hover:bg-[#F5F5DC]/5"
+                  >
+                    Kembali ke Beranda
+                  </Link>
+                </div>
+
+                {/* Fallback: kalau token-nya sendiri sudah tidak ada di dummy_user
+                    (mis. sudah pernah di-resend & diganti dari sesi lain, atau
+                    memang tidak ada token di URL), gak ada lagi cara lain buat
+                    resend tanpa jejak apa pun — arahkan buat daftar ulang. */}
+                {(resendState === 'error' || !token) && (
+                  <p className="mt-6 text-sm text-[#F5F5DC]/50">
+                    Masih gagal?{' '}
+                    <Link
+                      to="/register"
+                      className="font-semibold text-[#EAB308] no-underline transition-colors hover:text-[#FACC15]"
+                    >
+                      Daftar ulang
+                    </Link>
+                  </p>
+                )}
+              </>
+            )}
           </>
         )}
       </div>

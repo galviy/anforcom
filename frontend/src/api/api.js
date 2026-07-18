@@ -127,6 +127,28 @@ export const authAPI = {
     }).then(handleResponse);
   },
 
+  // POST minta kirim ulang link verifikasi email (kalau email pertama hilang/
+  // kedaluwarsa). Sama seperti resetPassword, selalu balas success:true walau
+  // emailnya tidak ada pendaftaran pending (mencegah enumerasi email).
+  resendVerification: (email, cfToken) => {
+    return fetch(`${API_BASE}/auth/resend_verification`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, cf_turnstile_token: cfToken }),
+    }).then(handleResponse);
+  },
+
+  // Kirim ulang link verifikasi pakai token LAMA (dari link email yang sudah
+  // kedaluwarsa/invalid) — dipakai tombol "kirim ulang" di halaman hasil
+  // verifikasi gagal, jadi user tidak perlu ngetik ulang emailnya.
+  resendVerificationByToken: (token) => {
+    return fetch(`${API_BASE}/auth/resend_verification_by_token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token }),
+    }).then(handleResponse);
+  },
+
   // POST konfirmasi reset password pakai token dari link email.
   // token dikirim lewat query string, bukan body.
   resetConfirmation: (token, newPassword1, newPassword2) => {

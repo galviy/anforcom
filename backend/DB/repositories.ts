@@ -518,6 +518,90 @@ export class UserRepository{
             throw e;
         }
     }
+
+    // Kirim ulang link verifikasi email. Menyasar baris dummy_user TERBARU untuk
+    // email tsb (bisa ada lebih dari satu kalau user daftar berkali-kali sebelum
+    // verifikasi), lalu men-generate token baru + reset `date_register` supaya
+    // window kedaluwarsa 1 jam di cek_dummy_user() ikut ke-reset juga.
+    async resendVerificationToken(email: string, newToken: string) {
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
+
+            const rows = await conn.query(
+                `SELECT id FROM dummy_user WHERE email = ? ORDER BY date_register DESC LIMIT 1 FOR UPDATE`,
+                [email]
+            );
+
+            if (rows.length === 0) {
+                await conn.rollback();
+                // Tidak ada pendaftaran pending untuk email ini (mungkin sudah
+                // terverifikasi, atau memang belum pernah daftar). Caller HARUS
+                // tetap balas pesan generik ke client (anti email-enumeration).
+                return { success: false, message: `Tidak ada pendaftaran pending untuk email ini` };
+            }
+
+            const result = await conn.query(
+                `UPDATE dummy_user SET token_verifikasi = ?, date_register = NOW() WHERE id = ?`,
+                [newToken, rows[0].id]
+            );
+            if (result.affectedRows !== 1) {
+                await conn.rollback();
+                return { success: false, message: `Somehow it did not affect anything huh..?` };
+            }
+
+            await conn.commit();
+            return { success: true, message: `Verification token resent` };
+        } catch (e) {
+            await conn.rollback();
+            console.error(e);
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+            conn.release();
+        }
+    }
+
+    // Sama seperti resendVerificationToken, tapi baris dummy_user dicari lewat
+    // token LAMA (dari link verifikasi yang sudah kedaluwarsa/invalid), bukan
+    // lewat email. Dipakai buat tombol "Kirim Ulang Link Verifikasi" di halaman
+    // hasil klik link verifikasi yang gagal, jadi user tidak perlu ngetik ulang
+    // emailnya. Token itu sendiri unik & tidak bisa ditebak (hasil enkripsi),
+    // makanya aman balas pesan yang lebih spesifik (bukan pesan generik anti-
+    // enumeration kayak versi email) kalau baris token-nya memang tidak ketemu.
+    async resendVerificationTokenByOldToken(oldToken: string, newToken: string) {
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
+
+            const rows = await conn.query(
+                `SELECT id, email FROM dummy_user WHERE token_verifikasi = ? FOR UPDATE`,
+                [oldToken]
+            );
+
+            if (rows.length === 0) {
+                await conn.rollback();
+                return { success: false, message: `Link verifikasi ini sudah tidak berlaku. Silakan daftar ulang atau minta link lewat email.` };
+            }
+
+            const result = await conn.query(
+                `UPDATE dummy_user SET token_verifikasi = ?, date_register = NOW() WHERE id = ?`,
+                [newToken, rows[0].id]
+            );
+            if (result.affectedRows !== 1) {
+                await conn.rollback();
+                return { success: false, message: `Somehow it did not affect anything huh..?` };
+            }
+
+            await conn.commit();
+            return { success: true, email: rows[0].email, message: `Verification token resent` };
+        } catch (e) {
+            await conn.rollback();
+            console.error(e);
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+            conn.release();
+        }
+    }
     async create_account(user: string, pass: string, email: string, no_telp: string, pendidikan: number) {
         try {
 
@@ -696,6 +780,3 @@ export class auth{
     }
     
 }
-
-
-
