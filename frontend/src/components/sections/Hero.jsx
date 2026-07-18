@@ -65,6 +65,9 @@ export default function Hero() {
           background: 'radial-gradient(ellipse at bottom left, rgba(0,128,128,0.06) 0%, transparent 70%)',
         }}
       />
+      
+      {/* Seamless transition gradient to match next section */}
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-[#14532D] to-transparent pointer-events-none" />
 
       <div className="relative z-10 mx-auto max-w-4xl text-center">
 
