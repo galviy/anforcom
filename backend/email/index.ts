@@ -1,5 +1,5 @@
 import nodemailer, { type Transporter } from "nodemailer";
-
+// boongan, gaada yang di update backend nya
 interface SendEmailOptions {
   to: string | string[];
   subject: string;
@@ -52,4 +52,4 @@ class EmailService {
   }
 }
 
-export const email  = new EmailService( Bun.env.email_username!,Bun.env.email_password!);
+export const email = new EmailService(Bun.env.email_username!, Bun.env.email_password!);

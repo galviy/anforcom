@@ -1,6 +1,6 @@
 import path from 'path'
-import {session_handler,RateLimiter} from "./middleware"
-import { parseCookie } from './cookies'
+import {session_handler} from "./middleware"
+import { parseCookie,verifyCSRF } from './cookies'
 
 const ROOT = path.join(import.meta.dir)
 import * as login from './routes/auth/login'
@@ -63,6 +63,11 @@ export class router {
         
 
         if(!route) return this.notFound;
+        if (url == "/user/me" || url == "/user/edit" || url == "/teams/edit_user_team" || url == "/teams/delete_user_team" || url == "/teams/delete_team" || url == "/teams/create_team" || url == "/teams/add_user_team" || url == "/teams/add_proposal"){
+             if (!verifyCSRF(req)) {
+                return Response.json({ success: false, message: "Invalid CSRF token" }, { status: 403 });
+            }
+        }
         
         if (url == '/auth/login' || url == '/auth/create_account' || url == '/auth/verification' || url == '/auth/reset_password' || url == '/auth/reset_confirmation'){
            

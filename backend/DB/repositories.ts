@@ -49,8 +49,8 @@ export class TeamRepository{
             if (sql.length == 0) {
                 return { success: false, message: 'not found' }; 
             }
-            console.log(idUser)
-            console.log(sql[0])
+            //onsole.log(idUser)
+            //console.log(sql[0])
             if (Number(idUser) !== Number(sql[0].pemilik)) {
                 return { success: false, message: 'pentester kah bang?' };
             }
@@ -545,6 +545,7 @@ export class UserRepository{
             WHERE id = ?;`,
             [hashedPassword, userId]
         );
+        console.log(userId)
         return result;
        
     }
