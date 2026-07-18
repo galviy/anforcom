@@ -67,20 +67,8 @@ export default function Dashboard() {
         await refreshTeams();
       } catch (err) {
         console.error('Failed to fetch user:', err);
-
-        //INI DATA DUMMY COZ I DONT WANT TO SETUP THE BACKEND JUST TO MODIFY THE UI, TOO MUCH OF A WORK THERE
-        console.warn('[DEV] Backend tidak tersedia — menggunakan data dummy.');
-        setUser({
-          username: 'DevUser',
-          email: 'dev@anforcom.id',
-          no_tlp: '081234567890',
-          pendidikan_id: 1,
-        });
-        setTeams([
-          { id: 1, nama_tim: 'Tim Alpha', isVerified: true },
-          { id: 2, nama_tim: 'Tim Beta', isVerified: false },
-        ]);
-        setError('');
+        // Jika gagal fetch user (belum login / sesi habis), arahkan kembali ke login
+        navigate('/login');
       } finally {
         setLoading(false);
       }
