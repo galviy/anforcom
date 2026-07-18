@@ -289,12 +289,8 @@ export default function CompetitionDetail() {
                         <span>Uang Pembinaan</span>
                       </div>
                       <div className="flex items-center gap-3 text-sm text-white/80">
-                        <Medal className="h-4 w-4 text-[#EAB308]/70" />
-                        <span>{juara.extras.split('+')[0].trim()}</span>
-                      </div>
-                      <div className="flex items-center gap-3 text-sm text-white/80">
                         <Award className="h-4 w-4 text-[#EAB308]/70" />
-                        <span>{juara.extras.split('+')[1]?.trim() || 'E-Sertifikat Nasional'}</span>
+                        <span>{juara.extras}</span>
                       </div>
                     </div>
                   </div>
