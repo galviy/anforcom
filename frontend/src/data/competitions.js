@@ -1,4 +1,4 @@
-import { MonitorSmartphone, TerminalSquare, LineChart } from 'lucide-react';
+import { MonitorSmartphone, TerminalSquare, Code2 } from 'lucide-react';
 
 export const COMPETITIONS = [
   {
@@ -68,29 +68,36 @@ export const COMPETITIONS = [
     ],
   },
   {
-    code: 'DDSC',
-    slug: 'ddsc',
-    name: 'Diponegoro Data Science Competition',
-    shortDesc: 'Gali insight dari data dunia nyata — mulai dari eksplorasi dan pembersihan data, penerapan metode analisis, sampai presentasi temuan di depan juri.',
-    icon: LineChart,
+    code: 'DSDC',
+    slug: 'dsdc',
+    name: 'Diponegoro Software Development Competition',
+    shortDesc: 'Bangun perangkat lunak inovatif berbasis website atau mobile yang menjawab tantangan nyata kota berkelanjutan — dari pengelolaan sampah, mobilitas hijau, hingga kesehatan lingkungan.',
+    icon: Code2,
     fullDesc:
-      'DDSC atau Diponegoro Data Science Competition adalah salah satu cabang lomba dari serangkaian kegiatan ANFORCOM 2026 yang dapat diikuti oleh mahasiswa se-Indonesia. Kegiatan ini berupa kompetisi yang berfokus pada penerapan data science dalam memahami dinamika sosial, politik, dan pembangunan nasional melalui pendekatan analisis data berbasis kecerdasan buatan. Peserta diharapkan mampu merancang pendekatan yang tepat dalam memahami dan mengklasifikasikan wacana publik berdasarkan data yang tersedia serta sesuai dengan tema perlombaan DDSC ANFORCOM 2026 yaitu "Digitalisasi untuk Indonesia Maju: Menggali Wacana Publik di X tentang Visi Astacita Prabowo-Gibran Menuju Pembangunan Berkelanjutan".',
+      'Diponegoro Software Development Competition (DSDC) adalah salah satu cabang lomba dari serangkaian kegiatan ANFORCOM 2026 yang dapat diikuti oleh siswa/i SMA/SMK/MA sederajat dan mahasiswa/i se-Indonesia. Kegiatan ini berupa kompetisi pengembangan perangkat lunak berbasis website maupun mobile yang menekankan pada fungsionalitas, performa, serta kemampuan solusi dalam menjawab permasalahan nyata secara terukur dan dapat diimplementasikan. Peserta diharapkan mampu merancang dan membangun perangkat lunak yang inovatif dan fungsional sesuai tema \'Engineering the Circular City: Software Solutions for a Sustainable and Healthy Urban Future\'.',
     summary: {
       kategori: 'Tim',
-      peserta: 'Mahasiswa',
+      peserta: 'SMA/SMK & Mahasiswa',
       anggota: '2-3 Orang',
-      biaya: 'Rp. 80.000',
-      biayaNote: 'per tim',
+      biaya: 'Rp. 50.000',
+      biayaNote: 'per tim (Batch 1)',
     },
     timeline: [
-      { label: 'Jadwal Lengkap', window: 'Menyusul' },
+      { label: 'Pendaftaran Gelombang 1', window: '15 Jul - 3 Agu 2026' },
+      { label: 'Pendaftaran Gelombang 2', window: '10 Agu - 30 Agu 2026' },
+      { label: 'Pengumuman Finalis', window: '16 Sep 2026' },
+      { label: 'Technical Meeting Finalis', window: '22 Sep 2026' },
+      { label: 'Tahap Final & Pengumuman Pemenang', window: '26 Sep 2026' },
     ],
     prizes: [
-      { place: '1st', reward: 'Rp 2.500.000', extras: 'Sertifikat Nasional' },
-      { place: '2nd', reward: 'Rp 1.500.000', extras: 'Sertifikat Nasional' },
-      { place: '3rd', reward: 'Rp 1.000.000', extras: 'Sertifikat Nasional' },
+      { place: '1st', reward: 'Uang Pembinaan', extras: 'Sertifikat + Piala' },
+      { place: '2nd', reward: 'Uang Pembinaan', extras: 'Sertifikat + Piala' },
+      { place: '3rd', reward: 'Uang Pembinaan', extras: 'Sertifikat + Piala' },
     ],
-    batches: [],
+    batches: [
+      { open: '2026-07-15T00:00:00+07:00', close: '2026-08-03T23:59:59+07:00' },
+      { open: '2026-08-10T00:00:00+07:00', close: '2026-08-30T23:59:59+07:00' },
+    ],
   },
 ];
 
