@@ -164,6 +164,11 @@ export class TeamRepository{
                 await conn.rollback();
                 return { success: false, message: `Theres nothing to change isnt it???` };
             }
+             const sql2 = await conn.query(
+                `SELECT data_image FROM isi_tim WHERE tim_id = ? and id = ?`,
+                [tim_id,user_id]
+            );
+
            const bytes = Buffer.from(imagebase64, "base64");
             if (bytes.length === 0 || bytes.length > MAX_SIZE) {
                 await conn.rollback();
@@ -194,6 +199,14 @@ export class TeamRepository{
                 };
             }
             await conn.commit();
+            if (sql2.length > 0 && sql2[0].data_image) {
+                const filePath = path.join(this.folder_upload, sql2[0].data_image);
+                try {
+                    await Bun.file(filePath).delete();
+                } catch (err) {
+                    console.error(`Gagal menghapus ${filePath}`, err);
+                }
+            }
             return {
                 success: true,
                 message: "Successfully changed your identity card!"
@@ -201,6 +214,9 @@ export class TeamRepository{
 
         } catch(e){
             await conn.rollback();
+            try {
+                await Bun.file(path.join(this.folder_upload, nama_ktm)).delete();
+            } catch {}
             console.error(e)
             throw e;
         } finally{
@@ -381,16 +397,60 @@ export class TeamRepository{
             message: `Successfully changed nama_lengkap to ${namaBaru}`
         };
     }
+   async deleteProposal(IdTeam: number) {
+        const conn = await db.getConnection();
+
+        try {
+            await conn.beginTransaction();
+
+            const readNamaProposal = await conn.query(
+                `SELECT data_proposal FROM data_proposal WHERE id_tim = ? FOR UPDATE`,
+                [IdTeam]
+            );
+           
+            await conn.query(`DELETE FROM data_proposal WHERE id_tim = ?`,[IdTeam] );
+
+            await conn.commit();
+            if (readNamaProposal.length > 0 && readNamaProposal[0].data_proposal) {
+                try {
+                    const filePath = path.join(this.folder_upload_proposal,readNamaProposal[0].data_proposal);
+                    await Bun.file(filePath).delete();
+                } catch(e){
+                    console.error("Gagal menghapus file proposal:", e);
+                }
+            }
+            return {success: true,message: "Successfully deleted all data_proposal"
+        };
+        } catch (e) {
+            await conn.rollback();
+            console.error(e);
+            throw e;
+        } finally {
+            conn.release();
+        }
+    }
     async deleteTeam(IdTeam: number) {
         const conn = await db.getConnection();
         try {
             await conn.beginTransaction();
+            const readNamaProposal = await conn.query(
+                `SELECT data_proposal FROM data_proposal WHERE id_tim = ? FOR UPDATE`,
+                [IdTeam]
+            );
             await conn.query(`DELETE from user_tim where tim_id = ?`, [IdTeam]);
             await conn.query(`DELETE FROM isi_tim WHERE tim_id = ?`, [IdTeam]);
+            
             await conn.query(`DELETE FROM data_proposal where id_tim =? `, [IdTeam])
             const result = await conn.query(`DELETE FROM tim WHERE id = ?`, [IdTeam]);
-            
             await conn.commit();
+            for (let i = 0; i < readNamaProposal.length; i++) {
+                const filePath = path.join(this.folder_upload_proposal,readNamaProposal[i].data_proposal);
+                try {
+                    await Bun.file(filePath).delete();
+                } catch (err) {
+                    console.error(`Gagal menghapus ${filePath}`, err);
+                }
+            }
             return result;
         } catch (e) {
             console.error(e);
@@ -400,6 +460,7 @@ export class TeamRepository{
             conn.release(); 
         }
     }   
+
     async timIdCheck(Iduser:number,Idteam:number){
        
         const sql = `

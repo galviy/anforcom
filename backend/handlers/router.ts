@@ -21,6 +21,7 @@ import * as edit_user from "./routes/teams/edit_user_team"
 import * as user_edit from "./routes/user/edit"
 import * as up_proposal from "./routes/teams/add_proposal"
 import * as view_proposal from "./routes/teams/view_proposal"
+import * as delete_proposal from "./routes/teams/delete_proposal"
 
 const rutercoy = new Map([
     ['/auth/login', login],
@@ -40,7 +41,8 @@ const rutercoy = new Map([
     ['/teams/edit_user_team',edit_user],
     ['/user/edit',user_edit],
     ['/teams/add_proposal',up_proposal],
-    ['/teams/view_proposal',view_proposal]
+    ['/teams/view_proposal',view_proposal],
+    ['/teams/delete_proposal',delete_proposal]
 ])
 
 import {logger} from "../logger"
