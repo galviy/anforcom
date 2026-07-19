@@ -83,19 +83,14 @@ export const COMPETITIONS = [
       biayaNote: 'per tim',
     },
     timeline: [
-      { label: 'Pendaftaran', window: '9 Feb – 30 Mar' },
-      { label: 'Pengumpulan Karya', window: '1 Apr – 15 Apr' },
-      { label: 'Penilaian & Seleksi', window: '16 Apr – 30 Apr' },
-      { label: 'Presentasi Final', window: '16 Mei' },
+      { label: 'Jadwal Lengkap', window: 'Menyusul' },
     ],
     prizes: [
       { place: '1st', reward: 'Rp 2.500.000', extras: 'Sertifikat Nasional' },
       { place: '2nd', reward: 'Rp 1.500.000', extras: 'Sertifikat Nasional' },
       { place: '3rd', reward: 'Rp 1.000.000', extras: 'Sertifikat Nasional' },
     ],
-    batches: [
-      { open: '2026-02-09T00:00:00+07:00', close: '2026-03-30T23:59:59+07:00' },
-    ],
+    batches: [],
   },
 ];
 

@@ -48,7 +48,7 @@ export default function CompetitionDetail() {
   // Countdown (batch-aware)
   useEffect(() => {
     if (!comp?.batches?.length) {
-      setCountdownState({ status: 'closed' });
+      setCountdownState({ status: 'tba' });
       return;
     }
     function tick() {
@@ -185,15 +185,17 @@ export default function CompetitionDetail() {
 
               {/* Buttons */}
               <div className="mt-10 flex flex-wrap gap-4">
-                <a
-                  href={`/guidebook-${comp.slug}.pdf`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/10 hover:shadow-lg hover:shadow-white/5"
-                >
-                  <Download className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5" />
-                  Guidebook
-                </a>
+                {comp.batches?.length > 0 && (
+                  <a
+                    href={`/guidebook-${comp.slug}.pdf`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/10 hover:shadow-lg hover:shadow-white/5"
+                  >
+                    <Download className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5" />
+                    Guidebook
+                  </a>
+                )}
                 <Link
                   to="/register"
                   className="group inline-flex items-center gap-2 rounded-full bg-[#EAB308] px-8 py-3.5 text-sm font-bold text-[#14532D] shadow-lg shadow-[#EAB308]/20 transition-all duration-300 hover:-translate-y-1 hover:bg-[#FACC15] hover:shadow-xl hover:shadow-[#EAB308]/30"
@@ -262,6 +264,15 @@ export default function CompetitionDetail() {
                   <div className="text-center py-4">
                     <p className="text-xs font-bold tracking-[0.25em] uppercase text-white/50">
                       🔒 Pendaftaran Ditutup
+                    </p>
+                  </div>
+                ) : countdownState.status === 'tba' ? (
+                  <div className="text-center py-4">
+                    <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#EAB308] mb-2">
+                      📅 Jadwal Menyusul
+                    </p>
+                    <p className="text-xs text-white/40 font-medium">
+                      Soon to be announced!
                     </p>
                   </div>
                 ) : null}
@@ -379,9 +390,8 @@ export default function CompetitionDetail() {
       <section
         id="section-timeline"
         data-animate
-        className={`relative px-6 pb-20 sm:pb-28 transition-all duration-1000 ${
-          visibleSections.has('section-timeline') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
+        className={`relative px-6 pb-20 sm:pb-28 transition-all duration-1000 ${visibleSections.has('section-timeline') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
       >
         <div className="mx-auto max-w-6xl">
           <div className="rounded-[40px] border border-white/20 bg-[#F5F5DC]/10 p-8 sm:p-16 backdrop-blur-md shadow-2xl shadow-black/20">
@@ -495,10 +505,10 @@ export default function CompetitionDetail() {
       <section className="relative px-6 pb-24 sm:pb-32 mt-10">
         {/* Glow Effects Behind the Card */}
         <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] max-w-full h-[300px] bg-gradient-to-t from-[#EAB308]/20 to-transparent rounded-[100%] blur-[100px]" />
-        
+
         <div className="relative mx-auto max-w-6xl">
           <div className="rounded-[32px] border border-white/20 bg-[#14532D]/40 backdrop-blur-2xl py-12 px-8 sm:py-14 sm:px-16 shadow-2xl shadow-black/40 text-center relative overflow-hidden">
-            
+
             {/* Pattern overlay from Hero */}
             <div
               className="absolute inset-0 opacity-10 pointer-events-none"
@@ -508,7 +518,7 @@ export default function CompetitionDetail() {
             />
             {/* Inner subtle glow */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-40" />
-            
+
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10 text-left">
               <div className="flex-1 text-center md:text-left">
                 <h2 className="text-3xl md:text-5xl lg:text-6xl font-black drop-shadow-[0_0_25px_rgba(234,179,8,0.3)] leading-[1.1] tracking-wide uppercase">
@@ -516,7 +526,7 @@ export default function CompetitionDetail() {
                   <span className="text-white block">POTENSIMU<br className="hidden md:block" /> SEKARANG!</span>
                 </h2>
               </div>
-              
+
               <div className="flex flex-col sm:flex-row items-center justify-center md:justify-end gap-4 sm:gap-5 w-full md:w-auto shrink-0">
                 <a
                   href="https://instagram.com/anforcom"
