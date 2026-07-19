@@ -1,9 +1,15 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { getCompetitionBySlug } from '../data/competitions';
-import { ArrowLeft, Download, Trophy, Users, Wallet, ChevronRight, Medal, Award } from 'lucide-react';
+import { ArrowLeft, Download, Trophy, Users, Wallet, ChevronRight, Medal, Award, Clock } from 'lucide-react';
 import heroBg from '../../assets/HERO_bg.jpg';
 import Footer from '../components/sections/Footer';
+
+const INDO_MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+function formatDeadlineDate(date) {
+  const d = new Date(date);
+  return `${d.getDate()} ${INDO_MONTHS[d.getMonth()]} ${d.getFullYear()}, ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')} WIB`;
+}
 
 export default function CompetitionDetail() {
   const { slug } = useParams();
@@ -14,9 +20,9 @@ export default function CompetitionDetail() {
   /* ── Typing animation ── */
   const [typedName, setTypedName] = useState('');
 
-  /* ── Countdown ── */
-  const DEADLINE = new Date('2026-08-30T23:59:59');
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
+  /* ── Countdown (batch-aware) ── */
+  const [countdownState, setCountdownState] = useState({ status: 'loading' });
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   /* ── Scroll-triggered fade-in ── */
   const [visibleSections, setVisibleSections] = useState(new Set());
@@ -39,21 +45,50 @@ export default function CompetitionDetail() {
     return () => clearInterval(id);
   }, [comp, slug]);
 
-  // Countdown
+  // Countdown (batch-aware)
   useEffect(() => {
-    function calc() {
-      const diff = DEADLINE - Date.now();
-      if (diff <= 0) return { days: 0, hours: 0, minutes: 0 };
-      return {
-        days: Math.floor(diff / 86400000),
-        hours: Math.floor((diff % 86400000) / 3600000),
-        minutes: Math.floor((diff % 3600000) / 60000),
-      };
+    if (!comp?.batches?.length) {
+      setCountdownState({ status: 'closed' });
+      return;
     }
-    setTimeLeft(calc());
-    const id = setInterval(() => setTimeLeft(calc()), 60000);
+    function tick() {
+      const now = new Date();
+      for (let i = 0; i < comp.batches.length; i++) {
+        const batch = comp.batches[i];
+        const open = new Date(batch.open);
+        const close = new Date(batch.close);
+        if (now < open) {
+          setCountdownState(i === 0
+            ? { status: 'not_open', batch: 1, openDate: open }
+            : { status: 'between_batches', prevBatch: i, nextBatch: i + 1, nextOpenDate: open });
+          return;
+        }
+        if (now <= close) {
+          const diffMs = Math.max(0, close.getTime() - now.getTime());
+          const ts = Math.floor(diffMs / 1000);
+          setTimeLeft({
+            days: Math.floor(ts / 86400),
+            hours: Math.floor((ts % 86400) / 3600),
+            minutes: Math.floor((ts % 3600) / 60),
+            seconds: ts % 60,
+          });
+          setCountdownState({ status: 'countdown', batch: i + 1, closeDate: close });
+          return;
+        }
+        if (i < comp.batches.length - 1) {
+          const nextOpen = new Date(comp.batches[i + 1].open);
+          if (now < nextOpen) {
+            setCountdownState({ status: 'between_batches', prevBatch: i + 1, nextBatch: i + 2, nextOpenDate: nextOpen });
+            return;
+          }
+        }
+      }
+      setCountdownState({ status: 'closed' });
+    }
+    tick();
+    const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [comp]);
 
   // Intersection Observer for fade-in
   useEffect(() => {
@@ -72,7 +107,7 @@ export default function CompetitionDetail() {
     return () => observer.disconnect();
   }, [comp]);
 
-  const registrationOpen = DEADLINE - Date.now() > 0;
+
   const pad = (n) => String(n).padStart(2, '0');
 
   if (!comp) {
@@ -173,26 +208,63 @@ export default function CompetitionDetail() {
             <div className="flex flex-col items-center gap-8">
               {/* Countdown box */}
               <div className="rounded-[28px] border border-white/10 bg-white/[0.04] px-8 py-8 backdrop-blur-xl shadow-2xl shadow-black/30 sm:px-10">
-                <p className="mb-5 text-center text-xs font-bold tracking-[0.25em] uppercase text-[#EAB308]">
-                  {registrationOpen ? '⏳ Pendaftaran Dibuka' : '🔒 Pendaftaran Ditutup'}
-                </p>
-                <div className="flex items-center gap-3 sm:gap-4">
-                  {[
-                    { value: timeLeft.days, label: 'Hari' },
-                    { value: timeLeft.hours, label: 'Jam' },
-                    { value: timeLeft.minutes, label: 'Menit' },
-                  ].map((unit, i) => (
-                    <div key={unit.label} className="flex items-center gap-3 sm:gap-4">
-                      <div className="flex flex-col items-center">
-                        <div className="flex h-[76px] w-[76px] items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] sm:h-[88px] sm:w-[88px]">
-                          <span className="text-3xl font-black tabular-nums text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] sm:text-4xl">{pad(unit.value)}</span>
-                        </div>
-                        <span className="mt-2.5 text-[10px] font-semibold tracking-[0.15em] text-white/40 uppercase">{unit.label}</span>
-                      </div>
-                      {i < 2 && <span className="mb-6 text-2xl font-black text-[#EAB308]/40">:</span>}
+                {countdownState.status === 'countdown' ? (
+                  <>
+                    <p className="mb-2 text-center text-xs font-bold tracking-[0.25em] uppercase text-[#EAB308]">
+                      Batch {countdownState.batch} — Ditutup dalam
+                    </p>
+                    <div className="mb-5 flex items-center justify-center gap-1.5 text-white/50">
+                      <Clock className="h-3.5 w-3.5" />
+                      <span className="text-xs font-medium">
+                        {formatDeadlineDate(countdownState.closeDate)}
+                      </span>
                     </div>
-                  ))}
-                </div>
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      {[
+                        { value: timeLeft.days, label: 'Hari' },
+                        { value: timeLeft.hours, label: 'Jam' },
+                        { value: timeLeft.minutes, label: 'Menit' },
+                        { value: timeLeft.seconds, label: 'Detik' },
+                      ].map((unit, i) => (
+                        <div key={unit.label} className="flex items-center gap-2 sm:gap-3">
+                          <div className="flex flex-col items-center">
+                            <div className="flex h-[64px] w-[64px] items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] sm:h-[76px] sm:w-[76px]">
+                              <span className="text-2xl font-black tabular-nums text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] sm:text-3xl">{pad(unit.value)}</span>
+                            </div>
+                            <span className="mt-2 text-[9px] font-semibold tracking-[0.15em] text-white/40 uppercase">{unit.label}</span>
+                          </div>
+                          {i < 3 && <span className="mb-6 text-xl font-black text-[#EAB308]/40">:</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : countdownState.status === 'not_open' ? (
+                  <div className="text-center py-4">
+                    <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#EAB308] mb-3">
+                      ⏳ Pendaftaran Belum Dibuka
+                    </p>
+                    <div className="flex items-center justify-center gap-1.5 text-white/50">
+                      <Clock className="h-3.5 w-3.5" />
+                      <span className="text-xs font-medium">Dibuka {formatDeadlineDate(countdownState.openDate)}</span>
+                    </div>
+                  </div>
+                ) : countdownState.status === 'between_batches' ? (
+                  <div className="text-center py-4">
+                    <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#EAB308] mb-3">
+                      Batch {countdownState.prevBatch} Telah Ditutup
+                    </p>
+                    <div className="flex items-center justify-center gap-1.5 text-white/50">
+                      <Clock className="h-3.5 w-3.5" />
+                      <span className="text-xs font-medium">Batch {countdownState.nextBatch} dibuka {formatDeadlineDate(countdownState.nextOpenDate)}</span>
+                    </div>
+                  </div>
+                ) : countdownState.status === 'closed' ? (
+                  <div className="text-center py-4">
+                    <p className="text-xs font-bold tracking-[0.25em] uppercase text-white/50">
+                      🔒 Pendaftaran Ditutup
+                    </p>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>

@@ -28,6 +28,10 @@ export const COMPETITIONS = [
       { place: '2nd', reward: 'Rp 1.500.000', extras: 'Sertifikat Nasional' },
       { place: '3rd', reward: 'Rp 1.000.000', extras: 'Sertifikat Nasional' },
     ],
+    batches: [
+      { open: '2026-07-15T00:00:00+07:00', close: '2026-08-03T23:59:59+07:00' },
+      { open: '2026-08-10T00:00:00+07:00', close: '2026-08-30T23:59:59+07:00' },
+    ],
   },
   {
     code: 'DCPC',
@@ -58,6 +62,10 @@ export const COMPETITIONS = [
       { place: '2nd', reward: 'Rp 1.500.000', extras: 'Sertifikat Nasional' },
       { place: '3rd', reward: 'Rp 1.000.000', extras: 'Sertifikat Nasional' },
     ],
+    batches: [
+      { open: '2026-07-15T00:00:00+07:00', close: '2026-08-03T23:59:59+07:00' },
+      { open: '2026-08-10T00:00:00+07:00', close: '2026-08-30T23:59:59+07:00' },
+    ],
   },
   {
     code: 'DDSC',
@@ -84,6 +92,9 @@ export const COMPETITIONS = [
       { place: '1st', reward: 'Rp 2.500.000', extras: 'Sertifikat Nasional' },
       { place: '2nd', reward: 'Rp 1.500.000', extras: 'Sertifikat Nasional' },
       { place: '3rd', reward: 'Rp 1.000.000', extras: 'Sertifikat Nasional' },
+    ],
+    batches: [
+      { open: '2026-02-09T00:00:00+07:00', close: '2026-03-30T23:59:59+07:00' },
     ],
   },
 ];
