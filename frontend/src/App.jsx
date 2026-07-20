@@ -8,6 +8,7 @@ import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import CompetitionDetail from './pages/CompetitionDetail'; // <==============
 import VerifySuccess from './pages/VerifySuccess';
+import RequireAuth from './components/RequireAuth';
 
 function App() {
   return (
@@ -17,11 +18,17 @@ function App() {
         <Route path="/competition/:slug" element={<CompetitionDetail />} /> {/*// <============== */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/create-team" element={<CreateTeam />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/verify-success" element={<VerifySuccess />} />
+
+        {/* Endpoint yang wajib login -> kalau belum login, RequireAuth
+            lempar ke landing page ("/"). Tambah route protected baru
+            tinggal taruh di sini. */}
+        <Route element={<RequireAuth />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/create-team" element={<CreateTeam />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

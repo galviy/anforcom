@@ -41,6 +41,22 @@ export default function Footer() {
                 </svg>
                 <span className="sr-only">Instagram</span>
               </a>
+              <a
+                href="https://x.com/anforcom"
+                target="_blank"
+                rel="noreferrer"
+                className="text-white hover:text-gray-300 transition-colors"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="h-7 w-7"
+                >
+                  <path d="M18.244 2H21.5l-7.29 8.33L22.5 22h-6.938l-5.43-7.11L4.5 22H1.24l7.79-8.9L1.5 2h7.06l4.91 6.49L18.244 2zm-2.44 18h1.94L8.26 4H6.2l9.604 16z" />
+                </svg>
+                <span className="sr-only">X (Twitter)</span>
+              </a>
             </div>
           </div>
 

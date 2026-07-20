@@ -21,6 +21,14 @@ export default function Register() {
   const [cfToken, setCfToken] = useState('');
   const resetTurnstile = useRef(null);
 
+  // Resend verifikasi dari halaman ini sendiri, pakai email yang sudah
+  // diketik di form registrasi — user tidak perlu ketik ulang di halaman lain.
+  const [resendOpen, setResendOpen] = useState(false);
+  const [resendState, setResendState] = useState('idle'); // 'idle' | 'loading' | 'sent' | 'error'
+  const [resendMessage, setResendMessage] = useState('');
+  const [resendCfToken, setResendCfToken] = useState('');
+  const resetResendTurnstile = useRef(null);
+
   // Kalau cookie session masih valid, jangan tampilkan form register lagi —
   // langsung lempar ke dashboard.
   useEffect(() => {
@@ -66,6 +74,27 @@ export default function Register() {
       resetTurnstile.current?.(); // token Turnstile sekali pakai, minta yang baru
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (!resendCfToken) {
+      setResendMessage('Selesaikan verifikasi captcha dulu ya.');
+      setResendState('error');
+      return;
+    }
+    setResendState('loading');
+    setResendMessage('');
+    try {
+      // Pakai form.email yang sudah diisi pas daftar tadi — tidak perlu ketik ulang.
+      const res = await authAPI.resendVerification(form.email, resendCfToken);
+      setResendState('sent');
+      setResendMessage(res?.message || 'Link verifikasi telah dikirim ulang.');
+    } catch (err) {
+      setResendState('error');
+      setResendMessage(err.message || 'Gagal mengirim ulang link verifikasi.');
+      setResendCfToken('');
+      resetResendTurnstile.current?.();
     }
   };
 
@@ -156,6 +185,60 @@ export default function Register() {
             {success && (
               <div className="mb-5 rounded-xl border border-[#EAB308]/30 bg-[#EAB308]/10 px-4 py-3 text-sm text-[#EAB308]">
                 ✅ {success} Cek email kamu (termasuk folder spam) dan klik link verifikasinya sebelum login.
+
+                {!resendOpen && resendState !== 'sent' && (
+                  <>
+                    <br />
+                    <button
+                      type="button"
+                      onClick={() => setResendOpen(true)}
+                      className="mt-1 inline-block font-semibold text-[#EAB308] underline underline-offset-2 hover:text-[#FACC15]"
+                    >
+                      Belum menerima email? Kirim ulang
+                    </button>
+                  </>
+                )}
+
+                {resendState === 'sent' && (
+                  <p className="mt-3 text-[#F5F5DC]">
+                    ✅ {resendMessage} Cek inbox (dan folder spam) kamu lagi ya.
+                  </p>
+                )}
+
+                {resendOpen && resendState !== 'sent' && (
+                  <div className="mt-4 space-y-3 border-t border-[#EAB308]/20 pt-4">
+                    <p className="text-[#F5F5DC]/80">
+                      Kirim ulang link verifikasi ke <span className="font-semibold">{form.email}</span>. Selesaikan captcha di bawah dulu ya.
+                    </p>
+
+                    {resendState === 'error' && (
+                      <p className="text-red-300">{resendMessage}</p>
+                    )}
+
+                    <div className="flex justify-center">
+                      <Turnstile
+                        onVerify={setResendCfToken}
+                        onExpire={() => setResendCfToken('')}
+                        resetRef={resetResendTurnstile}
+                      />
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={handleResend}
+                      disabled={resendState === 'loading' || !resendCfToken}
+                      className="
+                        w-full rounded-full bg-[#EAB308] py-2.5
+                        text-sm font-bold text-[#14532D]
+                        transition-all duration-200
+                        hover:bg-[#FACC15]
+                        disabled:opacity-50 disabled:cursor-not-allowed
+                      "
+                    >
+                      {resendState === 'loading' ? 'Mengirim...' : 'Kirim Ulang Sekarang'}
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 
@@ -285,7 +368,7 @@ export default function Register() {
                 {/* Submit */}
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || !cfToken}
                   className="
                     mt-2 w-full rounded-full bg-[#EAB308] py-3.5
                     text-sm font-bold text-[#14532D]
