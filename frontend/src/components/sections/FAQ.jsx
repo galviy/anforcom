@@ -14,7 +14,7 @@ const FAQS = [
   },
   {
     q: 'Siapa saja yang boleh mengikuti Anforcom?',
-    a: 'DUC terbuka untuk siswa SMA/SMK/MA sederajat maupun mahasiswa se-Indonesia. DCPC untuk saat ini terbuka bagi siswa SMA/Sederajat, sedangkan DDSC khusus untuk mahasiswa S1/D4.',
+    a: 'DUC terbuka untuk siswa SMA/SMK/MA sederajat maupun mahasiswa se-Indonesia. DCPC untuk saat ini terbuka bagi siswa SMA/Sederajat, sedangkan DSDC (Diponegoro Software Development Competition) terbuka untuk siswa SMA/SMK/MA sederajat maupun mahasiswa S1/D4 se-Indonesia.',
   },
   {
     q: 'Apakah rangkaian acara online atau offline?',

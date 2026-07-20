@@ -157,6 +157,7 @@ curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
       -d '{"tim_id": 123}'
 ```
 
+
 Response berhasil
 
 ```nginx
@@ -387,6 +388,30 @@ Content-Type: application/json;charset=utf-8
 ```
 
 Gunakan `nama_file` yang dikembalikan untuk membangun URL `GET /api/teams/view_ktm?id=<nama_file>` seperti pada endpoint "view ktm tiap user".
+
+# delete proposal
+
+```curl
+curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
+      -X POST http://127.0.0.1:1337/api/teams/delete_proposal \
+      -H "Content-Type: application/json" \
+      -H "Cookie: session=valid_session" \
+      -H "X-CSRF-Token: valid_csrftoken" \  
+      -d '{"tim_id": 123}'
+```
+
+Response berhasil
+
+```nginx
+HTTP/1.1 200 OK
+Content-Type: application/json;charset=utf-8
+Date: Thu, 02 Jul 2026 07:30:43 GMT
+Content-Length: 16
+
+{"success":true}
+
+[INFO] Waktu Total Respons: 0.012674 detik
+```
 
 # Edit password user
 

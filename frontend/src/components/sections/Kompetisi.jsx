@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
-import { ChevronLeft, ChevronRight, MonitorSmartphone, TerminalSquare, LineChart } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MonitorSmartphone, TerminalSquare, Code2 } from 'lucide-react';
 
 const TITLE_PART_1 = 'Pick Your ';
 const TITLE_PART_2 = 'Game!';
@@ -20,10 +20,11 @@ const COMPETITIONS = [
     icon: TerminalSquare,
   },
   {
-    code: 'DDSC',
-    name: 'Diponegoro Data Science Competition',
-    desc: 'Gali insight dari data dunia nyata — mulai dari eksplorasi dan pembersihan data, penerapan metode analisis, sampai presentasi temuan di depan juri.',
-    icon: LineChart,
+    code: 'DSDC',
+    slug: 'dsdc',
+    name: 'Diponegoro Software Development Competition',
+    desc: 'Bangun perangkat lunak inovatif berbasis website atau mobile yang menjawab tantangan nyata kota berkelanjutan — dari pengelolaan sampah, mobilitas hijau, hingga kesehatan lingkungan perkotaan.',
+    icon: Code2,
   },
 ];
 

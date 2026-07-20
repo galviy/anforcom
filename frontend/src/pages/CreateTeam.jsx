@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Users, CheckCircle, MonitorSmartphone, TerminalSquare, LineChart } from 'lucide-react';
+import { ArrowLeft, Users, CheckCircle, MonitorSmartphone, TerminalSquare, Code2 } from 'lucide-react';
 import { userAPI, teamAPI } from '../api/api';
 
 // Backend TIDAK punya endpoint untuk mengambil daftar lomba, jadi daftar ini
@@ -8,11 +8,11 @@ import { userAPI, teamAPI } from '../api/api';
 // - data tabel `lomba` (lihat anforcom_dummy.sql)
 // - validasi di backend/handlers/routes/teams/create_team.ts
 //     pendidikan 1 (Sarjana)       -> lomba 2 DITOLAK (khusus SMA). Lomba 1 & 3 boleh.
-//     pendidikan 2 (SMA/Sederajat) -> lomba 3 DITOLAK (khusus Sarjana). Lomba 1 & 2 boleh.
+//     pendidikan 2 (SMA/Sederajat) -> lomba 3 boleh (DSDC terbuka untuk SMA & Mahasiswa). Lomba 1 & 3 boleh. Lomba 2 boleh.
 const ALL_LOMBA = [
   { id: 1, nama_lomba: 'DUC', label: 'Diponegoro UI/UX Competition', icon: MonitorSmartphone, untuk_pendidikan: [1, 2] },
   { id: 2, nama_lomba: 'DCPC', label: 'Diponegoro Competitive Programming Challenge', icon: TerminalSquare, untuk_pendidikan: [2] },
-  { id: 3, nama_lomba: 'DDSC', label: 'Diponegoro Data Science Competition', icon: LineChart, untuk_pendidikan: [1] },
+  { id: 3, nama_lomba: 'DSDC', label: 'Diponegoro Software Development Competition', icon: Code2, untuk_pendidikan: [1, 2] },
 ];
 
 export default function CreateTeam() {

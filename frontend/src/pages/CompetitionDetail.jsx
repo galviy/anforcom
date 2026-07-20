@@ -1,9 +1,15 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { getCompetitionBySlug } from '../data/competitions';
-import { ArrowLeft, Download, Trophy, Users, Wallet, ChevronRight, Medal, Award } from 'lucide-react';
+import { ArrowLeft, Download, Trophy, Users, Wallet, ChevronRight, Medal, Award, Clock, MessageCircle } from 'lucide-react';
 import heroBg from '../../assets/HERO_bg.jpg';
 import Footer from '../components/sections/Footer';
+
+const INDO_MONTHS = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+function formatDeadlineDate(date) {
+  const d = new Date(date);
+  return `${d.getDate()} ${INDO_MONTHS[d.getMonth()]} ${d.getFullYear()}, ${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')} WIB`;
+}
 
 export default function CompetitionDetail() {
   const { slug } = useParams();
@@ -14,9 +20,9 @@ export default function CompetitionDetail() {
   /* ── Typing animation ── */
   const [typedName, setTypedName] = useState('');
 
-  /* ── Countdown ── */
-  const DEADLINE = new Date('2026-08-30T23:59:59');
-  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0 });
+  /* ── Countdown (batch-aware) ── */
+  const [countdownState, setCountdownState] = useState({ status: 'loading' });
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   /* ── Scroll-triggered fade-in ── */
   const [visibleSections, setVisibleSections] = useState(new Set());
@@ -39,21 +45,50 @@ export default function CompetitionDetail() {
     return () => clearInterval(id);
   }, [comp, slug]);
 
-  // Countdown
+  // Countdown (batch-aware)
   useEffect(() => {
-    function calc() {
-      const diff = DEADLINE - Date.now();
-      if (diff <= 0) return { days: 0, hours: 0, minutes: 0 };
-      return {
-        days: Math.floor(diff / 86400000),
-        hours: Math.floor((diff % 86400000) / 3600000),
-        minutes: Math.floor((diff % 3600000) / 60000),
-      };
+    if (!comp?.batches?.length) {
+      setCountdownState({ status: 'tba' });
+      return;
     }
-    setTimeLeft(calc());
-    const id = setInterval(() => setTimeLeft(calc()), 60000);
+    function tick() {
+      const now = new Date();
+      for (let i = 0; i < comp.batches.length; i++) {
+        const batch = comp.batches[i];
+        const open = new Date(batch.open);
+        const close = new Date(batch.close);
+        if (now < open) {
+          setCountdownState(i === 0
+            ? { status: 'not_open', batch: 1, openDate: open }
+            : { status: 'between_batches', prevBatch: i, nextBatch: i + 1, nextOpenDate: open });
+          return;
+        }
+        if (now <= close) {
+          const diffMs = Math.max(0, close.getTime() - now.getTime());
+          const ts = Math.floor(diffMs / 1000);
+          setTimeLeft({
+            days: Math.floor(ts / 86400),
+            hours: Math.floor((ts % 86400) / 3600),
+            minutes: Math.floor((ts % 3600) / 60),
+            seconds: ts % 60,
+          });
+          setCountdownState({ status: 'countdown', batch: i + 1, closeDate: close });
+          return;
+        }
+        if (i < comp.batches.length - 1) {
+          const nextOpen = new Date(comp.batches[i + 1].open);
+          if (now < nextOpen) {
+            setCountdownState({ status: 'between_batches', prevBatch: i + 1, nextBatch: i + 2, nextOpenDate: nextOpen });
+            return;
+          }
+        }
+      }
+      setCountdownState({ status: 'closed' });
+    }
+    tick();
+    const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, []);
+  }, [comp]);
 
   // Intersection Observer for fade-in
   useEffect(() => {
@@ -72,7 +107,7 @@ export default function CompetitionDetail() {
     return () => observer.disconnect();
   }, [comp]);
 
-  const registrationOpen = DEADLINE - Date.now() > 0;
+
   const pad = (n) => String(n).padStart(2, '0');
 
   if (!comp) {
@@ -150,15 +185,17 @@ export default function CompetitionDetail() {
 
               {/* Buttons */}
               <div className="mt-10 flex flex-wrap gap-4">
-                <a
-                  href={`/guidebook-${comp.slug}.pdf`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/10 hover:shadow-lg hover:shadow-white/5"
-                >
-                  <Download className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5" />
-                  Guidebook
-                </a>
+                {comp.guidebookFile && (
+                  <a
+                    href={comp.guidebookFile}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/10 hover:shadow-lg hover:shadow-white/5"
+                  >
+                    <Download className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5" />
+                    Rulebook
+                  </a>
+                )}
                 <Link
                   to="/register"
                   className="group inline-flex items-center gap-2 rounded-full bg-[#EAB308] px-8 py-3.5 text-sm font-bold text-[#14532D] shadow-lg shadow-[#EAB308]/20 transition-all duration-300 hover:-translate-y-1 hover:bg-[#FACC15] hover:shadow-xl hover:shadow-[#EAB308]/30"
@@ -173,26 +210,72 @@ export default function CompetitionDetail() {
             <div className="flex flex-col items-center gap-8">
               {/* Countdown box */}
               <div className="rounded-[28px] border border-white/10 bg-white/[0.04] px-8 py-8 backdrop-blur-xl shadow-2xl shadow-black/30 sm:px-10">
-                <p className="mb-5 text-center text-xs font-bold tracking-[0.25em] uppercase text-[#EAB308]">
-                  {registrationOpen ? '⏳ Pendaftaran Dibuka' : '🔒 Pendaftaran Ditutup'}
-                </p>
-                <div className="flex items-center gap-3 sm:gap-4">
-                  {[
-                    { value: timeLeft.days, label: 'Hari' },
-                    { value: timeLeft.hours, label: 'Jam' },
-                    { value: timeLeft.minutes, label: 'Menit' },
-                  ].map((unit, i) => (
-                    <div key={unit.label} className="flex items-center gap-3 sm:gap-4">
-                      <div className="flex flex-col items-center">
-                        <div className="flex h-[76px] w-[76px] items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] sm:h-[88px] sm:w-[88px]">
-                          <span className="text-3xl font-black tabular-nums text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] sm:text-4xl">{pad(unit.value)}</span>
-                        </div>
-                        <span className="mt-2.5 text-[10px] font-semibold tracking-[0.15em] text-white/40 uppercase">{unit.label}</span>
-                      </div>
-                      {i < 2 && <span className="mb-6 text-2xl font-black text-[#EAB308]/40">:</span>}
+                {countdownState.status === 'countdown' ? (
+                  <>
+                    <p className="mb-2 text-center text-xs font-bold tracking-[0.25em] uppercase text-[#EAB308]">
+                      Batch {countdownState.batch} — Ditutup dalam
+                    </p>
+                    <div className="mb-5 flex items-center justify-center gap-1.5 text-white/50">
+                      <Clock className="h-3.5 w-3.5" />
+                      <span className="text-xs font-medium">
+                        {formatDeadlineDate(countdownState.closeDate)}
+                      </span>
                     </div>
-                  ))}
-                </div>
+                    <div className="flex items-center gap-2 sm:gap-3">
+                      {[
+                        { value: timeLeft.days, label: 'Hari' },
+                        { value: timeLeft.hours, label: 'Jam' },
+                        { value: timeLeft.minutes, label: 'Menit' },
+                        { value: timeLeft.seconds, label: 'Detik' },
+                      ].map((unit, i) => (
+                        <div key={unit.label} className="flex items-center gap-2 sm:gap-3">
+                          <div className="flex flex-col items-center">
+                            <div className="flex h-[64px] w-[64px] items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] sm:h-[76px] sm:w-[76px]">
+                              <span className="text-2xl font-black tabular-nums text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] sm:text-3xl">{pad(unit.value)}</span>
+                            </div>
+                            <span className="mt-2 text-[9px] font-semibold tracking-[0.15em] text-white/40 uppercase">{unit.label}</span>
+                          </div>
+                          {i < 3 && <span className="mb-6 text-xl font-black text-[#EAB308]/40">:</span>}
+                        </div>
+                      ))}
+                    </div>
+                  </>
+                ) : countdownState.status === 'not_open' ? (
+                  <div className="text-center py-4">
+                    <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#EAB308] mb-3">
+                      ⏳ Pendaftaran Belum Dibuka
+                    </p>
+                    <div className="flex items-center justify-center gap-1.5 text-white/50">
+                      <Clock className="h-3.5 w-3.5" />
+                      <span className="text-xs font-medium">Dibuka {formatDeadlineDate(countdownState.openDate)}</span>
+                    </div>
+                  </div>
+                ) : countdownState.status === 'between_batches' ? (
+                  <div className="text-center py-4">
+                    <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#EAB308] mb-3">
+                      Batch {countdownState.prevBatch} Telah Ditutup
+                    </p>
+                    <div className="flex items-center justify-center gap-1.5 text-white/50">
+                      <Clock className="h-3.5 w-3.5" />
+                      <span className="text-xs font-medium">Batch {countdownState.nextBatch} dibuka {formatDeadlineDate(countdownState.nextOpenDate)}</span>
+                    </div>
+                  </div>
+                ) : countdownState.status === 'closed' ? (
+                  <div className="text-center py-4">
+                    <p className="text-xs font-bold tracking-[0.25em] uppercase text-white/50">
+                      🔒 Pendaftaran Ditutup
+                    </p>
+                  </div>
+                ) : countdownState.status === 'tba' ? (
+                  <div className="text-center py-4">
+                    <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#EAB308] mb-2">
+                      📅 Jadwal Menyusul
+                    </p>
+                    <p className="text-xs text-white/40 font-medium">
+                      Soon to be announced!
+                    </p>
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>
@@ -265,8 +348,7 @@ export default function CompetitionDetail() {
             <div className="relative overflow-hidden rounded-2xl bg-white/[0.05] border border-white/10 border-l-[4px] border-l-[#EAB308] p-8 sm:p-10 shadow-2xl shadow-black/40 backdrop-blur-sm transition-colors hover:bg-white/[0.07]">
               <div className="flex justify-between items-start mb-8">
                 <div>
-                  <h3 className="text-xs font-bold tracking-[0.2em] text-[#EAB308] uppercase mb-2">Penghargaan & Prestise</h3>
-                  <p className="text-sm text-white/50">Hadiah bagi para penakluk arena.</p>
+                  <h3 className="text-lg font-bold tracking-[0.2em] text-[#EAB308] uppercase mb-2">Penghargaan</h3>
                 </div>
                 <Trophy className="h-10 w-10 text-[#EAB308]" />
               </div>
@@ -307,9 +389,8 @@ export default function CompetitionDetail() {
       <section
         id="section-timeline"
         data-animate
-        className={`relative px-6 pb-20 sm:pb-28 transition-all duration-1000 ${
-          visibleSections.has('section-timeline') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
+        className={`relative px-6 pb-20 sm:pb-28 transition-all duration-1000 ${visibleSections.has('section-timeline') ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
       >
         <div className="mx-auto max-w-6xl">
           <div className="rounded-[40px] border border-white/20 bg-[#F5F5DC]/10 p-8 sm:p-16 backdrop-blur-md shadow-2xl shadow-black/20">
@@ -423,10 +504,10 @@ export default function CompetitionDetail() {
       <section className="relative px-6 pb-24 sm:pb-32 mt-10">
         {/* Glow Effects Behind the Card */}
         <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] max-w-full h-[300px] bg-gradient-to-t from-[#EAB308]/20 to-transparent rounded-[100%] blur-[100px]" />
-        
+
         <div className="relative mx-auto max-w-6xl">
           <div className="rounded-[32px] border border-white/20 bg-[#14532D]/40 backdrop-blur-2xl py-12 px-8 sm:py-14 sm:px-16 shadow-2xl shadow-black/40 text-center relative overflow-hidden">
-            
+
             {/* Pattern overlay from Hero */}
             <div
               className="absolute inset-0 opacity-10 pointer-events-none"
@@ -436,7 +517,7 @@ export default function CompetitionDetail() {
             />
             {/* Inner subtle glow */}
             <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 to-transparent opacity-40" />
-            
+
             <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-10 text-left">
               <div className="flex-1 text-center md:text-left">
                 <h2 className="text-3xl md:text-5xl lg:text-6xl font-black drop-shadow-[0_0_25px_rgba(234,179,8,0.3)] leading-[1.1] tracking-wide uppercase">
@@ -444,16 +525,39 @@ export default function CompetitionDetail() {
                   <span className="text-white block">POTENSIMU<br className="hidden md:block" /> SEKARANG!</span>
                 </h2>
               </div>
-              
+
               <div className="flex flex-col sm:flex-row items-center justify-center md:justify-end gap-4 sm:gap-5 w-full md:w-auto shrink-0">
-                <a
-                  href="https://instagram.com/anforcom"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-black/40 border border-white/20 px-8 py-4 text-sm font-bold text-white transition-all hover:bg-black/60 hover:border-white/40 shadow-lg"
-                >
-                  Hubungi Kami
-                </a>
+                {comp.contacts?.length > 0 ? (
+                  <div className="flex flex-col gap-3 w-full sm:w-auto">
+                    <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/40 text-center sm:text-left">Narahubung {comp.code}</p>
+                    {comp.contacts.map((c) => (
+                      <a
+                        key={c.phone}
+                        href={`https://wa.me/${c.phone}?text=Halo%20kak%2C%20saya%20ingin%20bertanya%20tentang%20${comp.code}%20ANFORCOM%202026`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group flex items-center gap-3 rounded-xl bg-black/40 border border-white/15 px-5 py-3 text-left transition-all hover:bg-[#25D366]/15 hover:border-[#25D366]/40 hover:shadow-lg hover:shadow-[#25D366]/10"
+                      >
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#25D366]/20 transition-colors group-hover:bg-[#25D366]/30">
+                          <MessageCircle className="h-4 w-4 text-[#25D366]" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-semibold text-white truncate">{c.name}</p>
+                          <p className="text-xs text-white/40 group-hover:text-[#25D366]/70">WhatsApp</p>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                ) : (
+                  <a
+                    href="https://instagram.com/anforcom"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-black/40 border border-white/20 px-8 py-4 text-sm font-bold text-white transition-all hover:bg-black/60 hover:border-white/40 shadow-lg"
+                  >
+                    Hubungi Kami
+                  </a>
+                )}
                 <Link
                   to="/register"
                   className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FACC15] to-[#EAB308] px-10 py-4 text-sm font-bold tracking-widest text-[#14532D] shadow-[0_0_20px_rgba(234,179,8,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_35px_rgba(234,179,8,0.6)]"
