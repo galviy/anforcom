@@ -58,7 +58,11 @@ export default function Dashboard() {
   // Backend sekarang mengembalikan field `proposal` & `tipe_lomba` langsung dari
   // getMyTeams() (lihat show_team.ts), jadi tidak perlu state terpisah untuk
   // "mengingat" nama file — cukup refresh daftar tim setelah upload berhasil.
-  const [proposalOpenTeamId, setProposalOpenTeamId] = useState(null);
+  // Panel aktif di dalam kartu tim yang lagi dibuka: 'anggota' | 'proposal'.
+  // Dipasangkan dengan expandedTeamId supaya cuma 1 tim & 1 panel yang bisa
+  // terbuka dalam satu waktu (gaya sidebar/tab, bukan dua tombol lepas yang
+  // bisa numpuk kebuka bareng seperti sebelumnya).
+  const [activePanel, setActivePanel] = useState(null);
   const [proposalFile, setProposalFile] = useState(null);
   const [proposalUploading, setProposalUploading] = useState(false);
   const [proposalError, setProposalError] = useState('');
@@ -117,19 +121,31 @@ export default function Dashboard() {
     }
   };
 
-  const handleToggleMembers = async (timId) => {
+  const handleSelectPanel = async (timId, panel) => {
     setActionError('');
     setAddingToTeamId(null);
     setEditingMemberId(null);
-    setProposalOpenTeamId(null);
-    if (expandedTeamId === timId) {
+
+    // Klik menu yang sama lagi -> tutup panel (collapse)
+    if (expandedTeamId === timId && activePanel === panel) {
       setExpandedTeamId(null);
-      setMembers([]);
+      setActivePanel(null);
       return;
     }
+
+    setExpandedTeamId(timId);
+    setActivePanel(panel);
+
+    if (panel === 'proposal') {
+      setProposalError('');
+      setProposalFile(null);
+      setViewingProposalTeamId(null);
+      return;
+    }
+
+    // panel === 'anggota'
     try {
       setMembersLoading(true);
-      setExpandedTeamId(timId);
       const res = await teamAPI.getTeamMembers(timId);
       setMembers(res?.data || []);
     } catch (err) {
@@ -147,9 +163,9 @@ export default function Dashboard() {
       await teamAPI.deleteTeam(timId);
       if (expandedTeamId === timId) {
         setExpandedTeamId(null);
+        setActivePanel(null);
         setMembers([]);
       }
-      if (proposalOpenTeamId === timId) setProposalOpenTeamId(null);
       if (viewingProposalTeamId === timId) setViewingProposalTeamId(null);
       await refreshTeams();
     } catch (err) {
@@ -325,13 +341,7 @@ export default function Dashboard() {
     }
   };
 
-  const openProposalForm = (timId) => {
-    setProposalOpenTeamId(timId);
-    setProposalError('');
-    setProposalFile(null);
-    setViewingProposalTeamId(null);
-  };
-
+  
   const handleProposalSubmit = async (e, timId) => {
     e.preventDefault();
     setProposalError('');
@@ -349,7 +359,6 @@ export default function Dashboard() {
       setProposalUploading(true);
       await teamAPI.addProposal(timId, proposalFile);
       await refreshTeams();
-      setProposalOpenTeamId(null);
       setProposalFile(null);
       setViewingProposalTeamId(timId);
     } catch (err) {
@@ -357,6 +366,18 @@ export default function Dashboard() {
       setProposalError(err.message || 'Gagal upload proposal.');
     } finally {
       setProposalUploading(false);
+    }
+  };
+
+  const handleDeleteProposal = async (timId) => {
+    if (!window.confirm('Yakin ingin menghapus proposal ini? Kamu perlu upload ulang setelahnya.')) return;
+    setProposalError('');
+    try {
+      await teamAPI.deleteProposal(timId);
+      await refreshTeams();
+      setViewingProposalTeamId(null);
+    } catch (err) {
+      setProposalError(err.message || 'Gagal menghapus proposal.');
     }
   };
 
@@ -639,50 +660,51 @@ export default function Dashboard() {
                           {t.isVerified ? 'Terverifikasi' : 'Menunggu verifikasi'}
                         </span>
                       </span>
-                      <div className="flex gap-2 flex-wrap">
+                      <button
+                        className="inline-flex items-center gap-1 rounded-full border border-red-400/25 bg-red-500/10 px-3.5 py-1.5 text-xs font-semibold text-red-400 transition-all duration-200 hover:bg-red-500/20"
+                        onClick={() => handleDeleteTeam(t.id)}
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        <span>Hapus Tim</span>
+                      </button>
+                    </div>
+
+                    {/* ── Sidebar menu tim (Anggota Manager / Proposal Manager) ── */}
+                    <div className="mt-4 flex flex-col sm:flex-row gap-4">
+                      <div className="flex sm:flex-col gap-2 sm:w-48 shrink-0">
                         <button
-                          className="inline-flex items-center gap-1 rounded-full border border-white/15 bg-white/[0.06] px-3.5 py-1.5 text-xs font-semibold text-[#F5F5DC]/80 transition-all duration-200 hover:border-[#EAB308]/40 hover:text-[#EAB308]"
-                          onClick={() => handleToggleMembers(t.id)}
+                          className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                            expandedTeamId === t.id && activePanel === 'anggota'
+                              ? 'bg-[#EAB308]/15 border border-[#EAB308]/40 text-[#EAB308]'
+                              : 'border border-white/10 bg-white/[0.03] text-[#F5F5DC]/70 hover:border-[#EAB308]/30 hover:text-[#F5F5DC]'
+                          }`}
+                          onClick={() => handleSelectPanel(t.id, 'anggota')}
                         >
-                          {expandedTeamId === t.id ? 'Tutup' : 'Lihat Anggota'}
+                          <Users className="h-4 w-4" />
+                          <span>Anggota</span>
                         </button>
                         {t.tipe_lomba === 1 && (
                           <button
-                            className="app-btn app-btn-ghost app-btn-sm"
-                            onClick={() => (proposalOpenTeamId === t.id ? setProposalOpenTeamId(null) : openProposalForm(t.id))}
+                            className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
+                              expandedTeamId === t.id && activePanel === 'proposal'
+                                ? 'bg-[#EAB308]/15 border border-[#EAB308]/40 text-[#EAB308]'
+                                : 'border border-white/10 bg-white/[0.03] text-[#F5F5DC]/70 hover:border-[#EAB308]/30 hover:text-[#F5F5DC]'
+                            }`}
+                            onClick={() => handleSelectPanel(t.id, 'proposal')}
                           >
-                            📄 Proposal
+                            <FileText className="h-4 w-4" />
+                            <span>Proposal</span>
                           </button>
                         )}
-                        <button
-                          className="inline-flex items-center gap-1 rounded-full border border-red-400/25 bg-red-500/10 px-3.5 py-1.5 text-xs font-semibold text-red-400 transition-all duration-200 hover:bg-red-500/20"
-                          onClick={() => handleDeleteTeam(t.id)}
-                        >
-                          Hapus Tim
-                        </button>
                       </div>
-                    </div>
 
-                    {/* ── Proposal form ── */}
-                    {proposalOpenTeamId === t.id && (
-                      <div className="mt-4 rounded-xl border border-white/10 bg-white/[0.04] p-4">
-                        <div className="flex items-center justify-between flex-wrap gap-3 mb-3">
-                          <h3 className="text-sm font-bold text-[#F5F5DC]">Proposal Tim (PDF)</h3>
-                          <button
-                            type="button"
-                            className="rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-xs font-semibold text-[#F5F5DC]/70 transition-all hover:border-[#EAB308]/40 hover:text-[#EAB308]"
-                            onClick={() => setProposalOpenTeamId(null)}
-                          >
-                            Tutup
-                          </button>
-                        </div>
+                      {expandedTeamId === t.id && (
+                        <div className="flex-1 min-w-0 rounded-xl border border-white/10 bg-white/[0.02] p-4">
 
-                        {proposalError && <div className="alert-error">{proposalError}</div>}
-                        {t.proposal && (
-                          <p style={{ fontSize: '0.82rem', color: 'var(--app-text-muted)', marginBottom: '0.75rem' }}>
-                            Proposal sudah pernah diupload. Upload file baru untuk menggantinya.
-                          </p>
-                        )}
+                    {/* ── Proposal Manager ── */}
+                    {activePanel === 'proposal' && (
+                      <div>
+                        {proposalError && <div className="mb-3 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{proposalError}</div>}
 
                         <form onSubmit={(e) => handleProposalSubmit(e, t.id)}>
                           <div className="mb-3">
@@ -698,7 +720,7 @@ export default function Dashboard() {
                           </div>
                           <div className="flex gap-2 flex-wrap">
                             <button type="submit" className="rounded-full bg-[#EAB308] px-5 py-2 text-xs font-bold text-[#14532D] shadow-lg shadow-[#EAB308]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#FACC15] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0" disabled={proposalUploading}>
-                              {proposalUploading ? 'Mengupload...' : 'Upload Proposal'}
+                              {proposalUploading ? 'Mengupload...' : 'Tambah Proposal'}
                             </button>
                             {t.proposal && (
                               <button
@@ -707,6 +729,15 @@ export default function Dashboard() {
                                 onClick={() => setViewingProposalTeamId(viewingProposalTeamId === t.id ? null : t.id)}
                               >
                                 {viewingProposalTeamId === t.id ? 'Sembunyikan Preview' : 'Lihat Proposal'}
+                              </button>
+                            )}
+                            {t.proposal && (
+                              <button
+                                type="button"
+                                className="rounded-full border border-red-400/30 bg-red-500/10 px-4 py-2 text-xs font-semibold text-red-300 transition-all hover:border-red-400/60 hover:bg-red-500/20"
+                                onClick={() => handleDeleteProposal(t.id)}
+                              >
+                                Hapus Proposal
                               </button>
                             )}
                           </div>
@@ -722,9 +753,9 @@ export default function Dashboard() {
                       </div>
                     )}
 
-                    {/* ── Members panel ── */}
-                    {expandedTeamId === t.id && (
-                      <div className="mt-4">
+                    {/* ── Anggota Manager ── */}
+                    {activePanel === 'anggota' && (
+                      <div>
                         {membersLoading ? (
                           <p className="text-sm text-[#F5F5DC]/50">Memuat anggota...</p>
                         ) : members.length === 0 ? (
@@ -865,6 +896,9 @@ export default function Dashboard() {
                         )}
                       </div>
                     )}
+                        </div>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>

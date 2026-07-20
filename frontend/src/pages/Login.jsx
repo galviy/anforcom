@@ -14,14 +14,6 @@ export default function Login() {
   const [cfToken, setCfToken] = useState('');
   const resetTurnstile = useRef(null);
 
-  // Form "lupa password" (inline, toggle di bawah form login)
-  const [showForgot, setShowForgot] = useState(false);
-  const [forgotEmail, setForgotEmail] = useState('');
-  const [forgotLoading, setForgotLoading] = useState(false);
-  const [forgotMessage, setForgotMessage] = useState('');
-  const [forgotCfToken, setForgotCfToken] = useState('');
-  const resetForgotTurnstile = useRef(null);
-
   // Kalau cookie session masih valid, jangan tampilkan form login lagi —
   // langsung lempar ke dashboard.
   useEffect(() => {
@@ -60,29 +52,7 @@ export default function Login() {
     }
   };
 
-  const handleForgotSubmit = async (e) => {
-    e.preventDefault();
-    setForgotMessage('');
-
-    if (!forgotCfToken) {
-      setForgotMessage('Selesaikan verifikasi captcha dulu ya.');
-      return;
-    }
-
-    setForgotLoading(true);
-    try {
-      await authAPI.resetPassword(forgotEmail, forgotCfToken);
-      // Backend selalu balas success:true walau email tidak terdaftar (anti email-enumeration)
-      setForgotMessage('Jika email terdaftar, link reset password sudah dikirim. Cek inbox/spam kamu.');
-    } catch (err) {
-      setForgotMessage(err.message || 'Gagal mengirim link reset. Coba lagi.');
-    } finally {
-      setForgotCfToken('');
-      resetForgotTurnstile.current?.();
-      setForgotLoading(false);
-    }
-  };
-
+  
   return (
     <div className="min-h-screen bg-[#14532D] relative overflow-hidden">
 
@@ -209,66 +179,14 @@ export default function Login() {
                   "
                 />
                 <div className="mt-2 text-right">
-                  <button
-                    type="button"
-                    onClick={() => { setShowForgot((v) => !v); setForgotMessage(''); }}
-                    className="text-xs font-medium text-[#EAB308]/70 transition-colors hover:text-[#EAB308] bg-transparent border-none cursor-pointer p-0"
+                  <Link
+                    to="/forgot-password"
+                    className="text-xs font-medium text-[#EAB308]/70 transition-colors hover:text-[#EAB308]"
                   >
                     Lupa password?
-                  </button>
+                  </Link>
                 </div>
               </div>
-
-              {/* Forgot password inline panel */}
-              {showForgot && (
-                <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
-                  {forgotMessage ? (
-                    <p className="text-sm text-[#F5F5DC]/60">{forgotMessage}</p>
-                  ) : (
-                    <>
-                      <div className="mb-3">
-                        <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#F5F5DC]/50">
-                          Email akun kamu
-                        </label>
-                        <input
-                          type="email"
-                          value={forgotEmail}
-                          onChange={(e) => setForgotEmail(e.target.value)}
-                          required
-                          className="
-                            w-full rounded-xl border border-white/15
-                            bg-white/[0.05] px-4 py-3
-                            text-sm text-[#F5F5DC] placeholder-white/25
-                            outline-none transition-all duration-200
-                            focus:border-[#EAB308]/50 focus:bg-white/[0.08] focus:ring-1 focus:ring-[#EAB308]/30
-                          "
-                        />
-                      </div>
-                      <div className="mb-3 flex justify-center">
-                        <Turnstile
-                          onVerify={setForgotCfToken}
-                          onExpire={() => setForgotCfToken('')}
-                          resetRef={resetForgotTurnstile}
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={handleForgotSubmit}
-                        disabled={forgotLoading || !forgotEmail || !forgotCfToken}
-                        className="
-                          w-full rounded-full bg-[#EAB308]/20 border border-[#EAB308]/30
-                          py-2.5 text-sm font-semibold text-[#EAB308]
-                          transition-all duration-200
-                          hover:bg-[#EAB308]/30
-                          disabled:opacity-50 disabled:cursor-not-allowed
-                        "
-                      >
-                        {forgotLoading ? 'Mengirim...' : 'Kirim Link Reset Password'}
-                      </button>
-                    </>
-                  )}
-                </div>
-              )}
 
               {/* Verifikasi captcha */}
               <div className="flex justify-center">

@@ -4,6 +4,73 @@ import { LogIn, ShieldCheck, CheckCircle, AlertCircle } from 'lucide-react';
 import { authAPI } from '../api/api';
 import PasswordInput from '../components/PasswordInput';
 
+/* ── Shared page shell ──
+ * PENTING: komponen ini harus didefinisikan di LUAR ResetPassword (di module
+ * scope), bukan di dalam body fungsinya. Kalau didefinisikan di dalam, setiap
+ * re-render (misal tiap kali user ngetik di form) bakal bikin fungsi Shell
+ * baru dengan identitas berbeda -> React unmount+mount ulang seluruh
+ * {children}-nya (termasuk input password) dari nol -> fokus kursor hilang
+ * tiap ngetik satu huruf.
+ */
+const Shell = ({ children }) => (
+  <div className="min-h-screen bg-[#14532D] relative overflow-hidden">
+
+    {/* Decorative background blobs */}
+    <div
+      className="pointer-events-none absolute -top-40 -right-32"
+      aria-hidden="true"
+      style={{
+        width: '600px',
+        height: '600px',
+        background: 'radial-gradient(ellipse at center, rgba(234,179,8,0.07) 0%, transparent 70%)',
+      }}
+    />
+    <div
+      className="pointer-events-none absolute -bottom-32 -left-40"
+      aria-hidden="true"
+      style={{
+        width: '500px',
+        height: '500px',
+        background: 'radial-gradient(ellipse at center, rgba(0,128,128,0.06) 0%, transparent 70%)',
+      }}
+    />
+
+    {/* Top navigation bar */}
+    <div className="fixed top-0 z-50 w-full px-4 pt-4 sm:px-6 sm:pt-5">
+      <nav className="relative mx-auto max-w-6xl rounded-[32px] border-l-4 border-[#EAB308] bg-[#14532D]/60 backdrop-blur-md shadow-lg shadow-black/15 transition-all duration-300">
+        <div className="flex items-center justify-between px-5 py-3 sm:px-7 sm:py-3.5">
+          <Link
+            to="/"
+            className="flex shrink-0 items-center gap-2 text-[#F5F5DC] no-underline rounded-lg"
+          >
+            <span className="text-lg font-bold tracking-wide sm:text-xl">
+              ANFORCOM <span className="font-semibold text-[#EAB308]">2026</span>
+            </span>
+          </Link>
+          <Link
+            to="/login"
+            className="
+              inline-flex items-center gap-1.5 rounded-full
+              border border-white/20 bg-white/[0.06] backdrop-blur-sm
+              px-5 py-2 text-sm font-semibold text-[#F5F5DC]/90
+              transition-all duration-200
+              hover:border-[#EAB308]/50 hover:text-[#EAB308]
+            "
+          >
+            <LogIn className="h-4 w-4" />
+            <span>Masuk</span>
+          </Link>
+        </div>
+      </nav>
+    </div>
+
+    {/* Main content */}
+    <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pt-24 pb-10">
+      {children}
+    </div>
+  </div>
+);
+
 export default function ResetPassword() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -43,66 +110,6 @@ export default function ResetPassword() {
       setLoading(false);
     }
   };
-
-  /* ── Shared page shell ── */
-  const Shell = ({ children }) => (
-    <div className="min-h-screen bg-[#14532D] relative overflow-hidden">
-
-      {/* Decorative background blobs */}
-      <div
-        className="pointer-events-none absolute -top-40 -right-32"
-        aria-hidden="true"
-        style={{
-          width: '600px',
-          height: '600px',
-          background: 'radial-gradient(ellipse at center, rgba(234,179,8,0.07) 0%, transparent 70%)',
-        }}
-      />
-      <div
-        className="pointer-events-none absolute -bottom-32 -left-40"
-        aria-hidden="true"
-        style={{
-          width: '500px',
-          height: '500px',
-          background: 'radial-gradient(ellipse at center, rgba(0,128,128,0.06) 0%, transparent 70%)',
-        }}
-      />
-
-      {/* Top navigation bar */}
-      <div className="fixed top-0 z-50 w-full px-4 pt-4 sm:px-6 sm:pt-5">
-        <nav className="relative mx-auto max-w-6xl rounded-[32px] border-l-4 border-[#EAB308] bg-[#14532D]/60 backdrop-blur-md shadow-lg shadow-black/15 transition-all duration-300">
-          <div className="flex items-center justify-between px-5 py-3 sm:px-7 sm:py-3.5">
-            <Link
-              to="/"
-              className="flex shrink-0 items-center gap-2 text-[#F5F5DC] no-underline rounded-lg"
-            >
-              <span className="text-lg font-bold tracking-wide sm:text-xl">
-                ANFORCOM <span className="font-semibold text-[#EAB308]">2026</span>
-              </span>
-            </Link>
-            <Link
-              to="/login"
-              className="
-                inline-flex items-center gap-1.5 rounded-full
-                border border-white/20 bg-white/[0.06] backdrop-blur-sm
-                px-5 py-2 text-sm font-semibold text-[#F5F5DC]/90
-                transition-all duration-200
-                hover:border-[#EAB308]/50 hover:text-[#EAB308]
-              "
-            >
-              <LogIn className="h-4 w-4" />
-              <span>Masuk</span>
-            </Link>
-          </div>
-        </nav>
-      </div>
-
-      {/* Main content */}
-      <div className="relative z-10 flex min-h-screen items-center justify-center px-4 pt-24 pb-10">
-        {children}
-      </div>
-    </div>
-  );
 
   /* ── Invalid / missing token state ── */
   if (!token) {

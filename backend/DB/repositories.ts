@@ -1,6 +1,7 @@
 import {db} from './connect'
 import path from 'path'; 
 import crypto from "node:crypto";
+import { unlink } from 'node:fs/promises';
 
 
 export class TeamRepository{
@@ -164,11 +165,6 @@ export class TeamRepository{
                 await conn.rollback();
                 return { success: false, message: `Theres nothing to change isnt it???` };
             }
-             const sql2 = await conn.query(
-                `SELECT data_image FROM isi_tim WHERE tim_id = ? and id = ?`,
-                [tim_id,user_id]
-            );
-
            const bytes = Buffer.from(imagebase64, "base64");
             if (bytes.length === 0 || bytes.length > MAX_SIZE) {
                 await conn.rollback();
@@ -199,14 +195,6 @@ export class TeamRepository{
                 };
             }
             await conn.commit();
-            if (sql2.length > 0 && sql2[0].data_image) {
-                const filePath = path.join(this.folder_upload, sql2[0].data_image);
-                try {
-                    await Bun.file(filePath).delete();
-                } catch (err) {
-                    console.error(`Gagal menghapus ${filePath}`, err);
-                }
-            }
             return {
                 success: true,
                 message: "Successfully changed your identity card!"
@@ -214,9 +202,6 @@ export class TeamRepository{
 
         } catch(e){
             await conn.rollback();
-            try {
-                await Bun.file(path.join(this.folder_upload, nama_ktm)).delete();
-            } catch {}
             console.error(e)
             throw e;
         } finally{
@@ -269,6 +254,51 @@ export class TeamRepository{
         } catch(e){
             console.error(e);
             await conn.rollback();
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+            conn.release();
+        }
+    }
+
+    // Hapus proposal tim. upload_proposal() di atas menolak upload kalau tim
+    // sudah punya proposal (satu tim cuma boleh satu proposal aktif), jadi
+    // method ini yang jadi "jalan keluar" biar user bisa upload ulang.
+    async deleteProposal(tim_id: number) {
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
+
+            const rows = await conn.query(
+                `SELECT data_proposal FROM data_proposal WHERE id_tim = ? FOR UPDATE`,
+                [tim_id]
+            );
+            if (rows.length === 0) {
+                await conn.rollback();
+                return { success: false, message: `Tim ini belum punya proposal` };
+            }
+
+            const result = await conn.query(`DELETE FROM data_proposal WHERE id_tim = ?`, [tim_id]);
+            if (result.affectedRows !== 1) {
+                await conn.rollback();
+                return { success: false, message: `Somehow it did not affect anything huh..?` };
+            }
+
+            await conn.commit();
+
+            // Best-effort hapus file fisiknya juga. Kalau gagal (mis. file-nya
+            // udah kehapus manual sebelumnya), jangan gagalin keseluruhan
+            // request -- yang penting record DB-nya udah bersih & bisa upload lagi.
+            const filePath = path.join(this.folder_upload_proposal, rows[0].data_proposal);
+            try {
+                await unlink(filePath);
+            } catch (e) {
+                console.error('Gagal hapus file proposal fisik:', e);
+            }
+
+            return { success: true, message: `Proposal berhasil dihapus` };
+        } catch (e) {
+            await conn.rollback();
+            console.error(e);
             return { success: false, message: 'terjadi kesalahan, coba lagi' };
         } finally {
             conn.release();
@@ -397,60 +427,16 @@ export class TeamRepository{
             message: `Successfully changed nama_lengkap to ${namaBaru}`
         };
     }
-   async deleteProposal(IdTeam: number) {
-        const conn = await db.getConnection();
-
-        try {
-            await conn.beginTransaction();
-
-            const readNamaProposal = await conn.query(
-                `SELECT data_proposal FROM data_proposal WHERE id_tim = ? FOR UPDATE`,
-                [IdTeam]
-            );
-           
-            await conn.query(`DELETE FROM data_proposal WHERE id_tim = ?`,[IdTeam] );
-
-            await conn.commit();
-            if (readNamaProposal.length > 0 && readNamaProposal[0].data_proposal) {
-                try {
-                    const filePath = path.join(this.folder_upload_proposal,readNamaProposal[0].data_proposal);
-                    await Bun.file(filePath).delete();
-                } catch(e){
-                    console.error("Gagal menghapus file proposal:", e);
-                }
-            }
-            return {success: true,message: "Successfully deleted all data_proposal"
-        };
-        } catch (e) {
-            await conn.rollback();
-            console.error(e);
-            throw e;
-        } finally {
-            conn.release();
-        }
-    }
     async deleteTeam(IdTeam: number) {
         const conn = await db.getConnection();
         try {
             await conn.beginTransaction();
-            const readNamaProposal = await conn.query(
-                `SELECT data_proposal FROM data_proposal WHERE id_tim = ? FOR UPDATE`,
-                [IdTeam]
-            );
             await conn.query(`DELETE from user_tim where tim_id = ?`, [IdTeam]);
             await conn.query(`DELETE FROM isi_tim WHERE tim_id = ?`, [IdTeam]);
-            
             await conn.query(`DELETE FROM data_proposal where id_tim =? `, [IdTeam])
             const result = await conn.query(`DELETE FROM tim WHERE id = ?`, [IdTeam]);
+            
             await conn.commit();
-            for (let i = 0; i < readNamaProposal.length; i++) {
-                const filePath = path.join(this.folder_upload_proposal,readNamaProposal[i].data_proposal);
-                try {
-                    await Bun.file(filePath).delete();
-                } catch (err) {
-                    console.error(`Gagal menghapus ${filePath}`, err);
-                }
-            }
             return result;
         } catch (e) {
             console.error(e);
@@ -460,7 +446,6 @@ export class TeamRepository{
             conn.release(); 
         }
     }   
-
     async timIdCheck(Iduser:number,Idteam:number){
        
         const sql = `

@@ -50,7 +50,7 @@ function clearCsrfToken() {
 // endpoint yang ada di daftar CSRF-protected pada backend/handlers/router.ts:
 // /user/me, /user/edit, /teams/create_team, /teams/delete_team,
 // /teams/delete_user_team, /teams/add_user_team, /teams/edit_user_team,
-// /teams/add_proposal.
+// /teams/add_proposal, /teams/delete_proposal.
 function withCsrf(extraHeaders = {}) {
   return { ...extraHeaders, 'X-CSRF-Token': getCsrfToken() };
 }
@@ -337,6 +337,17 @@ export const teamAPI = {
 
   // URL PDF proposal tim, langsung dipakai sebagai src <embed>/<iframe> untuk preview.
   getProposalUrl: (filename) => `${API_BASE}/teams/view_proposal?id=${encodeURIComponent(filename)}`,
+
+  // Hapus proposal tim yang sudah diupload. Backend cuma izinin 1 proposal aktif
+  // per tim (addProposal akan nolak upload baru kalau masih ada yang lama), jadi
+  // ini jalan satu-satunya buat bisa upload ulang.
+  deleteProposal: (timId) => {
+    return fetch(`${API_BASE}/teams/delete_proposal`, {
+      method: 'POST',
+      headers: withCsrf({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ tim_id: timId }),
+    }).then(handleResponse);
+  },
 
   // POST edit data anggota tim (nama_lengkap/asal_instansi/nomor_induk/foto), satu
   // panggilan mengubah satu field lewat parameter editCase. `memberId` sama seperti
