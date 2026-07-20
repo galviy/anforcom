@@ -700,3 +700,60 @@ Error     : SqlError: (conn:-1, no: 45028, SQLState: HY000) pool failed to retri
     at _rejectTimedOutRequest (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/pool.js:366:22)
     at _checkRequestTimeouts (/home/shala/Desktop/project/anforcom/node_modules/mariadb/lib/pool.js:334:14)
 -----------------------------------------
+2026-07-20 - 23:17:54 : [ERROR] GET /api/user/ping
+Headers   : {"accept":"*/*","cookie":"session=K2FZsVynIC_BgHUfgsA9cK7LRTdYEMD4qipwORbwA9x2VCZ_BXGwqu9qCWFxx_Q3bISrWbSqRKPfYDaAlEeWY4nKCHJN_D5-013FFa807kzcTJE3lEYyJl_4X4GDV93cSMOTUTF80aUZ8nUChIFtzxEprg2ncG0hXd9_zTGIVVU_14uRf-MMj9dcZbhtwTVg2n7prjpocLpPX4jom9Gl_58hVwbgg4zmH9O0Og","host":"127.0.0.1:1337","user-agent":"curl/8.21.0"}
+Error     : SyntaxError: JSON Parse error: Unexpected identifier "object"
+    at <parse> (:0)
+    at parse (unknown)
+    at handler (/home/shala/Desktop/project/anforcom/backend/handlers/routes/user/ping.ts:8:22)
+    at handle (/home/shala/Desktop/project/anforcom/backend/handlers/router.ts:105:32)
+    at processTicksAndRejections (native:7:39)
+-----------------------------------------
+2026-07-20 - 23:18:13 : [ERROR] GET /api/user/ping
+Headers   : {"accept":"*/*","cookie":"session=K2FZsVynIC_BgHUfgsA9cK7LRTdYEMD4qipwORbwA9x2VCZ_BXGwqu9qCWFxx_Q3bISrWbSqRKPfYDaAlEeWY4nKCHJN_D5-013FFa807kzcTJE3lEYyJl_4X4GDV93cSMOTUTF80aUZ8nUChIFtzxEprg2ncG0hXd9_zTGIVVU_14uRf-MMj9dcZbhtwTVg2n7prjpocLpPX4jom9Gl_58hVwbgg4zmH9O0Og","host":"127.0.0.1:1337","user-agent":"curl/8.21.0"}
+Error     : SyntaxError: JSON Parse error: Unexpected identifier "object"
+    at <parse> (:0)
+    at parse (unknown)
+    at handler (/home/shala/Desktop/project/anforcom/backend/handlers/routes/user/ping.ts:8:22)
+    at handle (/home/shala/Desktop/project/anforcom/backend/handlers/router.ts:105:32)
+    at processTicksAndRejections (native:7:39)
+-----------------------------------------
+2026-07-20 - 23:18:34 : [ERROR] GET /api/user/ping
+Headers   : {"accept":"*/*","cookie":"session=K2FZsVynIC_BgHUfgsA9cK7LRTdYEMD4qipwORbwA9x2VCZ_BXGwqu9qCWFxx_Q3bISrWbSqRKPfYDaAlEeWY4nKCHJN_D5-013FFa807kzcTJE3lEYyJl_4X4GDV93cSMOTUTF80aUZ8nUChIFtzxEprg2ncG0hXd9_zTGIVVU_14uRf-MMj9dcZbhtwTVg2n7prjpocLpPX4jom9Gl_58hVwbgg4zmH9O0Og","host":"127.0.0.1:1337","user-agent":"curl/8.21.0"}
+Error     : SyntaxError: JSON Parse error: Unexpected identifier "object"
+    at <parse> (:0)
+    at parse (unknown)
+    at handler (/home/shala/Desktop/project/anforcom/backend/handlers/routes/user/ping.ts:9:22)
+    at handle (/home/shala/Desktop/project/anforcom/backend/handlers/router.ts:105:32)
+    at processTicksAndRejections (native:7:39)
+-----------------------------------------
+2026-07-20 - 23:18:56 : [ERROR] GET /api/user/ping
+Headers   : {"accept":"*/*","cookie":"session=K2FZsVynIC_BgHUfgsA9cK7LRTdYEMD4qipwORbwA9x2VCZ_BXGwqu9qCWFxx_Q3bISrWbSqRKPfYDaAlEeWY4nKCHJN_D5-013FFa807kzcTJE3lEYyJl_4X4GDV93cSMOTUTF80aUZ8nUChIFtzxEprg2ncG0hXd9_zTGIVVU_14uRf-MMj9dcZbhtwTVg2n7prjpocLpPX4jom9Gl_58hVwbgg4zmH9O0Og","host":"127.0.0.1:1337","user-agent":"curl/8.21.0"}
+Error     : TypeError: The first argument must be of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received an instance of Object
+    at unknown
+    at <anonymous> (native:1:11)
+    at encryptCookie (/home/shala/Desktop/project/anforcom/backend/handlers/cookies.ts:38:12)
+    at handler (/home/shala/Desktop/project/anforcom/backend/handlers/routes/user/ping.ts:23:29)
+    at handle (/home/shala/Desktop/project/anforcom/backend/handlers/router.ts:105:32)
+    at processTicksAndRejections (native:7:39)
+-----------------------------------------
+2026-07-20 - 23:21:25 : [ERROR] GET /api/user/ping
+Headers   : {"accept":"*/*","cookie":"session=K2FZsVynIC_BgHUfgsA9cK7LRTdYEMD4qipwORbwA9x2VCZ_BXGwqu9qCWFxx_Q3bISrWbSqRKPfYDaAlEeWY4nKCHJN_D5-013FFa807kzcTJE3lEYyJl_4X4GDV93cSMOTUTF80aUZ8nUChIFtzxEprg2ncG0hXd9_zTGIVVU_14uRf-MMj9dcZbhtwTVg2n7prjpocLpPX4jom9Gl_58hVwbgg4zmH9O0Og","host":"127.0.0.1:1337","user-agent":"curl/8.21.0"}
+Error     : TypeError: The first argument must be of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received an instance of Object
+    at unknown
+    at <anonymous> (native:1:11)
+    at encryptCookie (/home/shala/Desktop/project/anforcom/backend/handlers/cookies.ts:38:12)
+    at handler (/home/shala/Desktop/project/anforcom/backend/handlers/routes/user/ping.ts:24:29)
+    at handle (/home/shala/Desktop/project/anforcom/backend/handlers/router.ts:105:32)
+    at processTicksAndRejections (native:7:39)
+-----------------------------------------
+2026-07-20 - 23:21:55 : [ERROR] GET /api/user/ping
+Headers   : {"accept":"*/*","cookie":"session=K2FZsVynIC_BgHUfgsA9cK7LRTdYEMD4qipwORbwA9x2VCZ_BXGwqu9qCWFxx_Q3bISrWbSqRKPfYDaAlEeWY4nKCHJN_D5-013FFa807kzcTJE3lEYyJl_4X4GDV93cSMOTUTF80aUZ8nUChIFtzxEprg2ncG0hXd9_zTGIVVU_14uRf-MMj9dcZbhtwTVg2n7prjpocLpPX4jom9Gl_58hVwbgg4zmH9O0Og","host":"127.0.0.1:1337","user-agent":"curl/8.21.0"}
+Error     : TypeError: The first argument must be of type string, Buffer, ArrayBuffer, Array, or Array-like Object. Received an instance of Object
+    at unknown
+    at <anonymous> (native:1:11)
+    at encryptCookie (/home/shala/Desktop/project/anforcom/backend/handlers/cookies.ts:38:12)
+    at handler (/home/shala/Desktop/project/anforcom/backend/handlers/routes/user/ping.ts:24:29)
+    at handle (/home/shala/Desktop/project/anforcom/backend/handlers/router.ts:105:32)
+    at processTicksAndRejections (native:7:39)
+-----------------------------------------
