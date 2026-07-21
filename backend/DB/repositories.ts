@@ -769,7 +769,11 @@ export class UserRepository{
         try {
             await conn.beginTransaction();
             await conn.query("SELECT id FROM user WHERE id = ? FOR UPDATE", [userId]);
-
+            const cek_duplikat = await conn.query(`select nama_tim from tim where nama_tim = ?`, [nama_tim])
+            if(cek_duplikat.length != 0){
+                await conn.rollback();
+                return { error: true, message: `Sudah ada tim dengan nama ${nama_tim} terdaftar sebelumnya!` };
+            } 
             switch (pendidikan_id) {
             case 1: {
                 const rows = await conn.query('select count(*) as jumlah from user_tim ut join tim t on ut.tim_id = t.id  where user_id = ? and tim_lomba = ?', [userId,timLomba]);
