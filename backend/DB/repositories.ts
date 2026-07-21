@@ -7,9 +7,35 @@ import { unlink } from 'node:fs/promises';
 export class TeamRepository{
     private folder_upload: string = path.join(import.meta.dir, "../../data_ktm");
     private folder_upload_proposal: string= path.join(import.meta.dir, "../../data_proposal");
+    private folder_upload_pembayaran: string = path.join(import.meta.dir, "../../data_pembayaran")
 
+    async check_file_pembayaran_sesuai(IdUser:number,nama_file:string){
+         const conn = await db.getConnection();
+        try {
+            const sql = await conn.query(
+                `SELECT ut.user_id 
+                FROM isi_tim it
+                JOIN user_tim ut ON it.tim_id = ut.tim_id
+                WHERE it.data_image = ?`, 
+                [nama_file]
+            );
+            if (sql.length == 0) {
+                return { success: false, message: 'not found' }; 
+            }
 
-
+            if (Number(IdUser) !== Number(sql[0].user_id)) {
+                return { success: false, message: 'pentester kah bang?' };
+            }
+            
+            return { success: true };  
+        } catch (e) {
+            console.error(e);
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+           
+            conn.release();
+        }
+    }
    async check_file_ktm_sesuai(idUser: number, nama_file: string) {
         const conn = await db.getConnection();
         try {
@@ -221,6 +247,16 @@ export class TeamRepository{
             throw e; 
         }
     }
+    async upload_pembayaran_file(filecoy:File,nama_receipt:string){
+        try {
+            const filePath = path.join(this.folder_upload_pembayaran,nama_receipt)
+            await Bun.write(filePath,filecoy);
+            return filePath
+        } catch(e){
+            console.error(e);
+            throw e;
+        }
+    }
     async upload_proposal_file(filecoy:File,nama_proposal:string){
         try {
             const filePath = path.join(this.folder_upload_proposal,nama_proposal)
@@ -304,7 +340,72 @@ export class TeamRepository{
             conn.release();
         }
     }
-    
+    async upload_pembayaran(tim_id: number,filecoy: File,nama_receipt:string) {
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
+            const sql1 = await conn.query(
+                `SELECT COUNT(*) as jumlah FROM data_pembayaran WHERE id_tim = ? FOR UPDATE`,
+                [tim_id]
+            );
+            console.log(sql1)
+            if (sql1[0].jumlah != 0) {
+                await conn.rollback();
+                return { success: false, message: `Kamu sudah upload pembayaran,mohon dihapus terlebih dahulu receipt sebelumnya!` };
+            }
+            await this.upload_pembayaran_file(filecoy,nama_receipt)
+            const sql2 = await conn.query(`INSERT INTO data_pembayaran (id_tim, foto_qris) VALUES (?, ?)`,
+                [tim_id,nama_receipt]
+            )
+            await conn.commit();
+            return { success: true, message: `successfully insert a team receipt boyyy, id ${sql2.insertId}` }; 
+
+        } catch (e){
+            console.error(e);
+            await conn.rollback();
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+            conn.release();
+        }
+    }
+    async deletePembayaran(tim_id: number) {
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
+
+            const rows = await conn.query(
+                `SELECT foto_qris FROM data_pembayaran WHERE id_tim = ? FOR UPDATE`,
+                [tim_id]
+            );
+            if (rows.length === 0) {
+                await conn.rollback();
+                return { success: false, message: `Tim ini belum punya pembayaran untuk di delete?` };
+            }
+
+            const result = await conn.query(`DELETE FROM data_pembayaran WHERE id_tim = ?`, [tim_id]);
+            if (result.affectedRows !== 1) {
+                await conn.rollback();
+                return { success: false, message: `Somehow it did not affect anything huh..?` };
+            }
+
+            await conn.commit();
+
+            const filePath = path.join(this.folder_upload_pembayaran, rows[0].foto_qris);
+            try {
+                await unlink(filePath);
+            } catch (e) {
+                console.error('Gagal hapus file proposal fisik:', e);
+            }
+
+            return { success: true, message: `Bukti pembayaran berhasil dihapus` };
+        } catch (e) {
+            await conn.rollback();
+            console.error(e);
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+            conn.release();
+        }
+    }
     async upload_ktm(nama_lengkap: string, asal_instansi: string, user_id: number, tim_id: number, nomor_induk: string, filecoy: File,nama_ktm:string) {
         const conn = await db.getConnection();
         try {
@@ -456,6 +557,7 @@ export class TeamRepository{
         return await db.query(sql,[Iduser,Idteam]);
     }
 
+    
     async bisaUpProposal(Idteam:number){
         const sql = `
             select tim_lomba 

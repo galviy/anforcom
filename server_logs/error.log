@@ -757,3 +757,11 @@ Error     : TypeError: The first argument must be of type string, Buffer, ArrayB
     at handle (/home/shala/Desktop/project/anforcom/backend/handlers/router.ts:105:32)
     at processTicksAndRejections (native:7:39)
 -----------------------------------------
+2026-07-21 - 13:45:04 : [ERROR] POST /api/teams/add_proposal
+Headers   : {"accept":"*/*","cookie":"session=CDqvNDJubdHSOXdwH42mivbiIMTd09QZvnINGhiP7A09AcIV2NBxrJdDbv3AeGd7oxMCs2wmHbunAvFnHyBhYfUG6pcxsKuJsn_7Trg1Os_5ga8NCZ3PdmnvMY7wOaGyTYJGAZRCJXuH8K0uRgver5JLDizzacxfE-0OkT2uNPiOBCLheAlwU52OjxtcvY2_3-9CQjkkgGIKCh2UBs8IuNo6ucV8LcaF3s2p4Q","host":"127.0.0.1:1337","user-agent":"curl/8.21.0","x-csrf-token":"valid_csrftoken"}
+Error     : TypeError: Can't decode form data from body because of incorrect MIME type/boundary
+    at formData (unknown)
+    at handler (/home/shala/Desktop/project/anforcom/backend/handlers/routes/teams/add_proposal.ts:18:30)
+    at handle (/home/shala/Desktop/project/anforcom/backend/handlers/router.ts:111:32)
+    at processTicksAndRejections (native:7:39)
+-----------------------------------------
