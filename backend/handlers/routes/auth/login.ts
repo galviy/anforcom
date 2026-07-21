@@ -20,14 +20,11 @@ export async function handler(req: Request): Promise<Response> {
   if (!username || !password || (!cf_turnstile_token && Bun.env.DEVELOPER_MODE === 'false')) {
     return Response.json({ success: false, error: "invalid data struct" }, { status: 400 });
   }
-
-  if(Bun.env.DEVELOPER_MODE === 'false'){
-    const cfCheck = await Cloudflare.validate_token(cf_turnstile_token);
-    if (!cfCheck?.success) {
-      return Response.json({ success: false, error: "Verifikasi captcha gagal, coba lagi" }, { status: 403 })
-    }
-  }
   
+  const cfCheck = await Cloudflare.validate_token(cf_turnstile_token);
+  if (!cfCheck?.success) {
+    return Response.json({ success: false, error: "Verifikasi captcha gagal, coba lagi" }, { status: 403 })
+  }
     
   if (username.length < 3 || username.length > 100) {
     return Response.json({ success: false, error: "Username/password harus 3-100 karakter" }, { status: 400 })
