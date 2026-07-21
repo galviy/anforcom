@@ -7,7 +7,7 @@ export async function handler(req: Request, json: any): Promise<Response> {
   //const payload: any = JSON.stringify(json);
 
   let payload = json
-  if (payload.extend == null || payload.extend > 6){
+  if (payload.extend == null && payload.extend > 6){
     return new Response("u gotta be afk right??", {
         status: 302, 
         headers: {
