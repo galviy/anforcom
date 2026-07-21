@@ -27,6 +27,7 @@ import * as resend_verif_token from "./routes/auth/resend_verification_by_token"
 import * as pingg from "./routes/user/ping"
 import * as up_pembayaran from "./routes/teams/pembayaran/upload_pembayaran"
 import * as del_pembayaran from "./routes/teams/pembayaran/delete_pembayaran"
+import * as view_pembayaran from "./routes/teams/pembayaran/view_pembayaran"
 
 const rutercoy = new Map([
     ['/auth/login', login],
@@ -52,7 +53,8 @@ const rutercoy = new Map([
     ['/auth/resend_verification_by_token',resend_verif_token],
     ['/user/ping',pingg],
     ['/teams/pembayaran/upload_pembayaran',up_pembayaran],
-    ['/teams/pembayaran/delete_pembayaran',del_pembayaran]
+    ['/teams/pembayaran/delete_pembayaran',del_pembayaran],
+    ['/teams/pembayaran/view_pembayaran',view_pembayaran]
 ])
 
 import {logger} from "../logger"

@@ -435,3 +435,43 @@ Content-Type: application/json;charset=utf-8
 
 Catatan: field `email` dan `no_tlp` pada endpoint ini belum diimplementasikan di backend (akan membalas `501 Not Implemented`).
 
+
+# Add bukti pembayaran
+```curl
+curl -X POST http://127.0.0.1:1337/api/teams/pembayaran/upload_pembayaran \
+        -H "Cookie: session=valid_session" \
+        -H "X-CSRF-Token: valid_csrftoken" \
+        -F "tim_id=426" \
+        -F "data_receipt=@$HOME/Downloads/manual-book.pdf"
+```
+Response berhasil
+
+```nginx
+{"success":true,"message":"Uploaded manual-book.pdf with size of 1.318034","nama_file":"41da6b87-75d9-44b8-9f40-427e50a15a35.pdf"}⏎
+```
+
+# Delete bukti pembayaran
+
+```curl
+curl -i -w "\n\n[INFO] Waktu Total Respons: %{time_total} detik\n" \
+            -X POST http://127.0.0.1:1337/api/teams/pembayaran/delete_pembayaran \
+            -H "Content-Type: application/json" \
+            -H "Cookie: session=0aSjw4l5oGCp2kViNLVk3qZdKfo51aiKL5RsqVpRC-zEfAXk9M3_Hn4LIC9wjP_rFG5bcovbv9ye93aAPTo5hZj8frBWC2sb0Ks8zfzsjCDBeYpiImttHVsXKZbWPbzT8n4uHahrihV_XlDA9WNY4vr-Xsxvy9i2IEGqaa21sR8zcgGsGNzzWzJhBcwCitrzUBrJ06dMzcSV9dKombXthJaPjIvGkBDSXQWuFw" \
+            -H "X-CSRF-Token: valid_csrftoken" \
+            -d '{"tim_id": 123}'
+```
+
+Response berhasil
+
+```nginx
+{"success":true,"message":"Bukti pembayaran berhasil dihapus"}
+```
+# view bukti pembayaran
+
+```curl
+curl -X GET http://127.0.0.1:1337/api/teams/pembayaran/view_pembayaran?id=41da6b87-75d9-44b8-9f40-427e50a15a35.pdf
+\
+  -H "Cookie: session=active_session"
+```
+
+Response berhasil: file

@@ -3,7 +3,7 @@ import path from 'path';
 
 
 const authRepo = new TeamRepository()
-let folder_upload = path.join(import.meta.dir, "../../../../../data_proposal");
+let folder_upload = path.join(import.meta.dir, "../../../../../data_pembayaran");
 
 
 export async function handler(req: Request, json?: any): Promise<Response> {
