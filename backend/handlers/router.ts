@@ -24,7 +24,7 @@ import * as view_proposal from "./routes/teams/view_proposal"
 import * as del_proposal from "./routes/teams/delete_proposal"
 import * as resend_verif from "./routes/auth/resend_verification"
 import * as resend_verif_token from "./routes/auth/resend_verification_by_token"
-import * as pingg from "./routes/user/ping"
+import * as ping from "./routes/user/ping"
 
 const rutercoy = new Map([
     ['/auth/login', login],
@@ -48,7 +48,7 @@ const rutercoy = new Map([
     ['/teams/delete_proposal',del_proposal],
     ['/auth/resend_verification',resend_verif],
     ['/auth/resend_verification_by_token',resend_verif_token],
-    ['/user/ping',pingg]
+    ['/user/ping',ping]
 ])
 
 import {logger} from "../logger"
@@ -71,8 +71,7 @@ export class router {
         
 
         if(!route) return this.notFound;
-        //url == "/user/me" || 
-        if (url == "/user/me"|| url == "/user/edit" || url == "/teams/edit_user_team" || url == "/teams/delete_user_team" || url == "/teams/delete_team" || url == "/teams/create_team" || url == "/teams/add_user_team" || url == "/teams/add_proposal" || url == "/teams/delete_proposal"){
+        if (url == "/user/me" || url == "/user/edit" || url == "/teams/edit_user_team" || url == "/teams/delete_user_team" || url == "/teams/delete_team" || url == "/teams/create_team" || url == "/teams/add_user_team" || url == "/teams/add_proposal" || url == "/teams/delete_proposal" || url == "/user/ping"){
              if (!verifyCSRF(req)) {
                 return Response.json({ success: false, message: "Invalid CSRF token" }, { status: 403 });
             }

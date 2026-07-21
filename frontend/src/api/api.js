@@ -199,6 +199,21 @@ export const userAPI = {
     }).then(handleResponse);
   },
 
+  // Heartbeat ringan buat dipanggil berkala (tiap 15 menit) selagi user ada di
+  // halaman yang butuh login. Backend (ping.ts) juga sekaligus MEMPERPANJANG
+  // sesi (rotate cookie + hitung extend) kalau masih valid, atau balas 302
+  // redirect + hapus cookie kalau sesi dianggap AFK/expired.
+  // `redirect: 'manual'` WAJIB di sini: tanpa ini, fetch otomatis ngikutin
+  // redirect 302-nya ke "/" dan dapat response 200 (HTML landing page), jadi
+  // kegagalan ping keliatan "sukses" walau sebenarnya sesinya sudah ditolak.
+  ping: () => {
+    return fetch(`${API_BASE}/user/ping`, {
+      method: 'GET',
+      headers: withCsrf({ 'Content-Type': 'application/json' }),
+      redirect: 'manual',
+    }).then(handleResponse);
+  },
+
   // POST ganti password user yang sedang login.
   // NOTE: baru bisa dipakai sekarang, sebelumnya handler-nya (/user/edit) belum
   // didaftarkan di backend router jadi selalu 404.

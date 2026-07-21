@@ -16,7 +16,7 @@ export async function handler(req: Request, json: any): Promise<Response> {
         },
     }); 
   }
-  if (payload.valid_until != null || payload.valid_until >= Date.now()/1000){
+  if (payload.valid_until != null && payload.valid_until >= Date.now()/1000){
     payload.valid_until = Math.floor(Date.now() / 1000) + 15 * 60;
     payload.extend+=1;
     const dataString = JSON.stringify(payload);
@@ -35,4 +35,3 @@ export async function handler(req: Request, json: any): Promise<Response> {
         },
     }); 
 }
-

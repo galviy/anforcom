@@ -20,12 +20,11 @@ export async function handler(req: Request): Promise<Response> {
   if (!username || !password || (!cf_turnstile_token && Bun.env.DEVELOPER_MODE === 'false')) {
     return Response.json({ success: false, error: "invalid data struct" }, { status: 400 });
   }
-  
+
   const cfCheck = await Cloudflare.validate_token(cf_turnstile_token);
   if (!cfCheck?.success) {
     return Response.json({ success: false, error: "Verifikasi captcha gagal, coba lagi" }, { status: 403 })
   }
-    
   if (username.length < 3 || username.length > 100) {
     return Response.json({ success: false, error: "Username/password harus 3-100 karakter" }, { status: 400 })
   }
@@ -44,7 +43,7 @@ export async function handler(req: Request): Promise<Response> {
     }
    
 
-    const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,no_tlp:user.no_tlp,tingkat_pendidikan:user.tingkat_pendidikan_id,valid_until:Math.floor(Date.now() / 1000) + 60 * 30,extend: 0})
+    const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,no_tlp:user.no_tlp,tingkat_pendidikan:user.tingkat_pendidikan_id,valid_until:Math.floor(Date.now() / 1000) + 60 * 60, extend: 0})
 
     const encrypted = await encryptCookie(payload)
 
@@ -67,7 +66,7 @@ export async function handler(req: Request): Promise<Response> {
       return Response.json({ success: false, error: "Username atau password salah" }, { status: 401 })
     }
 
-    const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,no_tlp:user.no_tlp,tingkat_pendidikan:user.tingkat_pendidikan_id,valid_until:Number(Math.floor(Date.now() / 1000) + 60*30),extend:0 })
+    const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,no_tlp:user.no_tlp,tingkat_pendidikan:user.tingkat_pendidikan_id,valid_until:Number(Math.floor(Date.now() / 1000) + 60*30), extend: 0 })
 
      const encrypted = await encryptCookie(payload)
       const token = Bun.CSRF.generate(Bun.env.SECRET_CSRF);
