@@ -10,7 +10,6 @@ export async function handler(req: Request, json?: any): Promise<Response> {
    if (!text) {
     return Response.json({ success: false, error: "invalid data struct??" }, { status: 400 })
   }
-  console.log("masuk anjing")
   const { tim_id } = JSON.parse(text)
 
   if (!tim_id ) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
@@ -19,7 +18,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   if (result.length == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 }) 
   
   let result2 = await authRepo.deletePembayaran(tim_id);
-  return Response.json({ result2 }, { status: 200 })
+  return Response.json(result2, { status: 200 })
 
 }
 

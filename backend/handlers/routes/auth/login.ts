@@ -15,7 +15,6 @@ export async function handler(req: Request): Promise<Response> {
   }
 
   const { username, password, cf_turnstile_token } = JSON.parse(text)
-  console.log(Bun.env.DEVELOPER_MODE )
 
   if (!username || !password || (!cf_turnstile_token && Bun.env.DEVELOPER_MODE === 'false')) {
     return Response.json({ success: false, error: "invalid data struct" }, { status: 400 });

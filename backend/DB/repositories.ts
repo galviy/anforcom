@@ -13,10 +13,10 @@ export class TeamRepository{
          const conn = await db.getConnection();
         try {
             const sql = await conn.query(
-                `SELECT ut.user_id 
-                FROM isi_tim it
-                JOIN user_tim ut ON it.tim_id = ut.tim_id
-                WHERE it.data_image = ?`, 
+                `select user_id 
+                from data_pembayaran dp 
+                join user_tim ut on dp.id_tim = ut.tim_id 
+                where foto_qris = ?`, 
                 [nama_file]
             );
             if (sql.length == 0) {
@@ -348,7 +348,7 @@ export class TeamRepository{
                 `SELECT COUNT(*) as jumlah FROM data_pembayaran WHERE id_tim = ? FOR UPDATE`,
                 [tim_id]
             );
-            console.log(sql1)
+            //console.log(sql1)
             if (sql1[0].jumlah != 0) {
                 await conn.rollback();
                 return { success: false, message: `Kamu sudah upload pembayaran,mohon dihapus terlebih dahulu receipt sebelumnya!` };
@@ -449,11 +449,12 @@ export class TeamRepository{
     }
     async findByUsername(username: string) {
         const sql = `
-            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal
+            SELECT t.id,t.nama_tim, t.isVerified, t.tim_lomba, dp.data_proposal, dp2.foto_qris
             FROM tim t
             JOIN user_tim ut ON t.id = ut.tim_id
             JOIN user u ON ut.user_id = u.id
             LEFT JOIN data_proposal dp ON dp.id_tim = t.id
+            LEFT join data_pembayaran dp2 on dp2.id_tim = t.id
             WHERE u.username = ?
         `;
         return await db.query(sql, [username]);
@@ -777,7 +778,7 @@ export class UserRepository{
             WHERE id = ?;`,
             [hashedPassword, userId]
         );
-        console.log(userId)
+        //console.log(userId)
         return result;
        
     }

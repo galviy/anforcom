@@ -7,6 +7,7 @@ interface datar_tim {
   nama_tim: string;
   isVerified: boolean;
   proposal:string;
+  pembayaran:string;
 }
 /*
 
@@ -38,13 +39,15 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   if (req.method != 'GET') return new Response(null, { status: 404 });
 
   const result = await authRepo.findByUsername(json.username);
-
+ 
   const p = result.map((row: any) => ({
+  
     id: row.id,
     nama_tim: row.nama_tim,
     tipe_lomba: row.tim_lomba,
     isVerified: row.isVerified,
-    proposal: row.tim_lomba == 1 ? (row.data_proposal ?? "") : ""
+    proposal: row.tim_lomba == 1 ? (row.data_proposal ?? "") : "",
+    receipt: row.tim_lomba == 1 ? (row.foto_qris ?? "") : "",
   }));
 
   return Response.json({ success: true, data: p }, { status: 200 });
