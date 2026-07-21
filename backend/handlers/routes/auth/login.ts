@@ -46,7 +46,7 @@ export async function handler(req: Request): Promise<Response> {
     }
    
 
-    const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,no_tlp:user.no_tlp,tingkat_pendidikan:user.tingkat_pendidikan_id,valid_until:Math.floor(Date.now() / 1000) + 60 * 30,extend: 0})
+    const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,no_tlp:user.no_tlp,tingkat_pendidikan:user.tingkat_pendidikan_id,valid_until:Math.floor(Date.now() / 1000) + 60 * 60,extend: 0})
 
     const encrypted = await encryptCookie(payload)
 
@@ -69,7 +69,7 @@ export async function handler(req: Request): Promise<Response> {
       return Response.json({ success: false, error: "Username atau password salah" }, { status: 401 })
     }
 
-    const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,no_tlp:user.no_tlp,tingkat_pendidikan:user.tingkat_pendidikan_id,valid_until:Number(Math.floor(Date.now() / 1000) + 60*30),extend:0 })
+    const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,no_tlp:user.no_tlp,tingkat_pendidikan:user.tingkat_pendidikan_id,valid_until:Number(Math.floor(Date.now() / 1000) + 60*30), extend:0 })
 
      const encrypted = await encryptCookie(payload)
       const token = Bun.CSRF.generate(Bun.env.SECRET_CSRF);
