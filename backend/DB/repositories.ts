@@ -406,6 +406,14 @@ export class TeamRepository{
             conn.release();
         }
     }
+    async cekExist(nomor_induk:string){
+         const sql = `
+           select id from isi_tim where nomor_induk = ?
+        `
+        const result =  await db.query(sql, [nomor_induk]);
+        if(result.length != 0) return true
+        return false;
+    }
     async upload_ktm(nama_lengkap: string, asal_instansi: string, user_id: number, tim_id: number, nomor_induk: string, filecoy: File,nama_ktm:string) {
         const conn = await db.getConnection();
         try {
