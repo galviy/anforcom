@@ -32,7 +32,7 @@ export class Server {
     const pathname = url.pathname
 
     const ip = this.getClientIP(req, server);
-    console.log(ip)
+    //console.log(ip)
     if (!this.limiter.isAllowed(ip)) {
       return new Response(null, { status: 429 });
     }
