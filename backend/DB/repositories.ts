@@ -494,7 +494,6 @@ export class TeamRepository{
             const filePath = path.join(this.folder_upload, rows[0].data_image);
             try {
                 await unlink(filePath);
-                console.log("selesai hapus!")
             } catch (e) {
                 console.error('Gagal hapus file proposal fisik:', e);
             }
@@ -571,21 +570,75 @@ export class TeamRepository{
         const conn = await db.getConnection();
         try {
             await conn.beginTransaction();
-            await conn.query(`DELETE from user_tim where tim_id = ?`, [IdTeam]);
+            const images = await conn.query(
+                `SELECT data_image FROM isi_tim WHERE tim_id = ?`, [IdTeam]
+            );
+            const proposals = await conn.query(
+                `SELECT data_proposal FROM data_proposal WHERE id_tim = ?`, [IdTeam]
+            );
+            const payments = await conn.query(
+                `SELECT foto_qris FROM data_pembayaran WHERE id_tim = ?`, [IdTeam]
+            );
+
+            await conn.query(`DELETE FROM user_tim WHERE tim_id = ?`, [IdTeam]);
             await conn.query(`DELETE FROM isi_tim WHERE tim_id = ?`, [IdTeam]);
-            await conn.query(`DELETE FROM data_proposal where id_tim =? `, [IdTeam])
+            await conn.query(`DELETE FROM data_proposal WHERE id_tim = ?`, [IdTeam]);
+            await conn.query(`DELETE FROM data_pembayaran WHERE id_tim = ?`, [IdTeam]);
+
             const result = await conn.query(`DELETE FROM tim WHERE id = ?`, [IdTeam]);
-            
+            if (result.affectedRows === 0) {
+                await conn.rollback();
+                return { success: false, message: 'Tim tidak ditemukan' };
+            }
             await conn.commit();
-            return result;
+            const filesToDelete: [string, string][] = [];
+
+            for (let i = 0; i < images.length; i++) {
+                const row = images[i];
+                if (!row) continue;
+                if (row.data_image) {
+                    filesToDelete.push([row.data_image, this.folder_upload]);
+                }
+            }
+
+            for (let i = 0; i < proposals.length; i++) {
+                const row = proposals[i];
+                if (!row) continue;
+                if (row.data_proposal) {
+                    filesToDelete.push([row.data_proposal, this.folder_upload_proposal]);
+                }
+            }
+
+            for (let i = 0; i < payments.length; i++) {
+                const row = payments[i];
+                if (!row) continue;
+                if (row.foto_qris) {
+                    filesToDelete.push([row.foto_qris, this.folder_upload_pembayaran]);
+                }
+            }
+
+            for (let i = 0; i < filesToDelete.length; i++) {
+                const entry = filesToDelete[i];
+                if (!entry) continue;
+
+                const file = entry[0];
+                const folder = entry[1];
+                try {
+                    await unlink(path.join(folder, file));
+                } catch (e) {
+                    console.error('Gagal hapus file fisik:', file, e);
+                }
+            }
+
+            return { success: true, message: 'Tim berhasil dihapus' };
         } catch (e) {
             console.error(e);
             await conn.rollback();
-            throw e; 
+            throw e;
         } finally {
-            conn.release(); 
+            conn.release();
         }
-    }   
+    }
     async timIdCheck(Iduser:number,Idteam:number){
        
         const sql = `
