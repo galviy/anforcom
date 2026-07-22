@@ -1,6 +1,6 @@
 import {UserRepository} from '../../../DB/repositories'
 import { decryptCookie } from '../../cookies'
-
+import {logger} from "../../../logger"
 
 const authRepo = new UserRepository()
 
@@ -31,7 +31,11 @@ export async function handler(req: Request): Promise<Response> {
     if (!new_password1 || !new_password2) return Response.json({ success: false, error: "you need to fill down the password confirmation" }, { status: 400 })
     if (new_password1 != new_password2)  return Response.json({ success: false, error: "Password you have typed does not match" }, { status: 400 })
     const changepewe = await authRepo.reset_password(new_password1,token)
-
+    if (Bun.env.logging_mode == "true"){
+         void logger.sendWebhook(`User just change a password "${changepewe.message}"`,Bun.env.RESET_PASSWORD_LOGS).catch(err => {
+            console.error(err);
+        });
+    }
     return Response.json(changepewe,{status:200})
     
 }

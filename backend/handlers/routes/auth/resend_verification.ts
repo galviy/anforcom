@@ -2,6 +2,7 @@ import {UserRepository} from '../../../DB/repositories'
 import {encryptCookie} from '../../cookies'
 import {emailRepositories} from '../../../email/repositories'
 import {Cloudflare} from '../../cloudflare'
+import {logger} from "../../../logger"
 
 const authRepo = new UserRepository()
 const emailHandler = new emailRepositories();
@@ -37,8 +38,13 @@ export async function handler(req: Request): Promise<Response> {
         void emailHandler.sendEmailVerification(email, generate_token).catch(err => {
             console.error(err);
         });
+        
     }
-
+    if (Bun.env.logging_mode == "true"){
+        void logger.sendWebhook(`resent account creation verification to ${email}`,Bun.env.Account_creation_logs).catch(err => {
+            console.error(err);
+        });
+    }
     // Selalu balas pesan generik yang sama baik email ditemukan atau tidak,
     // biar tidak bisa dipakai buat mengecek email mana saja yang sudah terdaftar.
     return Response.json({ success: true, message: `If a pending registration with that email address exists, we have resent the verification link.` }, { status: 200 })

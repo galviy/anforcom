@@ -18,10 +18,30 @@ export class Logger {
   async error(message: string) {
     await this.write(`[ERROR] ${message}`)
   }
+  public async sendWebhook(text: string, webHookUrl: any) {
+    try {
+      const response = await fetch(webHookUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+          content: text 
+        }),
+      });
 
+      if (!response.ok) {
+        throw new Error(`Discord API error: ${response.status} ${response.statusText}`);
+      }
 
+      
+    } catch (error) {
+      console.error('Gagal mengirim pesan ke Discord:', error);
+      throw error;
+    }
+  }
    public async requestError(err: unknown, req: any) {
-    console.log(req)
+    //console.log(req)
     const url = new URL(req.url)
     const method = req.method
     const route = url.pathname
@@ -31,14 +51,14 @@ export class Logger {
     if (method === 'POST') {
       try {
       body = await req.text()
-      console.log('body:', body)
+      //console.log('body:', body)
       } catch (e) {
     
         body = '(gagal baca body)'
       }
     }
 
-    console.log(body)
+   // console.log(body)
     const errMessage = err instanceof Error ? err.stack ?? err.message : String(err)
 
     const detail = [

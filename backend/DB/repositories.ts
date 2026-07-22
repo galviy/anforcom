@@ -660,7 +660,7 @@ export class TeamRepository{
         if (result.length == 0){
              return { success: false, message: `Unable to find??` };
         } 
-        if (result[0].tim_lomba != 1 || result[0].tim_lomba != 3) return { success: false, message: `Anda tidak perlu proposal untuk kategori tersebut?` };
+        if (result[0].tim_lomba != 1 && result[0].tim_lomba != 3) return { success: false, message: `Anda tidak perlu proposal untuk kategori tersebut?` };
         return  { success: true, message: `Valid` };
     }
 
@@ -942,7 +942,7 @@ export class UserRepository{
 
             return {
                 success: true,
-                message: "Password has been reset successfully."
+                message: `Password has been reset successfully for account (${data.email})`
             };
 
         } catch (e) {

@@ -1,6 +1,7 @@
 import {TeamRepository} from "../../../DB/repositories"
 import path from 'path';
 import { decryptCookie } from '../../cookies'
+import {logger} from "../../../logger"
 
 const authRepo = new TeamRepository()
 let folder_upload = path.join(import.meta.dir, "../../../../data_ktm");
@@ -29,7 +30,12 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   
   let validasi = await authRepo.cek_dummy_user(token);
   if (!validasi.success){
-        return Response.json({  validasi }, { status: 403 }) 
+      return Response.json({  validasi }, { status: 403 }) 
+  }
+  if (Bun.env.logging_mode == "true"){
+      void logger.sendWebhook(`Created an account "${validasi.message}"`,Bun.env.Account_creation_logs).catch(err => {
+        console.error(err);
+      });
   }
   return Response.json({  validasi }, { status: 200 }) 
 

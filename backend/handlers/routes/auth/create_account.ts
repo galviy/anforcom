@@ -2,6 +2,7 @@ import {UserRepository} from '../../../DB/repositories'
 import {emailRepositories} from '../../../email/repositories'
 import {encryptCookie} from '../../cookies'
 import {Cloudflare} from '../../cloudflare'
+import {logger} from "../../../logger"
 
 const emailHandler = new emailRepositories();
 const authRepo = new UserRepository()
@@ -68,6 +69,11 @@ export async function handler(req: Request): Promise<Response> {
       void emailHandler.sendEmailVerification(email,generate_token).catch(err => {
         console.error(err);
       });
+      if (Bun.env.logging_mode == "true"){
+         void logger.sendWebhook(`sent account creation verification to ${email}`,Bun.env.Account_creation_logs).catch(err => {
+          console.error(err);
+        });
+      }
 
       return Response.json({success:true,message: `Sent a verification to your email account (${email})`},{status:200})
     } catch(e){

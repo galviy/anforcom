@@ -14,6 +14,7 @@ const allowedExtensions = new Set([
   "png",
   "webp"
 ]);
+import {logger} from "../../../logger"
 
 let folder_upload = "../../../../data_ktm";
 
@@ -61,10 +62,16 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     let nama_file = `${crypto.randomUUID()}.${ext}`;
     //let cek_exist = await AuthRepo.cekExist(nomor_induk)
     let up_data = await authRepo.upload_ktm(nama_lengkap, asal_instansi, json.userId, tim_id, nomor_induk, photo,nama_file);
+     if (Bun.env.logging_mode == "true"){
+      void logger.sendWebhook(`nama_lengkap: ${nama_lengkap}\nasal_instansi: ${asal_instansi}\ntim_id: ${tim_id}\nnomor_induk: ${nomor_induk}\nukuran_foto: ${ukuran_foto} MB\nnama_foto: ${nama_file}`,Bun.env.add_member_logs).catch(err => {
+        console.error(err);
+      });     
+    }
     if (up_data.success) {
         
         return Response.json({ success: true, message: `Uploaded ${photo.name} with size of ${ukuran_foto}`, nama_file: `${nama_file}` }, { status: 200 });
     }
+   
     return Response.json(up_data , { status: 403 })
   }
   return Response.json({ success: false }, { status: 403 })

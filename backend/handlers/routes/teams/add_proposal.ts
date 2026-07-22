@@ -1,6 +1,7 @@
 import {TeamRepository} from "../../../DB/repositories"
-
+import {logger} from "../../../logger"
 const authRepo = new TeamRepository()
+
 
 const allowedTypes = new Set([
   "application/pdf",
@@ -46,14 +47,21 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     if (!apakahbisaup.success) return Response.json({ apakahbisaup });
 
     console.log(`tim_id: ${tim_id}\nUkuran proposal: ${ukuran_proposal} MB\nnama_file: ${proposal.name}`);
-    
+  
     if (ukuran_proposal >= 50) return Response.json({ success: false, error: `file size is way too big ${ukuran_proposal}, max nya 50 mb boy bisa kasih compress tah?` });
     
     let nama_file = `${crypto.randomUUID()}.${ext}`;
     let up_proposal = await authRepo.upload_proposal(Number(tim_id),proposal,nama_file)
+     if (Bun.env.logging_mode == "true"){
+      void logger.sendWebhook(`tim_id: ${tim_id}\nUkuran proposal: ${ukuran_proposal} MB\nnama_file: \`${nama_file}\``,Bun.env.PROPOSAL_LOGS).catch(err => {
+        console.error(err);
+      });
+    }
     if (up_proposal.success) {
         return Response.json({ success: true, message: `Uploaded ${proposal.name} with size of ${ukuran_proposal}`, nama_file: `${nama_file}` }, { status: 200 });
     }
+   
+
     return Response.json(up_proposal)
   }
   return Response.json({ success: false }, { status: 403 })

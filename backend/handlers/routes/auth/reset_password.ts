@@ -2,7 +2,7 @@ import {UserRepository} from '../../../DB/repositories'
 import {encryptCookie,decryptCookie} from '../../cookies'
 import {emailRepositories} from '../../../email/repositories'
 import {Cloudflare} from '../../cloudflare'
-
+import {logger} from "../../../logger"
 
 const authRepo = new UserRepository()
 const emailHandler = new emailRepositories();
@@ -36,6 +36,12 @@ export async function handler(req: Request): Promise<Response> {
     const sendwoy = await authRepo.createPasswordResetToken(email,generate_token)
     
     if(sendwoy.success) {
+        if (Bun.env.logging_mode == "true"){
+            void logger.sendWebhook(`Request to change password on email -> ${email}`,Bun.env.RESET_PASSWORD_LOGS).catch(err => {
+                console.error(err);
+            });
+            
+        }
         void emailHandler.sendResetAccountVerification(email,generate_token).catch(err => {
             console.error(err);
         });
