@@ -468,15 +468,43 @@ export class TeamRepository{
         return await db.query(sql, [username]);
     }
 
-    async deleteUserTeam(idTeam:number,idUser:number){
-        const sql = `
-            DELETE from
-            isi_tim 
-            where id = ? and tim_id = ?
-        `
-        const result = await db.query(sql,[idUser,idTeam]);
+    async deleteUserTeam(idTeam: number, idUser: number) {
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
 
-        return result;
+            const rows = await conn.query(
+                `SELECT data_image FROM isi_tim WHERE id = ? AND tim_id = ? FOR UPDATE`,
+                [idUser, idTeam]
+            );
+            if (rows.length === 0) {
+                await conn.rollback();
+                return { success: false, message: `you cant have anything to delete dont u?` };
+            }
+            const result = await conn.query(
+                `DELETE FROM isi_tim WHERE id = ? AND tim_id = ?`,
+                [idUser, idTeam]
+            );
+            if (result.affectedRows !== 1) {
+                await conn.rollback();
+                return { success: false, message: `Somehow it did not affect anything huh..?` };
+            }
+            await conn.commit(); 
+            const filePath = path.join(this.folder_upload, rows[0].data_image);
+            try {
+                await unlink(filePath);
+            } catch (e) {
+                console.error('Gagal hapus file proposal fisik:', e);
+            }
+
+            return { success: true, message: `Berhasil delete user tersebut!` };
+        } catch (e) {
+            await conn.rollback();
+            console.error(e);
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+            conn.release();
+        }
     }
     async update_nomor_induk(idTeam:number,idUser:number,noInduk:string){
 
@@ -577,7 +605,7 @@ export class TeamRepository{
         if (result.length == 0){
              return { success: false, message: `Unable to find??` };
         } 
-        if (result[0].tim_lomba != 1) return { success: false, message: `Anda tidak perlu proposal untuk kategori tersebut?` };
+        if (result[0].tim_lomba != 1 || result[0].tim_lomba != 3) return { success: false, message: `Anda tidak perlu proposal untuk kategori tersebut?` };
         return  { success: true, message: `Valid` };
     }
 

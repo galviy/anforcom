@@ -18,11 +18,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   if (result.length == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 }) 
   
   let result2 = await authRepo.deleteUserTeam(tim_id,user_id);
-  if (result2.affectedRows == 0){
-    return Response.json({ success: false }, { status: 404 })
-  }
-
-  return Response.json({ success: true }, { status: 200 })
+  return Response.json({ result2 }, { status: 200 })
 
 }
 

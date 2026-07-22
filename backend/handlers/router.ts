@@ -69,6 +69,7 @@ export class router {
     private get notFound(): Response{
         return new Response(null, {status:404});
     }
+    
 
     async handle(req: Request,pathname: string,server: Bun.Server<any>): Promise<Response> {
         let url = pathname.replace("/api", "");
