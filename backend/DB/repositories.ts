@@ -490,9 +490,11 @@ export class TeamRepository{
                 return { success: false, message: `Somehow it did not affect anything huh..?` };
             }
             await conn.commit(); 
+
             const filePath = path.join(this.folder_upload, rows[0].data_image);
             try {
                 await unlink(filePath);
+                console.log("selesai hapus!")
             } catch (e) {
                 console.error('Gagal hapus file proposal fisik:', e);
             }
