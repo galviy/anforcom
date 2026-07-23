@@ -14,6 +14,7 @@ const allowedExtensions = new Set([
   "png",
   "webp"
 ]);
+import {logger} from "../../../logger"
 
 let folder_upload = "../../../../data_ktm";
 
@@ -52,18 +53,25 @@ export async function handler(req: Request, json?: any): Promise<Response> {
 
     let result = await authRepo.timIdCheck(json.userId, Number(tim_id));
     if (result.length == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 });
-
+    let cek_exist = await authRepo.cekExist(nomor_induk)
+    if(cek_exist)  return Response.json({ success: false, error: `Someone has already registered with nim ${nomor_induk}, maybe trying to contact the site administrator would work?` }, { status: 403 });
     console.log(`nama_lengkap: ${nama_lengkap}\nasal_instansi: ${asal_instansi}\ntim_id: ${tim_id}\nnomor_induk: ${nomor_induk}\nukuran_foto: ${ukuran_foto} MB\nnama_foto: ${photo.name}`);
     
     if (ukuran_foto >= 10) return Response.json({ success: false, error: `Size file is way too big ${ukuran_foto}` });
     
     let nama_file = `${crypto.randomUUID()}.${ext}`;
-
+    //let cek_exist = await AuthRepo.cekExist(nomor_induk)
     let up_data = await authRepo.upload_ktm(nama_lengkap, asal_instansi, json.userId, tim_id, nomor_induk, photo,nama_file);
+     if (Bun.env.logging_mode == "true"){
+      void logger.sendWebhook(`nama_lengkap: ${nama_lengkap}\nasal_instansi: ${asal_instansi}\ntim_id: ${tim_id}\nnomor_induk: ${nomor_induk}\nukuran_foto: ${ukuran_foto} MB\nnama_foto: ${nama_file}`,Bun.env.add_member_logs).catch(err => {
+        console.error(err);
+      });     
+    }
     if (up_data.success) {
         
         return Response.json({ success: true, message: `Uploaded ${photo.name} with size of ${ukuran_foto}`, nama_file: `${nama_file}` }, { status: 200 });
     }
+   
     return Response.json(up_data , { status: 403 })
   }
   return Response.json({ success: false }, { status: 403 })

@@ -76,3 +76,14 @@ export function parseCookie(cookie: string): Record<string, string> {
     cookie.split(';').map(c => c.trim().split('='))
   )
 }
+
+export function isValidText(teks:string){
+  if (!teks || teks.trim().length === 0) {
+    return false; 
+  }
+  const regexPalsuAtauEmoji = /\u3164|\p{Extended_Pictographic}/u;
+  if (regexPalsuAtauEmoji.test(teks)) {
+    return false;
+  }
+  return true; 
+}

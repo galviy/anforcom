@@ -1,6 +1,6 @@
 // routes/user/index.ts
 import { UserRepository } from "../../../DB/repositories"
-
+import {logger} from "../../../logger"
 const authRepo = new UserRepository()
 
 export async function handler(req: Request, json: any): Promise<Response> {
@@ -45,7 +45,12 @@ export async function handler(req: Request, json: any): Promise<Response> {
     if (result.affectedRows === 0) {
       return Response.json({ success: false, error: "Something went wrong?" }, { status: 500 })
     }
-
+    //edit_password_logs
+    if (Bun.env.logging_mode == "true"){
+      void logger.sendWebhook(`User ${json.email} just change a password from settings`,Bun.env.edit_password_logs).catch(err => {
+        console.error(err);
+      });
+    }
     return Response.json({ success: true, message: "Successfully changed your password!" },
       {
         status: 200,

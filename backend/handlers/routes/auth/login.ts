@@ -1,7 +1,7 @@
 import {UserRepository} from '../../../DB/repositories'
 import {encryptCookie} from '../../cookies'
 import {Cloudflare} from '../../cloudflare'
-
+import {logger} from "../../../logger"
 
 const authRepo = new UserRepository()
 
@@ -51,6 +51,9 @@ export async function handler(req: Request): Promise<Response> {
     const encrypted = await encryptCookie(payload)
 
     const token = Bun.CSRF.generate(Bun.env.SECRET_CSRF);
+    if (Bun.env.logging_mode == "true"){
+      await logger.sendWebhook(`user ${username} just logged in to account`,Bun.env.LOGIN_LOGS)
+    }
     return Response.json({ success: true,csrf_token: token}, {
       headers: {
         'Set-Cookie': `session=${encrypted}; HttpOnly; Path=/; Max-Age=86400`
@@ -72,7 +75,12 @@ export async function handler(req: Request): Promise<Response> {
     const payload = JSON.stringify({ userId: user.id, username: user.username,email: user.email,no_tlp:user.no_tlp,tingkat_pendidikan:user.tingkat_pendidikan_id,valid_until:Number(Math.floor(Date.now() / 1000) + 60*30), extend:0 })
 
      const encrypted = await encryptCookie(payload)
-      const token = Bun.CSRF.generate(Bun.env.SECRET_CSRF);
+    const token = Bun.CSRF.generate(Bun.env.SECRET_CSRF);
+     if (Bun.env.logging_mode == "true"){
+       void logger.sendWebhook(`user ${username} just logged in to account`,Bun.env.LOGIN_LOGS).catch(err => {
+            console.error(err);
+        });
+    }
      return Response.json({ success: true ,csrf_token: token}, {
       headers: {
         'Set-Cookie': `session=${encrypted}; HttpOnly; Path=/; Max-Age=86400`

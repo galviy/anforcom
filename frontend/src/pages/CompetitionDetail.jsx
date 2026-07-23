@@ -526,41 +526,45 @@ export default function CompetitionDetail() {
                 </h2>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-center md:justify-end gap-4 sm:gap-5 w-full md:w-auto shrink-0">
+              <div className="flex flex-col gap-6 w-full md:w-auto md:max-w-2xl shrink-0">
                 {comp.contacts?.length > 0 ? (
-                  <div className="flex flex-col gap-3 w-full sm:w-auto">
-                    <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/40 text-center sm:text-left">Narahubung {comp.code}</p>
-                    {comp.contacts.map((c) => (
-                      <a
-                        key={c.phone}
-                        href={`https://wa.me/${c.phone}?text=Halo%20kak%2C%20saya%20ingin%20bertanya%20tentang%20${comp.code}%20ANFORCOM%202026`}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group flex items-center gap-3 rounded-xl bg-black/40 border border-white/15 px-5 py-3 text-left transition-all hover:bg-[#25D366]/15 hover:border-[#25D366]/40 hover:shadow-lg hover:shadow-[#25D366]/10"
-                      >
-                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#25D366]/20 transition-colors group-hover:bg-[#25D366]/30">
-                          <MessageCircle className="h-4 w-4 text-[#25D366]" />
-                        </div>
-                        <div className="min-w-0">
-                          <p className="text-sm font-semibold text-white truncate">{c.name}</p>
-                          <p className="text-xs text-white/40 group-hover:text-[#25D366]/70">WhatsApp</p>
-                        </div>
-                      </a>
-                    ))}
+                  <div className="flex flex-col gap-3 w-full">
+                    <p className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/40 text-center md:text-left">Narahubung {comp.code}</p>
+                    <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 w-full">
+                      {comp.contacts.map((c) => (
+                        <a
+                          key={c.phone}
+                          href={`https://wa.me/${c.phone}?text=Halo%20kak%2C%20saya%20ingin%20bertanya%20tentang%20${comp.code}%20ANFORCOM%202026`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group flex items-center gap-3 rounded-xl bg-white/[0.04] border border-white/10 px-5 py-3.5 text-left transition-all hover:bg-[#25D366]/10 hover:border-[#25D366]/30 hover:shadow-lg hover:shadow-[#25D366]/5"
+                        >
+                          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#25D366]/10 transition-colors group-hover:bg-[#25D366]/20">
+                            <MessageCircle className="h-4 w-4 text-[#25D366]" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-sm font-semibold text-white truncate">{c.name}</p>
+                            <p className="text-xs text-white/40 group-hover:text-[#25D366]/70">WhatsApp</p>
+                          </div>
+                        </a>
+                      ))}
+                    </div>
                   </div>
                 ) : (
-                  <a
-                    href="https://instagram.com/anforcom"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-black/40 border border-white/20 px-8 py-4 text-sm font-bold text-white transition-all hover:bg-black/60 hover:border-white/40 shadow-lg"
-                  >
-                    Hubungi Kami
-                  </a>
+                  <div className="w-full flex justify-end">
+                    <a
+                      href="https://instagram.com/anforcom"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group w-full inline-flex items-center justify-center gap-2 rounded-xl bg-white/[0.04] border border-white/10 px-8 py-4 text-sm font-bold text-white transition-all hover:bg-white/[0.08] hover:border-white/20 shadow-lg"
+                    >
+                      Hubungi Kami
+                    </a>
+                  </div>
                 )}
                 <Link
                   to="/register"
-                  className="group w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FACC15] to-[#EAB308] px-10 py-4 text-sm font-bold tracking-widest text-[#14532D] shadow-[0_0_20px_rgba(234,179,8,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_35px_rgba(234,179,8,0.6)]"
+                  className="group w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FACC15] to-[#EAB308] px-10 py-4 text-sm font-bold tracking-widest text-[#14532D] shadow-[0_0_20px_rgba(234,179,8,0.4)] transition-all hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(234,179,8,0.6)]"
                 >
                   DAFTAR SEKARANG
                   <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />

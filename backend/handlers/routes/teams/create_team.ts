@@ -1,6 +1,6 @@
 import {UserRepository} from "../../../DB/repositories"
 const authRepo = new UserRepository()
-
+import {logger} from "../../../logger"
 export async function handler(req: Request, json?: any): Promise<Response> {
 
    
@@ -22,6 +22,11 @@ export async function handler(req: Request, json?: any): Promise<Response> {
           const result = await authRepo.createTeam(json.tingkat_pendidikan, json.userId, team_name, lomba_id);
 
           if (!result) return Response.json({ success: false, error: "internal server error" }, { status: 500 })
+          if (Bun.env.logging_mode == "true"){
+            void logger.sendWebhook(`${json.username} just Created a tim : ${team_name} dengan lomba id ${lomba_id} `,Bun.env.team_creation_logs).catch(err => {
+                console.error(err);
+              });
+          }
           return Response.json(result);
       } break;
       case 2:{
@@ -29,6 +34,11 @@ export async function handler(req: Request, json?: any): Promise<Response> {
             if (lomba_id > 3)  return Response.json({ success: false, error: "Invalid Lomba ID??" }, { status: 401 })
             const result = await authRepo.createTeam(json.tingkat_pendidikan, json.userId, team_name, lomba_id);
             if (!result) return Response.json({ success: false, error: "internal server error" }, { status: 500 })
+            if (Bun.env.logging_mode == "true"){
+              void logger.sendWebhook(`${json.username} just Created a tim : ${team_name} dengan lomba id ${lomba_id} }`,Bun.env.team_creation_logs).catch(err => {
+                console.error(err);
+              });
+            }
             return Response.json(result);
       } break;
 

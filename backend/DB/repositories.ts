@@ -8,7 +8,35 @@ export class TeamRepository{
     private folder_upload: string = path.join(import.meta.dir, "../../data_ktm");
     private folder_upload_proposal: string= path.join(import.meta.dir, "../../data_proposal");
     private folder_upload_pembayaran: string = path.join(import.meta.dir, "../../data_pembayaran")
+    private folder_upload_pernyataan: string = path.join(import.meta.dir, "../../data_persetujuan")
 
+    async check_file_pernyataan_sesuai(IdUser:number,nama_file:string){
+         const conn = await db.getConnection();
+        try {
+            const sql = await conn.query(
+                `select user_id 
+                from data_pernyataan dp 
+                join user_tim ut on dp.id_tim = ut.tim_id 
+                where foto_pernyataan = ?`, 
+                [nama_file]
+            );
+            if (sql.length == 0) {
+                return { success: false, message: 'not found' }; 
+            }
+
+            if (Number(IdUser) !== Number(sql[0].user_id)) {
+                return { success: false, message: 'pentester kah bang?' };
+            }
+            
+            return { success: true };  
+        } catch (e) {
+            console.error(e);
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+           
+            conn.release();
+        }
+    }
     async check_file_pembayaran_sesuai(IdUser:number,nama_file:string){
          const conn = await db.getConnection();
         try {
@@ -247,6 +275,16 @@ export class TeamRepository{
             throw e; 
         }
     }
+      async upload_pernyataan_file(filecoy:File,nama_file_pernyataan:string){
+        try {
+            const filePath = path.join(this.folder_upload_pernyataan,nama_file_pernyataan)
+            await Bun.write(filePath,filecoy);
+            return filePath
+        } catch(e){
+            console.error(e);
+            throw e;
+        }
+    }
     async upload_pembayaran_file(filecoy:File,nama_receipt:string){
         try {
             const filePath = path.join(this.folder_upload_pembayaran,nama_receipt)
@@ -340,6 +378,34 @@ export class TeamRepository{
             conn.release();
         }
     }
+     async upload_pernyataan(tim_id: number,filecoy: File,nama_pernyataan_file:string) {
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
+            const sql1 = await conn.query(
+                `SELECT COUNT(*) as jumlah FROM data_pernyataan WHERE id_tim = ? FOR UPDATE`,
+                [tim_id]
+            );
+            //console.log(sql1)
+            if (sql1[0].jumlah != 0) {
+                await conn.rollback();
+                return { success: false, message: `Kamu sudah upload surat pernyataan,mohon dihapus terlebih dahulu untuk melakukan upload ulang!` };
+            }
+            await this.upload_pernyataan_file(filecoy,nama_pernyataan_file)
+            const sql2 = await conn.query(`INSERT INTO data_pernyataan (id_tim, foto_pernyataan) VALUES (?, ?)`,
+                [tim_id,nama_pernyataan_file]
+            )
+            await conn.commit();
+            return { success: true, message: `successfully insert a team "pernyataan" boyyy, id ${sql2.insertId}` }; 
+
+        } catch (e){
+            console.error(e);
+            await conn.rollback();
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+            conn.release();
+        }
+    }
     async upload_pembayaran(tim_id: number,filecoy: File,nama_receipt:string) {
         const conn = await db.getConnection();
         try {
@@ -368,6 +434,45 @@ export class TeamRepository{
             conn.release();
         }
     }
+    async deletePernyataan(tim_id: number) {
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
+
+            const rows = await conn.query(
+                `SELECT foto_pernyataan FROM data_pernyataan WHERE id_tim = ? FOR UPDATE`,
+                [tim_id]
+            );
+            if (rows.length === 0) {
+                await conn.rollback();
+                return { success: false, message: `Tim ini belum punya pernyataan untuk di delete?` };
+            }
+
+            const result = await conn.query(`DELETE FROM data_pernyataan WHERE id_tim = ?`, [tim_id]);
+            if (result.affectedRows !== 1) {
+                await conn.rollback();
+                return { success: false, message: `Somehow it did not affect anything huh..?` };
+            }
+
+            await conn.commit();
+
+            const filePath = path.join(this.folder_upload_pernyataan, rows[0].data_pernyataan);
+            try {
+                await unlink(filePath);
+            } catch (e) {
+                console.error('Gagal hapus file proposal fisik:', e);
+            }
+
+            return { success: true, message: `Foto pernyataan berhasil dihapus` };
+        } catch (e) {
+            await conn.rollback();
+            console.error(e);
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+            conn.release();
+        }
+    }
+
     async deletePembayaran(tim_id: number) {
         const conn = await db.getConnection();
         try {
@@ -405,6 +510,14 @@ export class TeamRepository{
         } finally {
             conn.release();
         }
+    }
+    async cekExist(nomor_induk:string){
+         const sql = `
+           select id from isi_tim where nomor_induk = ?
+        `
+        const result =  await db.query(sql, [nomor_induk]);
+        if(result.length != 0) return true
+        return false;
     }
     async upload_ktm(nama_lengkap: string, asal_instansi: string, user_id: number, tim_id: number, nomor_induk: string, filecoy: File,nama_ktm:string) {
         const conn = await db.getConnection();
@@ -460,15 +573,44 @@ export class TeamRepository{
         return await db.query(sql, [username]);
     }
 
-    async deleteUserTeam(idTeam:number,idUser:number){
-        const sql = `
-            DELETE from
-            isi_tim 
-            where id = ? and tim_id = ?
-        `
-        const result = await db.query(sql,[idUser,idTeam]);
+    async deleteUserTeam(idTeam: number, idUser: number) {
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
 
-        return result;
+            const rows = await conn.query(
+                `SELECT data_image FROM isi_tim WHERE id = ? AND tim_id = ? FOR UPDATE`,
+                [idUser, idTeam]
+            );
+            if (rows.length === 0) {
+                await conn.rollback();
+                return { success: false, message: `you cant have anything to delete dont u?` };
+            }
+            const result = await conn.query(
+                `DELETE FROM isi_tim WHERE id = ? AND tim_id = ?`,
+                [idUser, idTeam]
+            );
+            if (result.affectedRows !== 1) {
+                await conn.rollback();
+                return { success: false, message: `Somehow it did not affect anything huh..?` };
+            }
+            await conn.commit(); 
+
+            const filePath = path.join(this.folder_upload, rows[0].data_image);
+            try {
+                await unlink(filePath);
+            } catch (e) {
+                console.error('Gagal hapus file proposal fisik:', e);
+            }
+
+            return { success: true, message: `Berhasil delete user tersebut!` };
+        } catch (e) {
+            await conn.rollback();
+            console.error(e);
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+            conn.release();
+        }
     }
     async update_nomor_induk(idTeam:number,idUser:number,noInduk:string){
 
@@ -533,21 +675,75 @@ export class TeamRepository{
         const conn = await db.getConnection();
         try {
             await conn.beginTransaction();
-            await conn.query(`DELETE from user_tim where tim_id = ?`, [IdTeam]);
+            const images = await conn.query(
+                `SELECT data_image FROM isi_tim WHERE tim_id = ?`, [IdTeam]
+            );
+            const proposals = await conn.query(
+                `SELECT data_proposal FROM data_proposal WHERE id_tim = ?`, [IdTeam]
+            );
+            const payments = await conn.query(
+                `SELECT foto_qris FROM data_pembayaran WHERE id_tim = ?`, [IdTeam]
+            );
+
+            await conn.query(`DELETE FROM user_tim WHERE tim_id = ?`, [IdTeam]);
             await conn.query(`DELETE FROM isi_tim WHERE tim_id = ?`, [IdTeam]);
-            await conn.query(`DELETE FROM data_proposal where id_tim =? `, [IdTeam])
+            await conn.query(`DELETE FROM data_proposal WHERE id_tim = ?`, [IdTeam]);
+            await conn.query(`DELETE FROM data_pembayaran WHERE id_tim = ?`, [IdTeam]);
+
             const result = await conn.query(`DELETE FROM tim WHERE id = ?`, [IdTeam]);
-            
+            if (result.affectedRows === 0) {
+                await conn.rollback();
+                return { success: false, message: 'Tim tidak ditemukan' };
+            }
             await conn.commit();
-            return result;
+            const filesToDelete: [string, string][] = [];
+
+            for (let i = 0; i < images.length; i++) {
+                const row = images[i];
+                if (!row) continue;
+                if (row.data_image) {
+                    filesToDelete.push([row.data_image, this.folder_upload]);
+                }
+            }
+
+            for (let i = 0; i < proposals.length; i++) {
+                const row = proposals[i];
+                if (!row) continue;
+                if (row.data_proposal) {
+                    filesToDelete.push([row.data_proposal, this.folder_upload_proposal]);
+                }
+            }
+
+            for (let i = 0; i < payments.length; i++) {
+                const row = payments[i];
+                if (!row) continue;
+                if (row.foto_qris) {
+                    filesToDelete.push([row.foto_qris, this.folder_upload_pembayaran]);
+                }
+            }
+
+            for (let i = 0; i < filesToDelete.length; i++) {
+                const entry = filesToDelete[i];
+                if (!entry) continue;
+
+                const file = entry[0];
+                const folder = entry[1];
+                try {
+                    await unlink(path.join(folder, file));
+                } catch (e) {
+                    console.error('Gagal hapus file fisik:', file, e);
+                }
+            }
+
+            return { success: true, message: 'Tim berhasil dihapus' };
         } catch (e) {
             console.error(e);
             await conn.rollback();
-            throw e; 
+            throw e;
         } finally {
-            conn.release(); 
+            conn.release();
         }
-    }   
+    }
     async timIdCheck(Iduser:number,Idteam:number){
        
         const sql = `
@@ -851,7 +1047,7 @@ export class UserRepository{
 
             return {
                 success: true,
-                message: "Password has been reset successfully."
+                message: `Password has been reset successfully for account (${data.email})`
             };
 
         } catch (e) {

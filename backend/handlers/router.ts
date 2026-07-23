@@ -28,6 +28,9 @@ import * as ping from "./routes/user/ping"
 import * as up_pembayaran from "./routes/teams/pembayaran/upload_pembayaran"
 import * as del_pembayaran from "./routes/teams/pembayaran/delete_pembayaran"
 import * as view_pembayaran from "./routes/teams/pembayaran/view_pembayaran"
+import * as up_pernyataan from "./routes/teams/pernyataan/upload_pernyataan"
+import * as del_pernyataan from "./routes/teams/pernyataan/delete_pernyataan"
+import * as view_pernyataan from "./routes/teams/pernyataan/view_pernyataan"
 
 const rutercoy = new Map([
     ['/auth/login', login],
@@ -54,7 +57,10 @@ const rutercoy = new Map([
     ['/user/ping',ping],
     ['/teams/pembayaran/upload_pembayaran',up_pembayaran],
     ['/teams/pembayaran/delete_pembayaran',del_pembayaran],
-    ['/teams/pembayaran/view_pembayaran',view_pembayaran]
+    ['/teams/pembayaran/view_pembayaran',view_pembayaran],
+    ['/teams/pernyataan/upload_pernyataan',up_pernyataan],
+    ['/teams/pembayaran/delete_pernyataan',del_pernyataan],
+    ['/teams/pembayaran/view_pernyataan',view_pernyataan]
 ])
 
 import {logger} from "../logger"
@@ -69,6 +75,7 @@ export class router {
     private get notFound(): Response{
         return new Response(null, {status:404});
     }
+    
 
     async handle(req: Request,pathname: string,server: Bun.Server<any>): Promise<Response> {
         let url = pathname.replace("/api", "");
@@ -78,8 +85,13 @@ export class router {
 
         if(!route) return this.notFound;
         //url == "/user/me" || 
+        /*
+         ['/teams/pernyataan/upload_pernyataan',up_pernyataan],
+    ['/teams/pembayaran/delete_pernyataan',del_pernyataan],
+    ['/teams/pembayaran/view_pernyataan',view_pernyataan]
+        */
         if(Bun.env.DEVELOPER_MODE === 'false'){
-            if (url == "/user/me"|| url == "/user/edit" || url == "/teams/edit_user_team" || url == "/teams/delete_user_team" || url == "/teams/delete_team" || url == "/teams/create_team" || url == "/teams/add_user_team" || url == "/teams/add_proposal" || url == "/teams/delete_proposal" || url == "/user/ping" || url == "/teams/pembayaran/upload_pembayaran" || url == "/teams/pembayaran/delete_pembayaran"){
+            if (url == "/teams/pembayaran/view_pernyataan" || url == "/teams/pembayaran/delete_pernyataan" || url == "/teams/pernyataan/upload_pernyataan" || url == "/user/me"|| url == "/user/edit" || url == "/teams/edit_user_team" || url == "/teams/delete_user_team" || url == "/teams/delete_team" || url == "/teams/create_team" || url == "/teams/add_user_team" || url == "/teams/add_proposal" || url == "/teams/delete_proposal" || url == "/user/ping"){
                 if (!verifyCSRF(req)) {
                     return Response.json({ success: false, message: "Invalid CSRF token" }, { status: 403 });
                 }
