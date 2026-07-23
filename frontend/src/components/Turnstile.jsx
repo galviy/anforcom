@@ -1,7 +1,50 @@
 import { useEffect, useRef, useState } from 'react';
 
 const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
+const SCRIPT_URL = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
 const SCRIPT_LOAD_TIMEOUT_MS = 10000; // 10 detik nunggu script api.js siap
+
+// Lazy-load script Cloudflare Turnstile cuma sekali, sekali dibutuhkan.
+// Sebelumnya script ini di-load GLOBAL lewat <script> di index.html, jadi
+// nyangkut di SETIAP halaman SPA (termasuk /dashboard yang sama sekali gak
+// ada widget captcha-nya). Sekarang cuma di-inject kalau ada komponen
+// <Turnstile> yang benar-benar mount — dan `turnstileScriptPromise` di sini
+// memastikan cuma ada 1 <script> tag walau ada beberapa <Turnstile> yang
+// mount bersamaan di halaman yang sama.
+let turnstileScriptPromise = null;
+
+function loadTurnstileScript() {
+  if (window.turnstile) return Promise.resolve();
+  if (turnstileScriptPromise) return turnstileScriptPromise;
+
+  turnstileScriptPromise = new Promise((resolve, reject) => {
+    const existing = document.querySelector(`script[src="${SCRIPT_URL}"]`);
+    if (existing) {
+      if (window.turnstile) {
+        resolve();
+      } else {
+        existing.addEventListener('load', () => resolve());
+        existing.addEventListener('error', () => reject(new Error('Gagal memuat script Turnstile')));
+      }
+      return;
+    }
+
+    const script = document.createElement('script');
+    script.src = SCRIPT_URL;
+    script.async = true;
+    script.defer = true;
+    script.onload = () => resolve();
+    script.onerror = () => reject(new Error('Gagal memuat script Turnstile'));
+    document.head.appendChild(script);
+  }).catch((err) => {
+    // Reset supaya percobaan berikutnya (mis. setelah user klik "Muat Ulang
+    // Halaman") tidak nyangkut di promise yang sudah gagal selamanya.
+    turnstileScriptPromise = null;
+    throw err;
+  });
+
+  return turnstileScriptPromise;
+}
 
 /**
  * Widget Cloudflare Turnstile. Panggil onVerify(token) tiap kali dapat token
@@ -52,31 +95,24 @@ export default function Turnstile({ onVerify, onExpire, onFail, resetRef, theme 
       });
     };
 
-    // Script Turnstile dimuat async di index.html, mungkin belum siap saat
-    // komponen ini mount. Tunggu sampai window.turnstile benar-benar ada,
-    // TAPI dibatasi SCRIPT_LOAD_TIMEOUT_MS — jangan poll selamanya kalau
-    // script-nya gagal/lambat kebuka (koneksi ke Cloudflare kurang stabil).
-    if (window.turnstile) {
-      renderWidget();
-    } else {
-      const startedAt = Date.now();
-      const interval = setInterval(() => {
-        if (cancelled) return;
-        if (window.turnstile) {
-          clearInterval(interval);
-          renderWidget();
-          return;
-        }
-        if (Date.now() - startedAt > SCRIPT_LOAD_TIMEOUT_MS) {
-          clearInterval(interval);
-          setLoadState('timeout');
-        }
-      }, 100);
-      return () => clearInterval(interval);
-    }
+    const timeoutId = setTimeout(() => {
+      if (!cancelled) setLoadState('timeout');
+    }, SCRIPT_LOAD_TIMEOUT_MS);
+
+    loadTurnstileScript()
+      .then(() => {
+        clearTimeout(timeoutId);
+        renderWidget();
+      })
+      .catch((err) => {
+        console.error(err);
+        clearTimeout(timeoutId);
+        if (!cancelled) setLoadState('failed');
+      });
 
     return () => {
       cancelled = true;
+      clearTimeout(timeoutId);
       if (widgetId.current && window.turnstile) {
         window.turnstile.remove(widgetId.current);
       }

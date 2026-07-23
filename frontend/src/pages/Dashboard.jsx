@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { User, Users, Plus, LogOut, Settings, FileText, Trash2, Edit, X, AlertCircle, CheckCircle } from 'lucide-react';
+import { User, Users, Plus, LogOut, Settings, FileText, Trash2, Edit, X, AlertCircle, CheckCircle, Receipt, QrCode, Maximize2 } from 'lucide-react';
 import { userAPI, teamAPI, authAPI } from '../api/api';
 import PasswordInput from '../components/PasswordInput';
 
@@ -8,11 +8,11 @@ const MAX_MEMBERS_PER_TEAM = 3;
 
 // tipe_lomba (kolom `tim_lomba` di DB) -> emoji & nama singkat, biar user
 // langsung tau tim itu ikut bidang apa cuma dari sekilas lihat daftar tim.
-// Harus sinkron sama ALL_LOMBA di CreateTeam.jsx (id 1=DUC, 2=DCPC, 3=DDSC).
+// Harus sinkron sama ALL_LOMBA di CreateTeam.jsx (id 1=DUC, 2=DCPC, 3=DSDC).
 const LOMBA_INFO = {
   1: { emoji: '🎨', label: 'DUC — UI/UX' },
   2: { emoji: '💻', label: 'DCPC — Competitive Programming' },
-  3: { emoji: '📊', label: 'DDSC — Data Science' },
+  3: { emoji: '🛠️', label: 'DSDC — Software Development' },
 };
 
 function getGreeting() {
@@ -68,6 +68,16 @@ export default function Dashboard() {
   const [proposalError, setProposalError] = useState('');
   const [viewingProposalTeamId, setViewingProposalTeamId] = useState(null);
 
+  // State untuk upload/preview bukti pembayaran tim (mirip proposal: backend
+  // balikin field `receipt` langsung dari getMyTeams(), jadi cukup refresh
+  // daftar tim setelah upload/hapus berhasil).
+  const [paymentFile, setPaymentFile] = useState(null);
+  // QRIS-nya statis/sama buat semua tim, jadi state modal-nya global (bukan per-tim)
+  const [showQrisModal, setShowQrisModal] = useState(false);
+  const [paymentUploading, setPaymentUploading] = useState(false);
+  const [paymentError, setPaymentError] = useState('');
+  const [viewingPembayaranTeamId, setViewingPembayaranTeamId] = useState(null);
+
   // Dropdown "Pengaturan" di kartu Profil Saya
   const [showSettingsMenu, setShowSettingsMenu] = useState(false);
 
@@ -77,6 +87,16 @@ export default function Dashboard() {
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const [passwordSuccess, setPasswordSuccess] = useState('');
+
+  // Tutup modal QRIS dengan tombol Escape
+  useEffect(() => {
+    if (!showQrisModal) return;
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setShowQrisModal(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [showQrisModal]);
 
   useEffect(() => {
     // Sesi login dicek lewat cookie (HttpOnly), bukan localStorage.
@@ -381,6 +401,47 @@ export default function Dashboard() {
     }
   };
 
+  const ALLOWED_PAYMENT_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+
+  const handlePembayaranSubmit = async (e, timId) => {
+    e.preventDefault();
+    setPaymentError('');
+
+    if (!paymentFile) {
+      setPaymentError('Pilih file bukti pembayaran terlebih dahulu.');
+      return;
+    }
+    if (!ALLOWED_PAYMENT_TYPES.includes(paymentFile.type)) {
+      setPaymentError('File harus berformat PDF, JPG, PNG, atau WEBP.');
+      return;
+    }
+
+    try {
+      setPaymentUploading(true);
+      await teamAPI.uploadPembayaran(timId, paymentFile);
+      await refreshTeams();
+      setPaymentFile(null);
+      setViewingPembayaranTeamId(timId);
+    } catch (err) {
+      // Pesan persis dari backend
+      setPaymentError(err.message || 'Gagal upload bukti pembayaran.');
+    } finally {
+      setPaymentUploading(false);
+    }
+  };
+
+  const handleDeletePembayaran = async (timId) => {
+    if (!window.confirm('Yakin ingin menghapus bukti pembayaran ini? Kamu perlu upload ulang setelahnya.')) return;
+    setPaymentError('');
+    try {
+      await teamAPI.deletePembayaran(timId);
+      await refreshTeams();
+      setViewingPembayaranTeamId(null);
+    } catch (err) {
+      setPaymentError(err.message || 'Gagal menghapus bukti pembayaran.');
+    }
+  };
+
   const avatarInitial = (user?.username || 'U').trim().charAt(0).toUpperCase();
 
   if (loading) {
@@ -497,6 +558,17 @@ export default function Dashboard() {
             >
               <Users className="h-4 w-4" />
               <span>Tim Saya</span>
+            </button>
+            <button
+              className={`w-full flex items-center gap-2.5 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200 text-left ${
+                activeTab === 'payment'
+                  ? 'bg-[#EAB308]/15 text-[#EAB308] font-semibold'
+                  : 'text-[#F5F5DC]/60 hover:text-[#F5F5DC] hover:bg-white/[0.05]'
+              }`}
+              onClick={() => setActiveTab('payment')}
+            >
+              <Receipt className="h-4 w-4" />
+              <span>Pembayaran</span>
             </button>
             <div className="my-2 border-t border-white/10" />
             <button
@@ -659,6 +731,22 @@ export default function Dashboard() {
                         }`}>
                           {t.isVerified ? 'Terverifikasi' : 'Menunggu verifikasi'}
                         </span>
+                        {t.receipt ? (
+                          <span className="inline-flex items-center gap-1 rounded-full border border-[#EAB308]/25 bg-[#EAB308]/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#EAB308]">
+                            <Receipt className="h-3 w-3" />
+                            Bukti Terupload
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => setActiveTab('payment')}
+                            className="inline-flex items-center gap-1 rounded-full border border-red-400/25 bg-red-500/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-red-400 transition-all hover:bg-red-500/20"
+                            title="Klik untuk ke halaman Pembayaran"
+                          >
+                            <Receipt className="h-3 w-3" />
+                            Belum Bayar
+                          </button>
+                        )}
                       </span>
                       <button
                         className="inline-flex items-center gap-1 rounded-full border border-red-400/25 bg-red-500/10 px-3.5 py-1.5 text-xs font-semibold text-red-400 transition-all duration-200 hover:bg-red-500/20"
@@ -683,7 +771,7 @@ export default function Dashboard() {
                           <Users className="h-4 w-4" />
                           <span>Anggota</span>
                         </button>
-                        {t.tipe_lomba === 1 && (
+                        {(t.tipe_lomba === 1 || t.tipe_lomba === 3) && (
                           <button
                             className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-200 ${
                               expandedTeamId === t.id && activePanel === 'proposal'
@@ -905,8 +993,172 @@ export default function Dashboard() {
             )}
           </div>
           )}
+
+          {/* ── Pembayaran ── */}
+          {activeTab === 'payment' && (
+          <div className="rounded-[24px] border border-white/15 bg-[#F5F5DC]/[0.06] backdrop-blur-md p-6 sm:p-8 shadow-xl shadow-black/10">
+            <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
+              <h3 className="text-xl font-bold text-[#F5F5DC] sm:text-2xl">Pembayaran</h3>
+            </div>
+
+            {paymentError && <div className="mb-5 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{paymentError}</div>}
+
+            {/* Panduan cara bayar — TODO: ganti nominal, tujuan transfer/nama merchant
+                QRIS, dan batas waktu di bawah sesuai info resmi panitia Anforcom */}
+            <div className="mb-6 rounded-2xl border border-[#EAB308]/20 bg-[#EAB308]/5 p-4 sm:p-5">
+              <h4 className="mb-2 flex items-center gap-2 text-sm font-bold text-[#EAB308]">
+                <FileText className="h-4 w-4" />
+                Panduan Cara Bayar
+              </h4>
+              <ol className="list-decimal space-y-1.5 pl-5 text-sm text-[#F5F5DC]/70">
+                <li>Bayar biaya registrasi lewat QRIS di bawah.</li>
+                <li>Simpan bukti pembayaran (screenshot/foto struk transfer atau screenshot QRIS berhasil).</li>
+                <li>Upload bukti itu lewat form "Upload Bukti Pembayaran" di bawah, per tim yang butuh bayar.</li>
+                <li>Tunggu panitia verifikasi — status akan berubah jadi <strong className="text-[#F5F5DC]">Terverifikasi</strong> setelah dicek.</li>
+              </ol>
+            </div>
+
+            {teams.length === 0 ? (
+              <p className="text-sm text-[#F5F5DC]/50">
+                Kamu belum punya tim. Buat tim dulu buat mulai proses pembayaran.
+              </p>
+            ) : (
+              <ul className="list-none flex flex-col gap-4">
+                {teams.map((t) => (
+                  <li key={t.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+                    <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+                      <span className="flex items-center gap-2 flex-wrap">
+                        <span className="text-lg leading-none">{LOMBA_INFO[t.tipe_lomba]?.emoji || '🏆'}</span>
+                        <span className="font-semibold text-[#F5F5DC]">{t.nama_tim}</span>
+                      </span>
+                      {/* Status pembayaran */}
+                      <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                        t.receipt
+                          ? 'bg-[#EAB308]/15 text-[#EAB308] border border-[#EAB308]/25'
+                          : 'bg-red-500/10 text-red-400 border border-red-400/25'
+                      }`}>
+                        {t.receipt ? 'Bukti Terupload — Menunggu Verifikasi Panitia' : 'Belum Upload Bukti'}
+                      </span>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row gap-5">
+                      {/* QR Bayar */}
+                      <div className="flex flex-col items-center gap-2 sm:w-52 shrink-0">
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-[#F5F5DC]/60">
+                          <QrCode className="h-3.5 w-3.5" />
+                          <span>Scan QRIS Buat Bayar</span>
+                        </div>
+                        {/* TODO: ganti src ini dengan gambar QRIS asli, taruh di frontend/public/ */}
+                        <div className="relative w-full max-w-[180px]">
+                          <img
+                            src="/qris-anforcom.png"
+                            alt="QRIS Pembayaran Anforcom"
+                            className="w-full rounded-xl border border-white/15 bg-white p-2"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setShowQrisModal(true)}
+                            title="Perbesar QRIS"
+                            className="absolute -right-2 -top-2 flex h-7 w-7 items-center justify-center rounded-full border border-white/15 bg-[#14532D] text-[#F5F5DC] shadow-md transition-all duration-200 hover:bg-[#EAB308] hover:text-[#14532D]"
+                          >
+                            <Maximize2 className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Upload / preview bukti pembayaran */}
+                      <div className="flex-1 min-w-0">
+                        <form onSubmit={(e) => handlePembayaranSubmit(e, t.id)}>
+                          <div className="mb-3">
+                            <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#F5F5DC]/50">
+                              Upload Bukti Pembayaran
+                            </label>
+                            <input
+                              type="file"
+                              accept="application/pdf,image/jpeg,image/png,image/webp"
+                              onChange={(e) => setPaymentFile(e.target.files?.[0] || null)}
+                              required
+                              className="w-full text-sm text-[#F5F5DC]/70 file:mr-3 file:rounded-full file:border file:border-white/15 file:bg-white/[0.06] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-[#F5F5DC]/80 file:transition-all hover:file:border-[#EAB308]/40 hover:file:text-[#EAB308] file:cursor-pointer"
+                            />
+                            <small className="text-xs text-[#F5F5DC]/40 mt-1 block">Format PDF/JPG/PNG/WEBP, maks 10MB.</small>
+                          </div>
+                          <div className="flex gap-2 flex-wrap">
+                            <button type="submit" className="rounded-full bg-[#EAB308] px-5 py-2 text-xs font-bold text-[#14532D] shadow-lg shadow-[#EAB308]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#FACC15] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0" disabled={paymentUploading}>
+                              {paymentUploading ? 'Mengupload...' : 'Upload Bukti'}
+                            </button>
+                            {t.receipt && (
+                              <button
+                                type="button"
+                                className="rounded-full border border-white/15 bg-white/[0.06] px-4 py-2 text-xs font-semibold text-[#F5F5DC]/80 transition-all hover:border-[#EAB308]/40 hover:text-[#EAB308]"
+                                onClick={() => setViewingPembayaranTeamId(viewingPembayaranTeamId === t.id ? null : t.id)}
+                              >
+                                {viewingPembayaranTeamId === t.id ? 'Sembunyikan Preview' : 'Lihat Bukti'}
+                              </button>
+                            )}
+                            {t.receipt && (
+                              <button
+                                type="button"
+                                className="rounded-full border border-red-400/30 bg-red-500/10 px-4 py-2 text-xs font-semibold text-red-300 transition-all hover:border-red-400/60 hover:bg-red-500/20"
+                                onClick={() => handleDeletePembayaran(t.id)}
+                              >
+                                Hapus Bukti
+                              </button>
+                            )}
+                          </div>
+                        </form>
+
+                        {viewingPembayaranTeamId === t.id && t.receipt && (
+                          <div className="mt-4">
+                            {t.receipt.toLowerCase().endsWith('.pdf') ? (
+                              <embed
+                                src={teamAPI.getPembayaranUrl(t.receipt)}
+                                type="application/pdf"
+                                style={{ width: '100%', height: '480px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}
+                              />
+                            ) : (
+                              <img
+                                src={teamAPI.getPembayaranUrl(t.receipt)}
+                                alt={`Bukti pembayaran ${t.nama_tim}`}
+                                className="max-h-[480px] w-auto rounded-xl border border-white/10"
+                              />
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          )}
         </main>
       </div>
+
+      {/* ── Modal perbesar QRIS ── */}
+      {showQrisModal && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4"
+          onClick={() => setShowQrisModal(false)}
+        >
+          <div className="relative max-w-sm" onClick={(e) => e.stopPropagation()}>
+            <button
+              type="button"
+              onClick={() => setShowQrisModal(false)}
+              title="Tutup"
+              className="absolute -right-3 -top-3 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-[#14532D] text-[#F5F5DC] shadow-lg transition-all duration-200 hover:bg-[#EAB308] hover:text-[#14532D]"
+            >
+              <X className="h-4 w-4" />
+            </button>
+            <img
+              src="/qris-anforcom.png"
+              alt="QRIS Pembayaran Anforcom (perbesar)"
+              className="w-full rounded-2xl border border-white/15 bg-white p-4 shadow-2xl"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -79,7 +79,7 @@ export class router {
         if(!route) return this.notFound;
         //url == "/user/me" || 
         if(Bun.env.DEVELOPER_MODE === 'false'){
-            if (url == "/user/me"|| url == "/user/edit" || url == "/teams/edit_user_team" || url == "/teams/delete_user_team" || url == "/teams/delete_team" || url == "/teams/create_team" || url == "/teams/add_user_team" || url == "/teams/add_proposal" || url == "/teams/delete_proposal" || url == "/user/ping"){
+            if (url == "/user/me"|| url == "/user/edit" || url == "/teams/edit_user_team" || url == "/teams/delete_user_team" || url == "/teams/delete_team" || url == "/teams/create_team" || url == "/teams/add_user_team" || url == "/teams/add_proposal" || url == "/teams/delete_proposal" || url == "/user/ping" || url == "/teams/pembayaran/upload_pembayaran" || url == "/teams/pembayaran/delete_pembayaran"){
                 if (!verifyCSRF(req)) {
                     return Response.json({ success: false, message: "Invalid CSRF token" }, { status: 403 });
                 }

@@ -200,19 +200,32 @@ export default function NavBar({ user, checkingSession }) {
                 <span>→</span>
               </Link>
             ) : (
-              <Link
-                to="/register"
-                className="
-                  inline-flex items-center gap-1.5 rounded-full
-                  bg-[#EAB308] px-6 py-2 text-sm font-semibold text-[#14532D]
-                  transition-all duration-200
-                  hover:-translate-y-0.5 hover:bg-[#FACC15] hover:shadow-lg hover:shadow-[#EAB308]/25
-                  focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EAB308] focus-visible:ring-offset-2 focus-visible:ring-offset-[#14532D]
-                "
-              >
-                Daftar Sekarang
-                <span className="text-base">→</span>
-              </Link>
+              <>
+                <Link
+                  to="/login"
+                  className="
+                    text-sm font-semibold text-[#F5F5DC]/80
+                    transition-colors duration-200
+                    hover:text-[#EAB308]
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EAB308] focus-visible:ring-offset-2 focus-visible:ring-offset-[#14532D] rounded-md px-2 py-1
+                  "
+                >
+                  Masuk
+                </Link>
+                <Link
+                  to="/register"
+                  className="
+                    inline-flex items-center gap-1.5 rounded-full
+                    bg-[#EAB308] px-6 py-2 text-sm font-semibold text-[#14532D]
+                    transition-all duration-200
+                    hover:-translate-y-0.5 hover:bg-[#FACC15] hover:shadow-lg hover:shadow-[#EAB308]/25
+                    focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EAB308] focus-visible:ring-offset-2 focus-visible:ring-offset-[#14532D]
+                  "
+                >
+                  Daftar Sekarang
+                  <span className="text-base">→</span>
+                </Link>
+              </>
             )}
           </div>
 
@@ -329,19 +342,33 @@ export default function NavBar({ user, checkingSession }) {
                   {user.username} → Dashboard
                 </Link>
               ) : (
-                <Link
-                  to="/register"
-                  className="
-                    flex items-center justify-center gap-1.5 rounded-full
-                    bg-[#EAB308] px-4 py-3 text-sm font-semibold text-[#14532D]
-                    transition-all duration-200 hover:bg-[#FACC15]
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EAB308] focus-visible:ring-offset-2 focus-visible:ring-offset-[#14532D]
-                  "
-                  onClick={() => setMobileOpen(false)}
-                >
-                  Daftar Sekarang
-                  <span className="text-base">→</span>
-                </Link>
+                <div className="flex gap-2">
+                  <Link
+                    to="/login"
+                    className="
+                      flex flex-1 items-center justify-center gap-1.5 rounded-full
+                      border border-white/15 px-4 py-3 text-sm font-semibold text-[#F5F5DC]/80
+                      transition-all duration-200 hover:border-[#EAB308]/40 hover:text-[#EAB308]
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EAB308] focus-visible:ring-offset-2 focus-visible:ring-offset-[#14532D]
+                    "
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Masuk
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="
+                      flex flex-1 items-center justify-center gap-1.5 rounded-full
+                      bg-[#EAB308] px-4 py-3 text-sm font-semibold text-[#14532D]
+                      transition-all duration-200 hover:bg-[#FACC15]
+                      focus:outline-none focus-visible:ring-2 focus-visible:ring-[#EAB308] focus-visible:ring-offset-2 focus-visible:ring-offset-[#14532D]
+                    "
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Daftar Sekarang
+                    <span className="text-base">→</span>
+                  </Link>
+                </div>
               )}
             </div>
           </div>
@@ -350,4 +377,3 @@ export default function NavBar({ user, checkingSession }) {
     </div>
   );
 }
-
