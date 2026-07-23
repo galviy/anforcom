@@ -33,9 +33,12 @@ export class Server {
 
     const ip = this.getClientIP(req, server);
     //console.log(ip)
-    if (!this.limiter.isAllowed(ip)) {
-      return new Response(null, { status: 429 });
+    if(Bun.env.using_rate_limit == "true"){
+      if (!this.limiter.isAllowed(ip)) {
+        return new Response(null, { status: 429 });
+      }
     }
+   
 
     if (pathname.startsWith("/api/"))
       return this.router.handle(req, pathname, server);
