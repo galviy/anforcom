@@ -353,6 +353,51 @@ export const teamAPI = {
   // URL PDF proposal tim, langsung dipakai sebagai src <embed>/<iframe> untuk preview.
   getProposalUrl: (filename) => `${API_BASE}/teams/view_proposal?id=${encodeURIComponent(filename)}`,
 
+  // Upload/ganti bukti pembayaran tim (foto/PDF struk transfer atau screenshot
+  // QRIS). Backend cuma terima 1 file aktif per tim (upload baru ditolak kalau
+  // masih ada yang lama, mesti dihapus dulu), tipe pdf/jpg/jpeg/png/webp, maks 10MB.
+  uploadPembayaran: async (timId, file) => {
+    const formData = new FormData();
+    formData.append('tim_id', timId);
+    formData.append('data_receipt', file);
+
+    const response = await fetch(`${API_BASE}/teams/pembayaran/upload_pembayaran`, {
+      method: 'POST',
+      headers: withCsrf(), // JANGAN tambah Content-Type manual, browser yang isi boundary-nya
+      body: formData,
+    });
+
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error(`HTTP ${response.status}: gagal membaca response`);
+    }
+
+    if (!response.ok) {
+      const err = new Error(data?.error || data?.message || `HTTP ${response.status}`);
+      err.status = response.status;
+      throw err;
+    }
+    if (data?.success === false) {
+      throw new Error(data.error || data.message || 'Gagal upload bukti pembayaran.');
+    }
+
+    return data; // { success:true, message, nama_file }
+  },
+
+  // URL bukti pembayaran, dipakai sebagai src <img>/<embed> untuk preview.
+  getPembayaranUrl: (filename) => `${API_BASE}/teams/pembayaran/view_pembayaran?id=${encodeURIComponent(filename)}`,
+
+  // Hapus bukti pembayaran yang sudah diupload (dibutuhkan sebelum bisa upload ulang).
+  deletePembayaran: (timId) => {
+    return fetch(`${API_BASE}/teams/pembayaran/delete_pembayaran`, {
+      method: 'POST',
+      headers: withCsrf({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ tim_id: timId }),
+    }).then(handleResponse);
+  },
+
   // Hapus proposal tim yang sudah diupload. Backend cuma izinin 1 proposal aktif
   // per tim (addProposal akan nolak upload baru kalau masih ada yang lama), jadi
   // ini jalan satu-satunya buat bisa upload ulang.

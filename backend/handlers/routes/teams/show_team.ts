@@ -46,8 +46,8 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     nama_tim: row.nama_tim,
     tipe_lomba: row.tim_lomba,
     isVerified: row.isVerified,
-    proposal: row.tim_lomba == 1 ? (row.data_proposal ?? "") : "",
-    receipt: row.tim_lomba == 1 ? (row.foto_qris ?? "") : "",
+    proposal: (row.tim_lomba == 1 || row.tim_lomba == 3) ? (row.data_proposal ?? "") : "",
+    receipt: row.foto_qris ?? "",
   }));
 
   return Response.json({ success: true, data: p }, { status: 200 });
