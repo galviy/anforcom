@@ -38,7 +38,7 @@ export async function handler(req: Request): Promise<Response> {
                 return Response.json({ success: false, error: "User blm upload file pembayaran??" }, { status: 404 });
             }
             const filepath = path.join(import.meta.dir,"../../../../data_pembayaran/");
-            const nama_file = Bun.file(filepath + `/${data.nama_proposal}`);
+            const nama_file = Bun.file(filepath + `/${data.foto_qris}`);
             const fileExists = await nama_file.exists();
             if (!fileExists) {
                 return new Response("Internal corruption??", { status: 500 });
@@ -52,8 +52,8 @@ export async function handler(req: Request): Promise<Response> {
             if (!data || !data.foto_pernyataan || data.foto_pernyataan === 'Belum Upload') {
                 return Response.json({ success: false, error: "User blm upload surat pernyataan??" }, { status: 404 });
             }
-            const filepath = path.join("../../../../data_pembayaran/", data.foto_pernyataan);
-            const file = Bun.file(filepath);
+            const filepath = path.join(import.meta.dir, "../../../../data_pernyataan/");
+            const file = Bun.file(filepath + `/${data.foto_pernyataan}`);
             if (!(await file.exists())) {
                 return Response.json({ success: false, message: "Tidak ketemu??" }, { status: 404 });
             }
