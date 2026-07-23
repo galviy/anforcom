@@ -1,5 +1,5 @@
 import path from 'path'
-import {session_handler} from "./middleware"
+import {session_handler, isAdminToken} from "./middleware"
 import { parseCookie,verifyCSRF } from './cookies'
 
 const ROOT = path.join(import.meta.dir)
@@ -32,6 +32,21 @@ import * as up_pernyataan from "./routes/teams/pernyataan/upload_pernyataan"
 import * as del_pernyataan from "./routes/teams/pernyataan/delete_pernyataan"
 import * as view_pernyataan from "./routes/teams/pernyataan/view_pernyataan"
 
+
+/* admin boy */
+
+import * as bukti_p from "./routes/admin/bukti"
+import * as pembayaran from "./routes/admin/pembayaran"
+import * as pernyataan from "./routes/admin/pernyataan"
+import * as proposal from "./routes/admin/proposal"
+import * as semua_tim from "./routes/admin/semua_tim"
+import * as tim_detail from "./routes/admin/tim_detail"
+
+
+/* Public file anjay*/
+
+import * as panitia_akses from "./routes/panitia_akses"
+
 const rutercoy = new Map([
     ['/auth/login', login],
     ['/auth/create_account',c_acc],
@@ -60,7 +75,17 @@ const rutercoy = new Map([
     ['/teams/pembayaran/view_pembayaran',view_pembayaran],
     ['/teams/pernyataan/upload_pernyataan',up_pernyataan],
     ['/teams/pembayaran/delete_pernyataan',del_pernyataan],
-    ['/teams/pembayaran/view_pernyataan',view_pernyataan]
+    ['/teams/pembayaran/view_pernyataan',view_pernyataan],
+
+
+    ['/admin/bukti', bukti_p],
+    ['/admin/pembayaran', pembayaran],
+    ['/admin/pernyataan', pernyataan],
+    ['/admin/proposal', proposal],
+    ['/admin/semua_tim', semua_tim],
+    ['/admin/tim_detail', tim_detail],
+
+    ['/panitia_akses',panitia_akses]
 ])
 
 import {logger} from "../logger"
@@ -80,16 +105,11 @@ export class router {
     async handle(req: Request,pathname: string,server: Bun.Server<any>): Promise<Response> {
         let url = pathname.replace("/api", "");
         if (!url) return this.notFound;
+        console.log(url)
         let route = rutercoy.get(url) 
         
 
         if(!route) return this.notFound;
-        //url == "/user/me" || 
-        /*
-         ['/teams/pernyataan/upload_pernyataan',up_pernyataan],
-    ['/teams/pembayaran/delete_pernyataan',del_pernyataan],
-    ['/teams/pembayaran/view_pernyataan',view_pernyataan]
-        */
         if(Bun.env.DEVELOPER_MODE === 'false'){
             if (url == "/teams/pembayaran/view_pernyataan" || url == "/teams/pembayaran/delete_pernyataan" || url == "/teams/pernyataan/upload_pernyataan" || url == "/user/me"|| url == "/user/edit" || url == "/teams/edit_user_team" || url == "/teams/delete_user_team" || url == "/teams/delete_team" || url == "/teams/create_team" || url == "/teams/add_user_team" || url == "/teams/add_proposal" || url == "/teams/delete_proposal" || url == "/user/ping"){
                 if (!verifyCSRF(req)) {
@@ -98,8 +118,7 @@ export class router {
             }
         }   
         
-        if (url == '/auth/login' || url == '/auth/create_account' || url == '/auth/verification' || url == '/auth/reset_password' || url == '/auth/reset_confirmation' || url == '/auth/resend_verification' || url == '/auth/resend_verification_by_token'){
-           
+        if (url == "/panitia_akses" || url == '/auth/login' || url == '/auth/create_account' || url == '/auth/verification' || url == '/auth/reset_password' || url == '/auth/reset_confirmation' || url == '/auth/resend_verification' || url == '/auth/resend_verification_by_token'){
            return route.handler(req,  "ok");
         }
         const cookieHeader = req.headers.get('cookie')
@@ -109,6 +128,15 @@ export class router {
         const raw = parseCookie(cookieHeader)?.session
         if (!raw) {
             return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
+        }
+        console.log(url)
+        if (url == '/admin/bukti' || url == "/admin/pembayaran" || url == "/admin/pernyataan" || url == "/admin/proposal" || url == "/admin/semua_tim" || url == "/admin/tim_detail"){
+            console.log("masuk")
+            let cekadminboy = await isAdminToken(raw);
+            if (!cekadminboy) {
+                return Response.json({ success: false, error: "nani?" }, { status: 401 })
+            }
+            return route.handler(req,  "ok");
         }
 
         let json = await session_handler(raw);

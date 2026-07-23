@@ -1,5 +1,13 @@
 import { decryptCookie } from './cookies'
 
+
+export async function isAdminToken(raw: string): Promise<boolean> {
+  if (!raw || raw !== Bun.env.Secret_token) {
+    return false;
+  }
+  return true;
+}
+
 export async function session_handler(raw:string){
     if (!raw) {
         return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
@@ -16,7 +24,7 @@ export async function session_handler(raw:string){
         return json;
 
     } catch(e){
-        console.error(e)
+        //console.error(e)
         return Response.json({success:false,error: "Session tidak valid"}, {status: 401})
     }
 }
@@ -58,7 +66,7 @@ export async function session_handler(raw:string){
 
     if (data.count > this.maxRequest) {
       data.blockedUntil = now + this.blockDuration;
-      console.log(`${ip} kena blokir ${this.blockDuration / 60000} menit!`);
+      //console.log(`${ip} kena blokir ${this.blockDuration / 60000} menit!`);
       return false;
     }
 
