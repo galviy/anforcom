@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import heroBg from '../../../assets/HERO_bg.jpg';
 import RegistrationCountdown from '../RegistrationCountdown';
 
-const HEADING_LINE_1 = 'RANCANG. PECAHKAN.';
-const HEADING_LINE_2 = 'NAIK PAPAN PERINGKAT.';
+const HEADING_LINE_1 = 'CREATE. COMPETE.';
+const HEADING_LINE_2 = 'ELEVATE.';
 
 export default function Hero() {
   const heroRef = useRef(null);

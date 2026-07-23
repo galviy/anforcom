@@ -4,7 +4,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import { ChevronLeft, ChevronRight, MonitorSmartphone, TerminalSquare, Code2 } from 'lucide-react';
 
 const TITLE_PART_1 = 'Pick Your ';
-const TITLE_PART_2 = 'Game!';
+const TITLE_PART_2 = 'Challenge!';
 
 const COMPETITIONS = [
   {
