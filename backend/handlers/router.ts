@@ -41,6 +41,7 @@ import * as pernyataan from "./routes/admin/pernyataan"
 import * as proposal from "./routes/admin/proposal"
 import * as semua_tim from "./routes/admin/semua_tim"
 import * as tim_detail from "./routes/admin/tim_detail"
+import * as delete_tim from "./routes/admin/delete_tim"
 
 
 /* Public file anjay*/
@@ -84,6 +85,7 @@ const rutercoy = new Map([
     ['/admin/proposal', proposal],
     ['/admin/semua_tim', semua_tim],
     ['/admin/tim_detail', tim_detail],
+    ['/admin/delete_tim',delete_tim],
 
     ['/panitia_akses',panitia_akses]
 ])
@@ -111,6 +113,7 @@ export class router {
 
         if(!route) return this.notFound;
         if(Bun.env.DEVELOPER_MODE === 'false'){
+            /*CSRF Handler*/
             if (url == "/teams/pembayaran/view_pernyataan" || url == "/teams/pembayaran/delete_pernyataan" || url == "/teams/pernyataan/upload_pernyataan" || url == "/user/me"|| url == "/user/edit" || url == "/teams/edit_user_team" || url == "/teams/delete_user_team" || url == "/teams/delete_team" || url == "/teams/create_team" || url == "/teams/add_user_team" || url == "/teams/add_proposal" || url == "/teams/delete_proposal" || url == "/user/ping"){
                 if (!verifyCSRF(req)) {
                     return Response.json({ success: false, message: "Invalid CSRF token" }, { status: 403 });
@@ -118,6 +121,7 @@ export class router {
             }
         }   
         
+        /* Endpoint public */
         if (url == "/panitia_akses" || url == '/auth/login' || url == '/auth/create_account' || url == '/auth/verification' || url == '/auth/reset_password' || url == '/auth/reset_confirmation' || url == '/auth/resend_verification' || url == '/auth/resend_verification_by_token'){
            return route.handler(req,  "ok");
         }
@@ -129,8 +133,9 @@ export class router {
         if (!raw) {
             return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
         }
-        console.log(url)
-        if (url == '/admin/bukti' || url == "/admin/pembayaran" || url == "/admin/pernyataan" || url == "/admin/proposal" || url == "/admin/semua_tim" || url == "/admin/tim_detail"){
+        /* admin akses, hanya lewat discord bot*/
+
+        if (url == "/admin/delete_tim" || url == '/admin/bukti' || url == "/admin/pembayaran" || url == "/admin/pernyataan" || url == "/admin/proposal" || url == "/admin/semua_tim" || url == "/admin/tim_detail"){
             console.log("masuk")
             let cekadminboy = await isAdminToken(raw);
             if (!cekadminboy) {
