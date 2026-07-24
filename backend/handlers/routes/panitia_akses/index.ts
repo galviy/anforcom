@@ -23,6 +23,9 @@ export async function handler(req: Request): Promise<Response> {
     switch (file_type) {
         case "proposal": {
             const cari = await adminRepo.show_data_proposal_tim(tim_id);
+             if (!cari || cari.length === 0) {
+                return Response.json({ success: false, message: "Data proposal tidak ditemukan" },{ status: 404 });
+            }
             const data = cari[0];
             if (!data || !data.nama_proposal || data.nama_proposal === 'Belum Upload') {
                 return Response.json({ success: false, error: "User belum upload proposal??" }, { status: 404 });
@@ -38,6 +41,9 @@ export async function handler(req: Request): Promise<Response> {
 
         case "pembayaran": {
             const cari = await adminRepo.show_data_pembayaran_tim(tim_id);
+            if (!cari || cari.length === 0) {
+                return Response.json({ success: false, message: "Foto pembayaran tidak ditemukan" },{ status: 404 });
+            }
             const data = cari[0];
             
             if (!data || !data.foto_qris || data.foto_qris === 'Belum Upload') {
@@ -54,6 +60,9 @@ export async function handler(req: Request): Promise<Response> {
 
         case "pernyataan": {
             const cari = await adminRepo.show_data_pernyataan_tim(tim_id);
+            if (!cari || cari.length === 0) {
+                return Response.json({ success: false, message: "Surat pernyataan tidak ditemukan" },{ status: 404 });
+            }
             const data = cari[0];
             if (!data || !data.foto_pernyataan || data.foto_pernyataan === 'Belum Upload') {
                 return Response.json({ success: false, error: "User blm upload surat pernyataan??" }, { status: 404 });
@@ -70,6 +79,9 @@ export async function handler(req: Request): Promise<Response> {
             const no_induk = url.searchParams.get('no_induk');
             if(!tim_id || !no_induk) return Response.json({ success: false, message: "Butuh nomor induk dan tim id??" }, { status: 404 });
             const cari = await adminRepo.show_ktm(tim_id.toLocaleString(),no_induk)
+            if (!cari || cari.length === 0) {
+                return Response.json({ success: false, message: "Data KTM tidak ditemukan" },{ status: 404 });
+            }
             let data_image = cari[0].data_image
             if(!data_image) return Response.json({ success: false, message: "Tidak ketemu??" }, { status: 404 });
             const filepath = path.join(import.meta.dir, "../../../../data_ktm/");
