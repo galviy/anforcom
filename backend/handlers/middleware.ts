@@ -8,6 +8,29 @@ export async function isAdminToken(raw: string): Promise<boolean> {
   return true;
 }
 
+
+export async function panitia_token(raw:string){
+   if (!raw) {
+        return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
+    }
+    try {
+      let decrypted = await decryptCookie(raw)
+      if (!decrypted) {
+        return false
+      }
+      let json = JSON.parse(decrypted);
+      if(!json.valid_until && !json.is_panitia){
+        return false;
+      }
+      if (Math.floor(Date.now() / 1000) > json.valid_until){
+        return false;
+      }
+      return true;
+    } catch(e){
+       return false
+    }
+}
+
 export async function session_handler(raw:string){
     if (!raw) {
         return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })

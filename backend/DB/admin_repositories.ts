@@ -172,4 +172,11 @@ export class administrator{
         `);
         return rows;
     }
+
+    async show_ktm(tim_id:string,nomor_induk:string){
+        const rows = await db.query(`
+             select data_image from isi_tim where tim_id = ? and nomor_induk = ?;
+        `,[tim_id,nomor_induk])
+        return rows
+    }
 }

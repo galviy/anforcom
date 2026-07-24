@@ -1,5 +1,6 @@
 // routes/panitia/file.ts
 import { administrator } from "../../../DB/admin_repositories";
+import {panitia_token} from "../../middleware"
 import path from 'path';
 const adminRepo = new administrator();
 
@@ -9,10 +10,15 @@ export async function handler(req: Request): Promise<Response> {
     const url = new URL(req.url);
     const tim_id = Number(url.searchParams.get('tim_id'));
     const file_type = url.searchParams.get('file_type');
+    const token = url.searchParams.get('token');
 
-    if (!tim_id || !file_type) {
+
+    if (!tim_id || !file_type || !token) {
         return Response.json({ success: false, error: "Invalid data struct??" }, { status: 400 });
     }
+    let cek = await panitia_token(token);
+    if(!cek) return Response.json({ success: false, error: "Invalid or expired??" }, { status: 400 });
+
 
     switch (file_type) {
         case "proposal": {
@@ -58,7 +64,22 @@ export async function handler(req: Request): Promise<Response> {
                 return Response.json({ success: false, message: "Tidak ketemu??" }, { status: 404 });
             }
             return new Response(file);
-        }
+        } break;
+
+        case "ktm":{
+            const no_induk = url.searchParams.get('no_induk');
+            if(!tim_id || !no_induk) return Response.json({ success: false, message: "Butuh nomor induk dan tim id??" }, { status: 404 });
+            const cari = await adminRepo.show_ktm(tim_id.toLocaleString(),no_induk)
+            let data_image = cari[0].data_image
+            if(!data_image) return Response.json({ success: false, message: "Tidak ketemu??" }, { status: 404 });
+            const filepath = path.join(import.meta.dir, "../../../../data_ktm/");
+            const file = Bun.file(filepath + `/${data_image}`);
+
+            if (!(await file.exists())) {
+                return Response.json({ success: false, message: "Tidak ketemu??" }, { status: 404 });
+            }
+                 return new Response(file);
+        } break;
 
         default: {
             return Response.json({ success: false, error: "unavailable file_type??" }, { status: 401 });
