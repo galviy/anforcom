@@ -39,7 +39,7 @@ export class emailRepositories{
   }
 
   async sendEmailVerifikasiBerhasil(emailName: string,tipeLomba: string) {
-    await email.send({to:emailName,subject: `Pendaftaran ${tipeLomba} Berhasil Diverifikasi`,
+    const p = await email.send({to:emailName,subject: `Pendaftaran ${tipeLomba} Berhasil Diverifikasi`,
         html: `
           <!DOCTYPE html>
           <html lang="id">
@@ -183,6 +183,8 @@ export class emailRepositories{
           </body>
           </html>
       `,
+      
     });
+    return p
   }
 }

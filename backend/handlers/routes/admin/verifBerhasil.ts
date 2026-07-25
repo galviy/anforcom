@@ -22,17 +22,17 @@ export async function handler(req: Request, json?: any): Promise<Response> {
 
   switch(parseInt(lomba_id)){
     case 1:{
-         const p = await emailrepo.sendResetAccountVerification(email,"Diponegoro UI/UX Competition (DUC)")
+         const p = await emailrepo.sendEmailVerifikasiBerhasil(email,"Diponegoro UI/UX Competition (DUC)")
          console.log(p)
     } break
 
     case 2:{
-         const p = await emailrepo.sendResetAccountVerification(email,"Diponegoro Competitive Programming Competition (DCPC)")
+         const p = await emailrepo.sendEmailVerifikasiBerhasil(email,"Diponegoro Competitive Programming Competition (DCPC)")
          console.log(p)
     } break;
 
     case 3:{
-        const p = await emailrepo.sendResetAccountVerification(email,"Diponegoro Software Development Competition (DSPC)")
+        const p = await emailrepo.sendEmailVerifikasiBerhasil(email,"Diponegoro Software Development Competition (DSPC)")
         console.log(p)
     } break;
     default:{{
