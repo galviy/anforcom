@@ -136,8 +136,7 @@ export class router {
             return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
         }
         /* admin akses, hanya lewat discord bot*/
-        console.log(url)
-        if (url == "/admin/verif_tim" || url == "/admin/delete_tim" || url == '/admin/bukti' || url == "/admin/pembayaran" || url == "/admin/pernyataan" || url == "/admin/proposal" || url == "/admin/semua_tim" || url == "/admin/tim_detail"){
+        if (url == "/admin/verifBerhasil" || url == "/admin/delete_tim" || url == '/admin/bukti' || url == "/admin/pembayaran" || url == "/admin/pernyataan" || url == "/admin/proposal" || url == "/admin/semua_tim" || url == "/admin/tim_detail"){
             console.log("masuk")
             let cekadminboy = await isAdminToken(raw);
             if (!cekadminboy) {
