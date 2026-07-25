@@ -3,6 +3,7 @@ import {emailRepositories} from "../../../email/repositories"
 const adminRepo = new TeamRepository()
 const emailrepo = new emailRepositories()
 
+
 export async function handler(req: Request, json?: any): Promise<Response> {
   
    if (req.method != 'POST')  return new Response(null, {status:404});
@@ -19,26 +20,28 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   let email = result2[0].email
   let lomba_id = result2[0].tim_lomba
   if(!email || !lomba_id  )return Response.json({ success: false, error: `tidak menemukan email dengan id tim ${tim_id}??` }, { status: 401 })
-
+  let jawaban;
   switch(parseInt(lomba_id)){
     case 1:{
          const p = await emailrepo.sendEmailVerifikasiBerhasil(email,"Diponegoro UI/UX Competition (DUC)")
-         console.log(p)
+         jawaban = p.messageId
     } break
 
     case 2:{
          const p = await emailrepo.sendEmailVerifikasiBerhasil(email,"Diponegoro Competitive Programming Competition (DCPC)")
-         console.log(p)
+         jawaban = p.messageId
     } break;
 
     case 3:{
         const p = await emailrepo.sendEmailVerifikasiBerhasil(email,"Diponegoro Software Development Competition (DSPC)")
-        console.log(p)
+        jawaban = p.messageId
     } break;
     default:{{
         
     }}
   }
+  const gantiStatus = await adminRepo.verify_team(tim_id)
+  if(jawaban != null ) return Response.json({ success: true, message: `${jawaban}`}, { status: 200 })
  
   return Response.json({ success: true }, { status: 200 })
 

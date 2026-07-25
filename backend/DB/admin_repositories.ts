@@ -35,6 +35,16 @@ export class administrator{
         return rows;
     }
 
+    async verify_team(timId:number){
+        const rows = await db.query(`
+            update 
+            from tim 
+            set isVerified = 1;
+            where id = ?
+        `, [timId])
+        return rows;
+    }
+
     async cek_bukti(){
         const rows = await db.query(`
             SELECT 

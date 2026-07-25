@@ -74,7 +74,7 @@ export class emailRepositories{
           Pendaftaran <span style="color:#EAB308;">Berhasil</span>
           </h1>
           <p style="margin:0;font-size:15px;color:#BBF7D0;">
-          Selamat datang di ANFORCOM 2026 👋
+          Selamat datang di ANFORCOM 2026 
           </p>
           </td>
           </tr>
@@ -118,7 +118,7 @@ export class emailRepositories{
           <tr>
           <td style="padding:18px 20px;">
           <p style="margin:0;font-size:15px;font-weight:bold;color:#EAB308;">
-          📌 Perhatian
+          Perhatian!!
           </p>
           <p style="margin:10px 0 0;color:#E3D5A3;line-height:1.8;font-size:14px;">
           Apabila kategori lomba yang Anda ikuti <strong style="color:#ffffff;">memerlukan proposal</strong>,

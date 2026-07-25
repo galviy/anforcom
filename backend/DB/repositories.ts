@@ -10,6 +10,16 @@ export class TeamRepository{
     private folder_upload_pembayaran: string = path.join(import.meta.dir, "../../data_pembayaran")
     private folder_upload_pernyataan: string = path.join(import.meta.dir, "../../data_persetujuan")
 
+     async verify_team(timId:number){
+        const rows = await db.query(`
+            update 
+            from tim 
+            set isVerified = 1;
+            where id = ?
+        `, [timId])
+        return rows;
+    }
+    
     async check_file_pernyataan_sesuai(IdUser:number,nama_file:string){
          const conn = await db.getConnection();
         try {
