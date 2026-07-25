@@ -42,6 +42,7 @@ import * as proposal from "./routes/admin/proposal"
 import * as semua_tim from "./routes/admin/semua_tim"
 import * as tim_detail from "./routes/admin/tim_detail"
 import * as delete_tim from "./routes/admin/delete_tim"
+import * as verif_tim from "./routes/admin/verifBerhasil"
 
 
 /* Public file anjay*/
@@ -86,6 +87,7 @@ const rutercoy = new Map([
     ['/admin/semua_tim', semua_tim],
     ['/admin/tim_detail', tim_detail],
     ['/admin/delete_tim', delete_tim],
+    ['/admin/verifBerhasil',verif_tim],
 
     ['/panitia_akses',panitia_akses]
 ])
@@ -110,7 +112,7 @@ export class router {
        
         let route = rutercoy.get(url) 
         
-        console.log(req)
+        //console.log(req)
         if(!route) return this.notFound;
         if(Bun.env.DEVELOPER_MODE === 'false'){
             /*CSRF Handler*/
@@ -135,7 +137,7 @@ export class router {
         }
         /* admin akses, hanya lewat discord bot*/
         
-        if (url == "/admin/delete_tim" || url == '/admin/bukti' || url == "/admin/pembayaran" || url == "/admin/pernyataan" || url == "/admin/proposal" || url == "/admin/semua_tim" || url == "/admin/tim_detail"){
+        if (url == "/admin/verif_tim" || url == "/admin/delete_tim" || url == '/admin/bukti' || url == "/admin/pembayaran" || url == "/admin/pernyataan" || url == "/admin/proposal" || url == "/admin/semua_tim" || url == "/admin/tim_detail"){
             console.log("masuk")
             let cekadminboy = await isAdminToken(raw);
             if (!cekadminboy) {
