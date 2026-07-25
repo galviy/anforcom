@@ -85,7 +85,7 @@ const rutercoy = new Map([
     ['/admin/proposal', proposal],
     ['/admin/semua_tim', semua_tim],
     ['/admin/tim_detail', tim_detail],
-    ['/admin/delete_tim',delete_tim],
+    ['/admin/delete_tim', delete_tim],
 
     ['/panitia_akses',panitia_akses]
 ])
@@ -107,10 +107,10 @@ export class router {
     async handle(req: Request,pathname: string,server: Bun.Server<any>): Promise<Response> {
         let url = pathname.replace("/api", "");
         if (!url) return this.notFound;
-        console.log(url)
+       
         let route = rutercoy.get(url) 
         
-
+        console.log(req)
         if(!route) return this.notFound;
         if(Bun.env.DEVELOPER_MODE === 'false'){
             /*CSRF Handler*/
@@ -134,7 +134,7 @@ export class router {
             return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
         }
         /* admin akses, hanya lewat discord bot*/
-
+        
         if (url == "/admin/delete_tim" || url == '/admin/bukti' || url == "/admin/pembayaran" || url == "/admin/pernyataan" || url == "/admin/proposal" || url == "/admin/semua_tim" || url == "/admin/tim_detail"){
             console.log("masuk")
             let cekadminboy = await isAdminToken(raw);

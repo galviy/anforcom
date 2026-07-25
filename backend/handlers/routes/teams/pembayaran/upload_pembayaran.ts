@@ -1,6 +1,7 @@
 import {TeamRepository} from "../../../../DB/repositories"
 
 const authRepo = new TeamRepository()
+import {logger} from "../../../../logger"
 
 const allowedTypes = new Set([
   "application/pdf",
@@ -56,7 +57,10 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     let nama_file = `${crypto.randomUUID()}.${ext}`;
     let up_receipt = await authRepo.upload_pembayaran(tim_id,receipt,nama_file)
     if (up_receipt.success) {
-        return Response.json({ success: true, message: `Uploaded ${receipt.name} with size of ${ukuran_receipt}`, nama_file: `${nama_file}` }, { status: 200 });
+      void logger.sendWebhook(`tim_id: ${tim_id}\nUkuran receipt: ${ukuran_receipt} MB\nnama_file: \`${nama_file}\``,Bun.env.pembayaran_logs).catch(err => {
+        console.error(err);
+      });
+      return Response.json({ success: true, message: `Uploaded ${receipt.name} with size of ${ukuran_receipt}`, nama_file: `${nama_file}` }, { status: 200 });
     }
     return Response.json(up_receipt)
   }
