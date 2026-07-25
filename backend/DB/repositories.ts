@@ -12,14 +12,13 @@ export class TeamRepository{
 
      async verify_team(timId:number){
         const rows = await db.query(`
-            update 
-            from tim 
-            set isVerified = 1;
-            where id = ?
+            UPDATE tim 
+            SET isVerified = 1
+            WHERE id = ?;
         `, [timId])
         return rows;
     }
-    
+
     async check_file_pernyataan_sesuai(IdUser:number,nama_file:string){
          const conn = await db.getConnection();
         try {
