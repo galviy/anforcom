@@ -671,6 +671,17 @@ export class TeamRepository{
             message: `Successfully changed nama_lengkap to ${namaBaru}`
         };
     }
+    async getEmailName(IdTeam: number){
+         const sql = `
+            select email
+            from tim t 
+            join user_tim ut on t.id = ut.tim_id 
+            join user u on ut.user_id = u.id
+            where tim_id = ?;
+        `;
+        return await db.query(sql,[IdTeam]);
+
+    }
     async deleteTeam(IdTeam: number) {
         const conn = await db.getConnection();
         try {
