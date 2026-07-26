@@ -682,7 +682,7 @@ export class TeamRepository{
     }
     async getEmailName(IdTeam: number){
          const sql = `
-            select email,tim_lomba
+            select email,tim_lomba,nama_tim
             from tim t 
             join user_tim ut on t.id = ut.tim_id 
             join user u on ut.user_id = u.id

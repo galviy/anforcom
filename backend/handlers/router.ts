@@ -43,6 +43,7 @@ import * as semua_tim from "./routes/admin/semua_tim"
 import * as tim_detail from "./routes/admin/tim_detail"
 import * as delete_tim from "./routes/admin/delete_tim"
 import * as verif_tim from "./routes/admin/verifBerhasil"
+import * as send_private_mail from "./routes/admin/send_private_mail"
 
 
 /* Public file anjay*/
@@ -88,6 +89,8 @@ const rutercoy = new Map([
     ['/admin/tim_detail', tim_detail],
     ['/admin/delete_tim', delete_tim],
     ['/admin/verifBerhasil',verif_tim],
+    ['/admin/send_private_mail',send_private_mail],
+
 
     ['/panitia_akses',panitia_akses]
 ])
@@ -136,7 +139,7 @@ export class router {
             return Response.json({ success: false, error: "Unauthorized" }, { status: 401 })
         }
         /* admin akses, hanya lewat discord bot*/
-        if (url == "/admin/verifBerhasil" || url == "/admin/delete_tim" || url == '/admin/bukti' || url == "/admin/pembayaran" || url == "/admin/pernyataan" || url == "/admin/proposal" || url == "/admin/semua_tim" || url == "/admin/tim_detail"){
+        if (url == "admin/send_private_mail" || url == "/admin/verifBerhasil" || url == "/admin/delete_tim" || url == '/admin/bukti' || url == "/admin/pembayaran" || url == "/admin/pernyataan" || url == "/admin/proposal" || url == "/admin/semua_tim" || url == "/admin/tim_detail"){
             console.log("masuk")
             let cekadminboy = await isAdminToken(raw);
             if (!cekadminboy) {

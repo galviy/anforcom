@@ -187,4 +187,158 @@ export class emailRepositories{
     });
     return p
   }
+  async sendEmailPengumuman(emailName: string,
+    params: {
+      subject: string;
+      title: string;           // judul besar di header, misal "Pengumuman Penting"
+      highlightWord?: string;  // kata yang di-highlight warna kuning di title, opsional
+      greetingName: string;    // nama penerima buat "Halo <nama>,"
+      message: string;         // isi pesan utama (bisa multi-paragraf, pisahkan pakai \n\n)
+      alertTitle?: string;     // judul box alert kuning, opsional
+      alertMessage?: string;   // isi box alert kuning, opsional
+      buttonText?: string;     // teks tombol, default "Buka Dashboard"
+      buttonUrl?: string;      // url tombol, default FRONTEND_URL
+    }
+  ) {
+    const {
+      subject,
+      title,
+      highlightWord = "",
+      greetingName,
+      message,
+      alertTitle,
+      alertMessage,
+      buttonText = "Buka Dashboard",
+      buttonUrl = FRONTEND_URL,
+    } = params;
+
+
+    const messageHtml = message
+      .split(/\n\s*\n/)
+      .map(
+        (para) => `
+          <p style="font-size:15px;line-height:1.8;color:#B7D9C2;margin:12px 0 0;">
+            ${para.trim().replace(/\n/g, "<br/>")}
+          </p>`
+      )
+      .join("");
+
+    const p = await email.send({
+      to: emailName,
+      subject,
+      html: `
+        <!DOCTYPE html>
+        <html lang="id">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>${title}</title>
+        </head>
+        <body style="margin:0;padding:0;background:#0b2818;font-family:Arial,Helvetica,sans-serif;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:40px 16px;">
+        <tr>
+        <td align="center">
+        <table role="presentation" width="620" cellpadding="0" cellspacing="0"
+        style="max-width:620px;background:#14532d;border-radius:20px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.06);">
+
+        <!-- HEADER -->
+        <tr>
+        <td align="center" style="background:linear-gradient(180deg,#183f26 0%,#14532d 100%);padding:40px 30px 30px;border-bottom:1px solid rgba(255,255,255,.08);">
+        <table role="presentation" cellpadding="0" cellspacing="0">
+        <tr>
+        <td style="font-size:13px;letter-spacing:2px;color:#EAB308;font-weight:bold;text-transform:uppercase;padding-bottom:14px;">
+        ANFORCOM <span style="color:#ffffff;">2026</span>
+        </td>
+        </tr>
+        </table>
+        <img
+        src="https://app.anforcom.com/assets/HERO_mascot-CBwIzS76.PNG"
+        alt="ANFORCOM Mascot"
+        width="140"
+        style="display:block;margin:0 auto 20px;filter:drop-shadow(0 0 18px rgba(234,179,8,.35));">
+        <h1 style="margin:0 0 8px;font-size:28px;color:#ffffff;font-weight:bold;">
+        ${title}${highlightWord ? ` <span style="color:#EAB308;">${highlightWord}</span>` : ""}
+        </h1>
+        </td>
+        </tr>
+
+        <!-- CONTENT -->
+        <tr>
+        <td style="padding:36px 40px 8px;background:#0f3822;">
+        <p style="margin:0;font-size:16px;color:#E5F5EA;">
+        Halo <strong style="color:#ffffff;">${greetingName}</strong>,
+        </p>
+        ${messageHtml}
+
+        ${
+          alertTitle || alertMessage
+            ? `
+        <!-- ALERT -->
+        <table width="100%" cellpadding="0" cellspacing="0"
+        style="background:rgba(234,179,8,.10);border-left:4px solid #EAB308;border-radius:10px;margin:26px 0;">
+        <tr>
+        <td style="padding:18px 20px;">
+        ${
+          alertTitle
+            ? `<p style="margin:0;font-size:15px;font-weight:bold;color:#EAB308;">${alertTitle}</p>`
+            : ""
+        }
+        ${
+          alertMessage
+            ? `<p style="margin:10px 0 0;color:#E3D5A3;line-height:1.8;font-size:14px;">${alertMessage}</p>`
+            : ""
+        }
+        </td>
+        </tr>
+        </table>`
+            : ""
+        }
+
+        <!-- BUTTON -->
+        <table width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+        <td align="center" style="padding:16px 0 8px;">
+        <a href="${buttonUrl}"
+        style="
+        display:inline-block;
+        background:#EAB308;
+        color:#14532d;
+        text-decoration:none;
+        padding:15px 40px;
+        font-size:16px;
+        font-weight:bold;
+        border-radius:10px;
+        box-shadow:0 8px 20px rgba(234,179,8,.25);
+        ">
+        ${buttonText} →
+        </a>
+        </td>
+        </tr>
+        </table>
+        </td>
+        </tr>
+
+        <!-- FOOTER -->
+        <tr>
+        <td align="center"
+        style="background:#0b2818;padding:26px;border-top:1px solid rgba(255,255,255,.06);">
+        <p style="margin:0;font-size:13px;color:#7FA98D;">
+        Email ini dikirim secara otomatis oleh sistem <strong style="color:#BBF7D0;">ANFORCOM 2026</strong>.
+        </p>
+        <p style="margin-top:6px;font-size:12px;color:#557A63;">
+        Mohon tidak membalas email ini.
+        </p>
+        </td>
+        </tr>
+
+        </table>
+        </td>
+        </tr>
+        </table>
+        </body>
+        </html>
+      `,
+    });
+    return p;
+  }
 }
