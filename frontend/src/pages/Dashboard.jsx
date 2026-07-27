@@ -660,7 +660,30 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Change password form */}
+            {/* Grup WhatsApp Peserta */}
+            <div className="mt-4 flex flex-col items-start justify-between gap-4 rounded-xl border border-[#25D366]/25 bg-[#25D366]/10 p-4 sm:flex-row sm:items-center">
+              <div className="flex items-center gap-3">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366]/20 text-[#25D366]">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="h-5 w-5">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-1.746-.872-2.888-1.556-4.035-3.526-.305-.523.305-.486.874-1.615.099-.198.05-.372-.05-.521-.098-.15-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.199 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.056 3.13 4.982 4.27 2.454.967 2.955.774 3.489.72.533-.052 1.758-.72 2.006-1.413.248-.694.248-1.29.173-1.414-.074-.124-.271-.198-.57-.347z"/>
+                    <path d="M12.004 2C6.486 2 2 6.486 2 12.004c0 1.87.516 3.702 1.494 5.29L2.06 22l4.883-1.283a9.96 9.96 0 0 0 5.06 1.376h.005c5.518 0 10.004-4.486 10.004-10.005C22.012 6.57 17.526 2 12.004 2zm0 18.19h-.004a8.164 8.164 0 0 1-4.16-1.14l-.298-.177-3.098.813.826-3.02-.194-.31a8.169 8.169 0 0 1-1.256-4.352c0-4.513 3.674-8.187 8.19-8.187 4.513 0 8.185 3.674 8.185 8.19 0 4.514-3.674 8.183-8.19 8.183z"/>
+                  </svg>
+                </span>
+                <div>
+                  <p className="text-sm font-bold text-[#F5F5DC]">Grup WhatsApp Peserta</p>
+                  <p className="text-xs text-[#F5F5DC]/60">Info pengumuman & pengingat penting seputar Anforcom ada di sini.</p>
+                </div>
+              </div>
+              <a
+                href="https://chat.whatsapp.com/K66oghdzp2y6pVX4BFck3H"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex w-full items-center justify-center gap-1.5 rounded-full bg-[#25D366] px-5 py-2 text-xs font-bold text-[#0a1f0f] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#25D366]/25 sm:w-auto"
+              >
+                Join Grup
+              </a>
+            </div>
+
             {showPasswordForm && (
               <form onSubmit={handlePasswordSubmit} className="mt-6 rounded-xl border border-white/10 bg-white/[0.04] p-5">
                 <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
@@ -731,12 +754,7 @@ export default function Dashboard() {
                         }`}>
                           {t.isVerified ? 'Terverifikasi' : 'Menunggu verifikasi'}
                         </span>
-                        {t.receipt ? (
-                          <span className="inline-flex items-center gap-1 rounded-full border border-[#EAB308]/25 bg-[#EAB308]/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#EAB308]">
-                            <Receipt className="h-3 w-3" />
-                            Bukti Terupload
-                          </span>
-                        ) : (
+                        {!t.receipt ? (
                           <button
                             type="button"
                             onClick={() => setActiveTab('payment')}
@@ -746,6 +764,16 @@ export default function Dashboard() {
                             <Receipt className="h-3 w-3" />
                             Belum Bayar
                           </button>
+                        ) : t.isVerified ? (
+                          <span className="inline-flex items-center gap-1 rounded-full border border-green-400/25 bg-green-500/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-green-400">
+                            <Receipt className="h-3 w-3" />
+                            Pembayaran Terverifikasi
+                          </span>
+                        ) : (
+                          <span className="inline-flex items-center gap-1 rounded-full border border-[#EAB308]/25 bg-[#EAB308]/15 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#EAB308]">
+                            <Receipt className="h-3 w-3" />
+                            Menunggu Verifikasi
+                          </span>
                         )}
                       </span>
                       <button
@@ -1033,11 +1061,17 @@ export default function Dashboard() {
                       </span>
                       {/* Status pembayaran */}
                       <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
-                        t.receipt
-                          ? 'bg-[#EAB308]/15 text-[#EAB308] border border-[#EAB308]/25'
-                          : 'bg-red-500/10 text-red-400 border border-red-400/25'
+                        !t.receipt
+                          ? 'bg-red-500/10 text-red-400 border border-red-400/25'
+                          : t.isVerified
+                            ? 'bg-green-500/15 text-green-400 border border-green-400/25'
+                            : 'bg-[#EAB308]/15 text-[#EAB308] border border-[#EAB308]/25'
                       }`}>
-                        {t.receipt ? 'Bukti Terupload — Menunggu Verifikasi Panitia' : 'Belum Upload Bukti'}
+                        {!t.receipt
+                          ? 'Belum Upload Bukti'
+                          : t.isVerified
+                            ? 'Pembayaran Terverifikasi'
+                            : 'Bukti Terupload — Menunggu Verifikasi Panitia'}
                       </span>
                     </div>
 
