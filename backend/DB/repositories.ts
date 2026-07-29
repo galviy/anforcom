@@ -765,7 +765,7 @@ export class TeamRepository{
         }
     }
     async isVerifiedCek(idteam:number){
-        const sql = `select isVerified from tim where tim_id = ?`
+        const sql = `select isVerified from tim where id = ?`
         const executewoy = await db.query(sql,[idteam]);
         let p = executewoy[0];
         let verif = parseInt(p.isVerified)
