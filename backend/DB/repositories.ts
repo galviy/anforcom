@@ -766,8 +766,11 @@ export class TeamRepository{
     }
     async isVerifiedCek(idteam:number){
         const sql = `select isVerified from tim where tim_id = ?`
-        return await db.query(sql,[idteam]);
-
+        const executewoy = await db.query(sql,[idteam]);
+        let p = executewoy[0];
+        let verif = parseInt(p.isVerified)
+        if (p == null || p.length == 0 || verif == null)  return false;
+        return verif == 1;
     }
     async timIdCheck(Iduser:number,Idteam:number){
        
