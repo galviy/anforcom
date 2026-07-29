@@ -53,7 +53,8 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     console.log(`tim_id: ${tim_id}\nUkuran receipt: ${ukuran_receipt} MB\nnama_file: ${receipt.name}`);
     
     if (ukuran_receipt >= 10) return Response.json({ success: false, error: `file size is way too big ${ukuran_receipt}, max nya 10 mb boy bisa kasih compress tah?` });
-    
+    let dah_verif = await authRepo.isVerifiedCek(Number(tim_id));
+    if(dah_verif) return Response.json({ success: false, error: "Akun anda telah diverifikasi,anda tidak bisa melakukan upload bukti pembayaran" }, { status: 401 })
     let nama_file = `${crypto.randomUUID()}.${ext}`;
     let up_receipt = await authRepo.upload_pembayaran(tim_id,receipt,nama_file)
     if (up_receipt.success) {
