@@ -764,6 +764,11 @@ export class TeamRepository{
             conn.release();
         }
     }
+    async isVerifiedCek(idteam:number){
+        const sql = `select isVerified from tim where tim_id = ?`
+        return await db.query(sql,[idteam]);
+
+    }
     async timIdCheck(Iduser:number,Idteam:number){
        
         const sql = `
