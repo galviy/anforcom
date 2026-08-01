@@ -190,28 +190,28 @@ export class administrator{
         return rows
     }
 
-    async show_pesebaran(){
-        const rows = await db.query(`
-            SELECT
-                it.asal_instansi,
-                l.nama_lomba,
-                COUNT(DISTINCT t.id) AS total_tim,
-                COUNT(*) AS total_peserta,
-                COUNT(DISTINCT CASE WHEN t.isVerified = 1 THEN t.id END) AS tim_terverifikasi,
-                COUNT(DISTINCT CASE WHEN t.isVerified = 0 THEN t.id END) AS tim_belum_terverifikasi
-            FROM tim t
-            JOIN isi_tim it
-                ON t.id = it.tim_id
-            JOIN lomba l
-                ON l.id = t.tim_lomba
-            GROUP BY
-                it.asal_instansi,
-                l.id,
-                l.nama_lomba
-            ORDER BY
-                it.asal_instansi,
-                l.nama_lomba;
-        `)
-        return rows;
-    }
+  async show_pesebaran() {
+    const rows = await db.query(`
+        SELECT
+            it.asal_instansi,
+            l.nama_lomba,
+            COUNT(DISTINCT t.id) AS total_tim,
+            COUNT(*) AS total_peserta,
+            COUNT(DISTINCT CASE WHEN t.isVerified = 1 THEN t.id END) AS tim_terverifikasi,
+            COUNT(DISTINCT CASE WHEN t.isVerified = 0 THEN t.id END) AS tim_belum_terverifikasi
+        FROM tim t
+        JOIN isi_tim it ON t.id = it.tim_id
+        JOIN lomba l ON l.id = t.tim_lomba
+        GROUP BY it.asal_instansi, l.id, l.nama_lomba
+        ORDER BY it.asal_instansi, l.nama_lomba;
+    `);
+
+    return rows.map((row: Record<string, any>) => {
+        const clean: Record<string, any> = {};
+        for (const key in row) {
+            clean[key] = typeof row[key] === "bigint" ? Number(row[key]) : row[key];
+        }
+        return clean;
+    });
+}
 }
