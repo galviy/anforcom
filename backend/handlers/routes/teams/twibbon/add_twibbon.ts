@@ -45,8 +45,11 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     if(user_id > 2147483647 || user_id < 0) return Response.json({ success: false, error: "yang make sense aja gabisa kah brooo?" }, { status: 400 })
 
     let result = await authRepo.cek_upload_valid_twibbon(json.userId,user_id);
+
     if (!result[0] || result.length == 0|| result[0].total == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 });
     
+    let cekkedua2 = await authRepo.cek_bisa_upload_twibbon(user_id);
+    if(!cekkedua2 || !cekkedua2[0] || cekkedua2[0].tim_lomba != 2) return Response.json({ success: false, error: "Twibbon hanya diperuntukan untuk tim DCPC saja!" }, { status: 403 });
     console.log(`tim_id: ${user_id}\nUkuran twibbon: ${ukuran_twibbon} MB\nnama_file: ${twibbon.name}`);
     
     if (ukuran_twibbon >= 10) return Response.json({ success: false, error: `file size is way too big ${ukuran_twibbon}, max nya 10 mb boy bisa kasih compress tah?` });

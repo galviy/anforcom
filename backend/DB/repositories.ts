@@ -929,6 +929,15 @@ export class TeamRepository{
         `
         return await db.query(sql,[IdUser,IdIsiTim]);
     }
+    async cek_bisa_upload_twibbon(IdUser:number){
+        const sql = `
+        select tim_lomba 
+        from tim t 
+        join isi_tim it on t.id =it.tim_id 
+        where it.id = ?;
+        `
+        return await db.query(sql,[IdUser])
+    }
 }
 
 export class UserRepository{
