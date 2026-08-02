@@ -30,7 +30,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
           return Response.json(result);
       } break;
       case 2:{
-          if (lomba_id == 3) return Response.json({ success: false, error: "Saat ini kamu terdaftar sebagai Kategori (SMA/Sederajat), lomba tersebut hanya tersedia untuk kategori Sarjana!" }, { status: 401 })
+          //if (lomba_id == 3) return Response.json({ success: false, error: "Saat ini kamu terdaftar sebagai Kategori (SMA/Sederajat), lomba tersebut hanya tersedia untuk kategori Sarjana!" }, { status: 401 })
             if (lomba_id > 3)  return Response.json({ success: false, error: "Invalid Lomba ID??" }, { status: 401 })
             const result = await authRepo.createTeam(json.tingkat_pendidikan, json.userId, team_name, lomba_id);
             if (!result) return Response.json({ success: false, error: "internal server error" }, { status: 500 })
