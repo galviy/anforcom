@@ -5,6 +5,7 @@ const TITLE_PART_2 = 'ANFORCOM!';
 
 const TIMELINE = [
   { label: 'Pendaftaran Batch 1', window: '19 Jul - 2 Agu' },
+  { label: 'Extended Batch 1', window: '3 Agu - 9 Agu' },
   { label: 'Pendaftaran Batch 2', window: '10 Agu - 24 Agu' },
   { label: 'Babak Penyisihan', window: 'Agu - Sep' },
   { label: 'Final & Awarding', window: '26 Sep' },
