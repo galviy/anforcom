@@ -12,6 +12,10 @@ import { userAPI } from '../api/api';
  * - 'checking' -> lagi nge-cek cookie sesi ke /user/me, tampilkan "Memuat..."
  * - 'guest'    -> sesi tidak valid -> redirect ke landing page ("/")
  * - 'authed'   -> render halaman aslinya lewat <Outlet/>
+ *
+ * Selagi 'authed', juga jalanin heartbeat ping tiap 15 menit ke /user/ping
+ * biar sesi user yang masih aktif (buka tab ini) otomatis diperpanjang
+ * backend, bukannya ke-logout paksa walau lagi dipakai.
  */
 export default function RequireAuth() {
   const [status, setStatus] = useState('checking');
@@ -29,6 +33,22 @@ export default function RequireAuth() {
       cancelled = true;
     };
   }, []);
+
+  // Heartbeat: selagi user berada di halaman protected, cek/perpanjang sesi
+  // tiap 15 menit. Kalau ping gagal (401/403/redirect AFK dari backend),
+  // langsung dianggap 'guest' biar ke-redirect, tanpa nunggu user klik apa-apa.
+  useEffect(() => {
+    if (status !== 'authed') return;
+
+    const PING_INTERVAL_MS = 15 * 60 * 1000; // 15 menit
+    const interval = setInterval(() => {
+      userAPI.ping().catch(() => {
+        setStatus('guest');
+      });
+    }, PING_INTERVAL_MS);
+
+    return () => clearInterval(interval);
+  }, [status]);
 
   if (status === 'checking') {
     return (

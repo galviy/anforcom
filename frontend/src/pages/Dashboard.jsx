@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { User, Users, Plus, LogOut, Settings, FileText, Trash2, Edit, X, AlertCircle, CheckCircle, Receipt, QrCode, Maximize2 } from 'lucide-react';
+import { User, Users, Plus, LogOut, Settings, FileText, Trash2, Edit, X, AlertCircle, CheckCircle, Receipt, QrCode, Maximize2, Image as ImageIcon } from 'lucide-react';
 import { userAPI, teamAPI, authAPI } from '../api/api';
 import PasswordInput from '../components/PasswordInput';
 
@@ -48,6 +48,13 @@ export default function Dashboard() {
   const [editForm, setEditForm] = useState({ nama_lengkap: '', asal_instansi: '', nomor_induk: '', photo: null });
   const [editLoading, setEditLoading] = useState(false);
   const [editError, setEditError] = useState('');
+
+  // State untuk panel "Twibbon" per anggota (upload/lihat/hapus foto twibbon)
+  const [twibbonOpenMemberId, setTwibbonOpenMemberId] = useState(null);
+  const [twibbonFile, setTwibbonFile] = useState(null);
+  const [twibbonUploading, setTwibbonUploading] = useState(false);
+  const [twibbonError, setTwibbonError] = useState('');
+  const [viewingTwibbonMemberId, setViewingTwibbonMemberId] = useState(null);
 
   // Tab sidebar: 'profile' (info akun) atau 'teams' (daftar tim & anggota).
   // Default ke 'teams' kalau datang dari redirect setelah membuat tim baru
@@ -202,6 +209,55 @@ export default function Dashboard() {
       setMembers(res?.data || []);
     } catch (err) {
       setActionError(err.message || 'Gagal mengeluarkan anggota.');
+    }
+  };
+
+  const ALLOWED_TWIBBON_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+
+  const openTwibbonPanel = (memberId) => {
+    setTwibbonError('');
+    setTwibbonFile(null);
+    setViewingTwibbonMemberId(null);
+    setTwibbonOpenMemberId(twibbonOpenMemberId === memberId ? null : memberId);
+  };
+
+  const handleTwibbonSubmit = async (e, timId, memberId) => {
+    e.preventDefault();
+    setTwibbonError('');
+
+    if (!twibbonFile) {
+      setTwibbonError('Pilih file twibbon terlebih dahulu.');
+      return;
+    }
+    if (!ALLOWED_TWIBBON_TYPES.includes(twibbonFile.type)) {
+      setTwibbonError('File harus berformat PDF, JPG, PNG, atau WEBP.');
+      return;
+    }
+
+    try {
+      setTwibbonUploading(true);
+      await teamAPI.uploadTwibbon(memberId, twibbonFile);
+      const res = await teamAPI.getTeamMembers(timId);
+      setMembers(res?.data || []);
+      setTwibbonFile(null);
+      setViewingTwibbonMemberId(memberId);
+    } catch (err) {
+      setTwibbonError(err.message || 'Gagal upload twibbon.');
+    } finally {
+      setTwibbonUploading(false);
+    }
+  };
+
+  const handleDeleteTwibbon = async (timId, memberId) => {
+    if (!window.confirm('Yakin ingin menghapus twibbon ini? Kamu perlu upload ulang setelahnya.')) return;
+    setTwibbonError('');
+    try {
+      await teamAPI.deleteTwibbon(memberId);
+      const res = await teamAPI.getTeamMembers(timId);
+      setMembers(res?.data || []);
+      setViewingTwibbonMemberId(null);
+    } catch (err) {
+      setTwibbonError(err.message || 'Gagal menghapus twibbon.');
     }
   };
 
@@ -900,6 +956,17 @@ export default function Dashboard() {
                                       <span>{editingMemberId === m.id ? 'Tutup' : 'Edit'}</span>
                                     </button>
                                     <button
+                                      className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
+                                        m.twibbon
+                                          ? 'border-[#EAB308]/25 bg-[#EAB308]/10 text-[#EAB308] hover:bg-[#EAB308]/20'
+                                          : 'border-white/15 bg-white/[0.06] text-[#F5F5DC]/80 hover:border-[#EAB308]/40 hover:text-[#EAB308]'
+                                      }`}
+                                      onClick={() => openTwibbonPanel(m.id)}
+                                    >
+                                      <ImageIcon className="h-3 w-3" />
+                                      <span>Twibbon</span>
+                                    </button>
+                                    <button
                                       className="inline-flex items-center gap-1 rounded-full border border-red-400/25 bg-red-500/10 px-3 py-1.5 text-xs font-semibold text-red-400 transition-all hover:bg-red-500/20"
                                       onClick={() => handleRemoveMember(t.id, m.id)}
                                     >
@@ -908,6 +975,70 @@ export default function Dashboard() {
                                     </button>
                                   </div>
                                 </div>
+
+                                {/* Panel Twibbon */}
+                                {twibbonOpenMemberId === m.id && (
+                                  <div className="rounded-xl border border-white/10 bg-white/[0.04] p-4">
+                                    {twibbonError && <div className="mb-3 rounded-xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{twibbonError}</div>}
+
+                                    <form onSubmit={(e) => handleTwibbonSubmit(e, t.id, m.id)}>
+                                      <div className="mb-3">
+                                        <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#F5F5DC]/50">
+                                          {m.twibbon ? 'Ganti Foto Twibbon' : 'Upload Foto Twibbon'}
+                                        </label>
+                                        <input
+                                          type="file"
+                                          accept="application/pdf,image/jpeg,image/png,image/webp"
+                                          onChange={(e) => setTwibbonFile(e.target.files?.[0] || null)}
+                                          required
+                                          className="w-full text-sm text-[#F5F5DC]/70 file:mr-3 file:rounded-full file:border file:border-white/15 file:bg-white/[0.06] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-[#F5F5DC]/80 file:transition-all hover:file:border-[#EAB308]/40 hover:file:text-[#EAB308] file:cursor-pointer"
+                                        />
+                                        <small className="text-xs text-[#F5F5DC]/40 mt-1 block">Format PDF/JPG/PNG/WEBP, maks 10MB.</small>
+                                      </div>
+                                      <div className="flex gap-2 flex-wrap">
+                                        <button type="submit" className="rounded-full bg-[#EAB308] px-5 py-2 text-xs font-bold text-[#14532D] shadow-lg shadow-[#EAB308]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#FACC15] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0" disabled={twibbonUploading}>
+                                          {twibbonUploading ? 'Mengupload...' : m.twibbon ? 'Ganti Twibbon' : 'Upload Twibbon'}
+                                        </button>
+                                        {m.twibbon && (
+                                          <button
+                                            type="button"
+                                            className="rounded-full border border-white/15 bg-white/[0.06] px-4 py-2 text-xs font-semibold text-[#F5F5DC]/80 transition-all hover:border-[#EAB308]/40 hover:text-[#EAB308]"
+                                            onClick={() => setViewingTwibbonMemberId(viewingTwibbonMemberId === m.id ? null : m.id)}
+                                          >
+                                            {viewingTwibbonMemberId === m.id ? 'Sembunyikan Preview' : 'Lihat Twibbon'}
+                                          </button>
+                                        )}
+                                        {m.twibbon && (
+                                          <button
+                                            type="button"
+                                            className="rounded-full border border-red-400/30 bg-red-500/10 px-4 py-2 text-xs font-semibold text-red-300 transition-all hover:border-red-400/60 hover:bg-red-500/20"
+                                            onClick={() => handleDeleteTwibbon(t.id, m.id)}
+                                          >
+                                            Hapus Twibbon
+                                          </button>
+                                        )}
+                                      </div>
+                                    </form>
+
+                                    {viewingTwibbonMemberId === m.id && m.twibbon && (
+                                      <div className="mt-4">
+                                        {m.twibbon.toLowerCase().endsWith('.pdf') ? (
+                                          <embed
+                                            src={teamAPI.getTwibbonUrl(m.twibbon)}
+                                            type="application/pdf"
+                                            style={{ width: '100%', height: '480px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}
+                                          />
+                                        ) : (
+                                          <img
+                                            src={teamAPI.getTwibbonUrl(m.twibbon)}
+                                            alt={`Twibbon ${m.nama_lengkap}`}
+                                            className="max-h-[480px] w-auto rounded-xl border border-white/10"
+                                          />
+                                        )}
+                                      </div>
+                                    )}
+                                  </div>
+                                )}
 
                                 {/* Edit member form */}
                                 {editingMemberId === m.id && (

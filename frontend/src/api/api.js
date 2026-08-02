@@ -398,6 +398,53 @@ export const teamAPI = {
     }).then(handleResponse);
   },
 
+  // Upload/ganti foto twibbon SATU ANGGOTA (bukan per tim — `memberId` di sini
+  // adalah field `id` dari getTeamMembers(), sama kayak yang dipakai di
+  // deleteUserTeam/editUserTeam*). Backend cuma terima 1 twibbon aktif per
+  // anggota (upload baru ditolak kalau masih ada yang lama, mesti dihapus dulu),
+  // tipe pdf/jpg/jpeg/png/webp, maks 10MB.
+  uploadTwibbon: async (memberId, file) => {
+    const formData = new FormData();
+    formData.append('user_id', memberId);
+    formData.append('data_twibbon', file);
+
+    const response = await fetch(`${API_BASE}/teams/twibbon/add_twibbon`, {
+      method: 'POST',
+      headers: withCsrf(), // JANGAN tambah Content-Type manual, browser yang isi boundary-nya
+      body: formData,
+    });
+
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      throw new Error(`HTTP ${response.status}: gagal membaca response`);
+    }
+
+    if (!response.ok) {
+      const err = new Error(data?.error || data?.message || `HTTP ${response.status}`);
+      err.status = response.status;
+      throw err;
+    }
+    if (data?.success === false) {
+      throw new Error(data.error || data.message || 'Gagal upload twibbon.');
+    }
+
+    return data; // { success:true, message, nama_file }
+  },
+
+  // URL foto twibbon anggota, dipakai sebagai src <img>/<embed> untuk preview.
+  getTwibbonUrl: (filename) => `${API_BASE}/teams/twibbon/view_twibbon?id=${encodeURIComponent(filename)}`,
+
+  // Hapus twibbon anggota yang sudah diupload (dibutuhkan sebelum bisa upload ulang).
+  deleteTwibbon: (memberId) => {
+    return fetch(`${API_BASE}/teams/twibbon/delete_twibbon`, {
+      method: 'POST',
+      headers: withCsrf({ 'Content-Type': 'application/json' }),
+      body: JSON.stringify({ user_id: memberId }),
+    }).then(handleResponse);
+  },
+
   // Hapus proposal tim yang sudah diupload. Backend cuma izinin 1 proposal aktif
   // per tim (addProposal akan nolak upload baru kalau masih ada yang lama), jadi
   // ini jalan satu-satunya buat bisa upload ulang.
