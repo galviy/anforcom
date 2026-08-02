@@ -25,9 +25,13 @@ import * as del_proposal from "./routes/teams/delete_proposal"
 import * as resend_verif from "./routes/auth/resend_verification"
 import * as resend_verif_token from "./routes/auth/resend_verification_by_token"
 import * as ping from "./routes/user/ping"
+
+/*Pembayaran */
 import * as up_pembayaran from "./routes/teams/pembayaran/upload_pembayaran"
 import * as del_pembayaran from "./routes/teams/pembayaran/delete_pembayaran"
 import * as view_pembayaran from "./routes/teams/pembayaran/view_pembayaran"
+
+/*Pernyataan */
 import * as up_pernyataan from "./routes/teams/pernyataan/upload_pernyataan"
 import * as del_pernyataan from "./routes/teams/pernyataan/delete_pernyataan"
 import * as view_pernyataan from "./routes/teams/pernyataan/view_pernyataan"
@@ -50,6 +54,11 @@ import * as persebaran from "./routes/admin/persebaran"
 /* Public file anjay*/
 
 import * as panitia_akses from "./routes/panitia_akses"
+
+
+/*twibbon */
+import * as up_twibbon from "./routes/teams/twibbon/add_twibbon"
+import * as del_twibbon from "./routes/teams/twibbon/delete_twibbon"
 
 const rutercoy = new Map([
     ['/auth/login', login],
@@ -94,6 +103,10 @@ const rutercoy = new Map([
     ['/admin/persebaran',persebaran],
 
 
+
+    ['/teams/twibbon/add_twibbon',up_twibbon],
+    ['/teams/twibbon/delete_twibbon',del_twibbon],
+
     ['/panitia_akses',panitia_akses]
 ])
 
@@ -121,7 +134,7 @@ export class router {
         if(!route) return this.notFound;
         if(Bun.env.DEVELOPER_MODE === 'false'){
             /*CSRF Handler*/
-            if (url == "/teams/pembayaran/view_pernyataan" || url == "/teams/pembayaran/delete_pernyataan" || url == "/teams/pernyataan/upload_pernyataan" || url == "/user/me"|| url == "/user/edit" || url == "/teams/edit_user_team" || url == "/teams/delete_user_team" || url == "/teams/delete_team" || url == "/teams/create_team" || url == "/teams/add_user_team" || url == "/teams/add_proposal" || url == "/teams/delete_proposal" || url == "/user/ping"){
+            if (url == "/teams/twibbon/delete_twibbon" || url == "/teams/twibbon/add_twibbon" || url == "/teams/pembayaran/view_pernyataan" || url == "/teams/pembayaran/delete_pernyataan" || url == "/teams/pernyataan/upload_pernyataan" || url == "/user/me"|| url == "/user/edit" || url == "/teams/edit_user_team" || url == "/teams/delete_user_team" || url == "/teams/delete_team" || url == "/teams/create_team" || url == "/teams/add_user_team" || url == "/teams/add_proposal" || url == "/teams/delete_proposal" || url == "/user/ping"){
                 if (!verifyCSRF(req)) {
                     return Response.json({ success: false, message: "Invalid CSRF token" }, { status: 403 });
                 }

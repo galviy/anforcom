@@ -4,14 +4,12 @@ const authRepo = new TeamRepository()
 import {logger} from "../../../../logger"
 
 const allowedTypes = new Set([
-  "application/pdf",
   "image/jpeg",
   "image/png",
   "image/webp",
 ]);
 
 const allowedExtensions = new Set([
-  "pdf", 
   "jpg",
   "jpeg",
   "png",
@@ -48,20 +46,21 @@ export async function handler(req: Request, json?: any): Promise<Response> {
 
     let result = await authRepo.cek_upload_valid_twibbon(json.userId,user_id);
     if (!result[0] || result.length == 0|| result[0].total == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 });
-
+    
     console.log(`tim_id: ${user_id}\nUkuran twibbon: ${ukuran_twibbon} MB\nnama_file: ${twibbon.name}`);
     
     if (ukuran_twibbon >= 10) return Response.json({ success: false, error: `file size is way too big ${ukuran_twibbon}, max nya 10 mb boy bisa kasih compress tah?` });
    
     let nama_file = `${crypto.randomUUID()}.${ext}`;
     let up_receipt = await authRepo.upload_twibbon(user_id,twibbon,nama_file)
+    console.log(up_receipt)
     if (up_receipt.success) {
       void logger.sendWebhook(`tim_id: ${user_id}\nUkuran receipt: ${ukuran_twibbon} MB\nnama_file: \`${nama_file}\``,Bun.env.twibbon_logs).catch(err => {
         console.error(err);
       });
       return Response.json({ success: true, message: `Uploaded ${twibbon.name} with size of ${ukuran_twibbon}`, nama_file: `${nama_file}` }, { status: 200 });
     }
-     return Response.json({ success: false , message: `Not implemented yet!`}, { status: 403 })
+     return Response.json(up_receipt, { status: 401 })
   }
   return Response.json({ success: false }, { status: 403 })
   

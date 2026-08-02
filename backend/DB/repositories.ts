@@ -307,7 +307,7 @@ export class TeamRepository{
     }
     async upload_twibbon_file(filecoy:File,nama_twibbon:string){
         try {
-            const filePath = path.join(this.folder_upload_pembayaran,nama_twibbon)
+            const filePath = path.join(this.folder_upload_twibbon,nama_twibbon)
             await Bun.write(filePath,filecoy);
             return filePath
         } catch (e){
@@ -434,7 +434,11 @@ export class TeamRepository{
                 `select count(*) as jumlah from isi_tim where id = ? FOR UPDATE`,
                 [user_id]
             );
-            if (sql1[0].jumlah != 0) {
+            const cekexist = await conn.query(
+                `select count(*) as jumlah from data_twibbon where isi_tim_data_twibbon = ?`,
+                [user_id]
+            )
+            if (cekexist[0].jumlah != 0) {
                 await conn.rollback();
                 return { success: false, message: `Kamu sudah upload twibbon,mohon dihapus terlebih dahulu twibbon sebelumnya!` };
             }
@@ -633,7 +637,7 @@ export class TeamRepository{
             );
             if (rows.length === 0) {
                 await conn.rollback();
-                return { success: false, message: `you cant have anything to delete dont u?` };
+                return { success: false, message: `you dont have anything to delete dont u?` };
             }
             const result = await conn.query(
                 `DELETE FROM isi_tim WHERE id = ? AND tim_id = ?`,
@@ -653,6 +657,45 @@ export class TeamRepository{
             }
 
             return { success: true, message: `Berhasil delete user tersebut!` };
+        } catch (e) {
+            await conn.rollback();
+            console.error(e);
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+            conn.release();
+        }
+    }
+     async deleteTwibbon(idUser: number) {
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
+
+            const rows = await conn.query(
+                `SELECT foto_twibbon FROM data_twibbon WHERE isi_tim_data_twibbon = ? FOR UPDATE`,
+                [idUser]
+            );
+            if (rows.length === 0) {
+                await conn.rollback();
+                return { success: false, message: `you dont have anything to delete dont u?` };
+            }
+            const result = await conn.query(
+                `DELETE FROM data_twibbon WHERE isi_tim_data_twibbon = ?`,
+                [idUser]
+            );
+            if (result.affectedRows !== 1) {
+                await conn.rollback();
+                return { success: false, message: `Somehow it did not affect anything huh..?` };
+            }
+            await conn.commit(); 
+
+            const filePath = path.join(this.folder_upload_twibbon, rows[0].foto_twibbon);
+            try {
+                await unlink(filePath);
+            } catch (e) {
+                console.error('Gagal hapus file proposal fisik:', e);
+            }
+
+            return { success: true, message: `Berhasil delete twibbon user tersebut!` };
         } catch (e) {
             await conn.rollback();
             console.error(e);
