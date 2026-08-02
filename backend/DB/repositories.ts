@@ -9,6 +9,7 @@ export class TeamRepository{
     private folder_upload_proposal: string= path.join(import.meta.dir, "../../data_proposal");
     private folder_upload_pembayaran: string = path.join(import.meta.dir, "../../data_pembayaran")
     private folder_upload_pernyataan: string = path.join(import.meta.dir, "../../data_persetujuan")
+    private folder_upload_twibbon: string = path.join(import.meta.dir, "../../data_twibbon")
 
      async verify_team(timId:number){
         const rows = await db.query(`
@@ -304,6 +305,16 @@ export class TeamRepository{
             throw e;
         }
     }
+    async upload_twibbon_file(filecoy:File,nama_twibbon:string){
+        try {
+            const filePath = path.join(this.folder_upload_pembayaran,nama_twibbon)
+            await Bun.write(filePath,filecoy);
+            return filePath
+        } catch (e){
+            console.error(e);
+            throw e;
+        }
+    }
     async upload_proposal_file(filecoy:File,nama_proposal:string){
         try {
             const filePath = path.join(this.folder_upload_proposal,nama_proposal)
@@ -412,6 +423,35 @@ export class TeamRepository{
             await conn.rollback();
             return { success: false, message: 'terjadi kesalahan, coba lagi' };
         } finally {
+            conn.release();
+        }
+    }
+    async upload_twibbon(user_id:number,filecoy:File,nama_twibbon:string){
+        const conn = await db.getConnection();
+        try {
+            await conn.beginTransaction();
+            const sql1 = await conn.query(
+                `select count(*) as jumlah from isi_tim where id = ? FOR UPDATE`,
+                [user_id]
+            );
+            if (sql1[0].jumlah != 0) {
+                await conn.rollback();
+                return { success: false, message: `Kamu sudah upload twibbon,mohon dihapus terlebih dahulu twibbon sebelumnya!` };
+            }
+            await this.upload_twibbon_file(filecoy,nama_twibbon)
+            const sql2 = await conn.query(`
+                INSERT INTO data_twibbon (isi_tim_data_twibbon,foto_twibbon)
+                VALUES (?,?)`,
+                [user_id,nama_twibbon]
+            )
+         
+            await conn.commit();
+            return { success: true, message: `successfully insert a twibbon anjayyy, id ${sql2.insertId}` }; 
+        } catch(e){
+            console.error(e);
+            await conn.rollback();
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally{
             conn.release();
         }
     }
@@ -805,6 +845,16 @@ export class TeamRepository{
         `;
         return await db.query(sql,[Idteam]);
 
+    }
+
+    async cek_upload_valid_twibbon(IdUser:number,IdIsiTim:number){
+        const sql = `
+           select count(*) as total 
+           from user_tim ut 
+           join isi_tim it on ut.tim_id = it.tim_id
+           where user_id = ? and it.id = ?;
+        `
+        return await db.query(sql,[IdUser,IdIsiTim]);
     }
 }
 

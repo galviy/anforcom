@@ -20,21 +20,22 @@ export class Logger {
   }
   public async sendWebhook(text: string, webHookUrl: any) {
     try {
-      const response = await fetch(webHookUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          content: text 
-        }),
-      });
+      if (Bun.env.logging_mode == "true"){
+        const response = await fetch(webHookUrl, {
+          method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              content: text 
+            }),
+        });
 
-      if (!response.ok) {
-        throw new Error(`Discord API error: ${response.status} ${response.statusText}`);
+        if (!response.ok) {
+          throw new Error(`Discord API error: ${response.status} ${response.statusText}`);
+        }
       }
-
-      
+    
     } catch (error) {
       console.error('Gagal mengirim pesan ke Discord:', error);
       throw error;
