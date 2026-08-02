@@ -9,6 +9,7 @@ interface isi_tim {
   asal_instansi:string;
   nomor_induk:string;
   data_image:string;
+  data_twibbon:string;
 }
 
 export async function handler(req: Request, json?: any): Promise<Response> {
@@ -27,9 +28,10 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   if (result.length == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 }) 
   
   let result2 = await authRepo.isiTimCheck(tim_id);
+  //console.log(result2)
   let p: isi_tim[] = []; 
   for(let i = 0; i < result2.length; i++){
-      p.push({id:result2[i].id,nama_lengkap:result2[i].nama_lengkap,asal_instansi:result2[i].asal_instansi,nomor_induk:result2[i].nomor_induk,data_image:result2[i].data_image});
+      p.push({id:result2[i].id,nama_lengkap:result2[i].nama_lengkap,asal_instansi:result2[i].asal_instansi,nomor_induk:result2[i].nomor_induk,data_image:result2[i].data_image,data_twibbon:result2[i].foto_twibbon});
   }
   return Response.json({ success: true, data: p }, { status: 200 })
 

@@ -74,6 +74,34 @@ export class TeamRepository{
             conn.release();
         }
     }
+    async check_file_twibbon_sesuai(idUser:number,nama_file:string){
+        const conn = await db.getConnection();
+        try {
+            const sql = await conn.query(`
+                select ut.user_id as u_id
+                from data_twibbon dt 
+                join isi_tim it on it.id = dt.isi_tim_data_twibbon 
+                join user_tim ut on ut.tim_id = it.tim_id 
+                where dt.foto_twibbon = ?
+                `, 
+                [nama_file]
+            );
+            if (sql.length == 0) {
+                return { success: false, message: 'not found' }; 
+            }
+
+            if (Number(idUser) !== Number(sql[0].u_id)) {
+                return { success: false, message: 'pentester kah bang?' };
+            }
+            return { success: true };  
+        } catch (e) {
+            console.error(e);
+            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+        } finally {
+           
+            conn.release();
+        }
+    }
    async check_file_ktm_sesuai(idUser: number, nama_file: string) {
         const conn = await db.getConnection();
         try {
@@ -882,10 +910,12 @@ export class TeamRepository{
 
     async isiTimCheck(Idteam:number){
         const sql = `
-            select * 
-            from isi_tim
-            where tim_id = ?
+            select it.id,it.nama_lengkap,it.asal_instansi,it.nomor_induk,it.data_image,dt.foto_twibbon 
+            from isi_tim it 
+            left join data_twibbon dt on dt.isi_tim_data_twibbon = it.id
+            where it.tim_id = ?
         `;
+       
         return await db.query(sql,[Idteam]);
 
     }

@@ -53,7 +53,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
    
     let nama_file = `${crypto.randomUUID()}.${ext}`;
     let up_receipt = await authRepo.upload_twibbon(user_id,twibbon,nama_file)
-    console.log(up_receipt)
+    //console.log(up_receipt)
     if (up_receipt.success) {
       void logger.sendWebhook(`tim_id: ${user_id}\nUkuran receipt: ${ukuran_twibbon} MB\nnama_file: \`${nama_file}\``,Bun.env.twibbon_logs).catch(err => {
         console.error(err);

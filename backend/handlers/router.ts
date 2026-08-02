@@ -59,6 +59,7 @@ import * as panitia_akses from "./routes/panitia_akses"
 /*twibbon */
 import * as up_twibbon from "./routes/teams/twibbon/add_twibbon"
 import * as del_twibbon from "./routes/teams/twibbon/delete_twibbon"
+import * as view_twibbon from "./routes/teams/twibbon/view_twibbon"
 
 const rutercoy = new Map([
     ['/auth/login', login],
@@ -106,6 +107,7 @@ const rutercoy = new Map([
 
     ['/teams/twibbon/add_twibbon',up_twibbon],
     ['/teams/twibbon/delete_twibbon',del_twibbon],
+    ['/teams/twibbon/view_twibbon', view_twibbon],
 
     ['/panitia_akses',panitia_akses]
 ])
