@@ -660,12 +660,16 @@ export class TeamRepository{
             await conn.beginTransaction();
 
             const rows = await conn.query(
-                `SELECT data_image FROM isi_tim WHERE id = ? AND tim_id = ? FOR UPDATE`,
+                `SELECT data_image FROM isi_tim WHERE id = ? AND tim_id = ?`,
                 [idUser, idTeam]
             );
+            const rows2coy = await conn.query(
+                `select foto_twibbon from data_twibbon where isi_tim_data_twibbon = ?`,
+                [idUser]
+            )
             if (rows.length === 0) {
                 await conn.rollback();
-                return { success: false, message: `you dont have anything to delete dont u?` };
+                return { success: false, error: `you dont have anything to delete dont u?` };
             }
             const result = await conn.query(
                 `DELETE FROM isi_tim WHERE id = ? AND tim_id = ?`,
@@ -673,13 +677,24 @@ export class TeamRepository{
             );
             if (result.affectedRows !== 1) {
                 await conn.rollback();
-                return { success: false, message: `Somehow it did not affect anything huh..?` };
+                return { success: false, error: `Somehow it did not affect anything huh..?` };
             }
             await conn.commit(); 
 
             const filePath = path.join(this.folder_upload, rows[0].data_image);
+            const twibbonpatth = path.join(this.folder_upload_twibbon,rows2coy[0].foto_twibbon)
             try {
-                await unlink(filePath);
+                if(rows[0].data_image){
+                    await unlink(filePath);
+                } 
+                
+            } catch (e) {
+                console.error('Gagal hapus file proposal fisik:', e);
+            }
+            try {
+                if(rows[0].foto_twibbon){
+                     await unlink(twibbonpatth)
+                }
             } catch (e) {
                 console.error('Gagal hapus file proposal fisik:', e);
             }
@@ -688,7 +703,7 @@ export class TeamRepository{
         } catch (e) {
             await conn.rollback();
             console.error(e);
-            return { success: false, message: 'terjadi kesalahan, coba lagi' };
+            return { success: false, error: 'terjadi kesalahan, coba lagi' };
         } finally {
             conn.release();
         }
@@ -815,6 +830,12 @@ export class TeamRepository{
             const payments = await conn.query(
                 `SELECT foto_qris FROM data_pembayaran WHERE id_tim = ?`, [IdTeam]
             );
+            const twibbons = await conn.query(
+                `select dt.foto_twibbon 
+                from isi_tim it 
+                join data_twibbon dt on it.id = dt.isi_tim_data_twibbon 
+                where it.tim_id = ?`, [IdTeam]
+            )
 
             await conn.query(`DELETE FROM user_tim WHERE tim_id = ?`, [IdTeam]);
             await conn.query(`DELETE FROM isi_tim WHERE tim_id = ?`, [IdTeam]);
@@ -853,6 +874,14 @@ export class TeamRepository{
                 }
             }
 
+            for(let i = 0; i <twibbons.length;i++ ){
+                const row = twibbons[i];
+                if(!row) continue;
+                if(row.foto_twibbon){
+                    filesToDelete.push([row.foto_twibbon, this.folder_upload_twibbon]);
+                }
+            }
+
             for (let i = 0; i < filesToDelete.length; i++) {
                 const entry = filesToDelete[i];
                 if (!entry) continue;
@@ -870,7 +899,8 @@ export class TeamRepository{
         } catch (e) {
             console.error(e);
             await conn.rollback();
-            throw e;
+             return { success: false, error: 'Internal server error!' };
+            
         } finally {
             conn.release();
         }

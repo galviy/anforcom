@@ -20,7 +20,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   let dah_verif = await authRepo.isVerifiedCek(Number(tim_id));
   if(dah_verif) return Response.json({ success: false, error: "Akun anda telah diverifikasi,anda tidak bisa melakukan penghapusan tim" }, { status: 401 })
   let result2 = await authRepo.deleteTeam(tim_id);
-  return Response.json({ success: true }, { status: 200 })
+  return Response.json(result2, { status: 200 })
 
 }
 
