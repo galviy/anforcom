@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 // Semua boundary pakai WIB (+07:00) biar konsisten siapapun yang buka & di manapun dia berada.
 const REG_OPEN_BATCH1 = new Date('2026-07-19T00:00:00+07:00');
-const REG_CLOSE_BATCH1 = new Date('2026-08-02T23:59:59+07:00');
+const REG_CLOSE_BATCH1 = new Date('2026-08-10T00:00:00+07:00');
 // Extended Batch 1: perpanjangan pendaftaran Batch 1, mengisi jeda yang
 // sebelumnya kosong (3-9 Agustus) sebelum Batch 2 dibuka.
 const REG_OPEN_EXT_BATCH1 = new Date('2026-08-03T00:00:00+07:00');

@@ -31,7 +31,7 @@ export const COMPETITIONS = [
       { place: '3rd', reward: 'Uang Pembinaan', extras: 'Sertifikat + Piala' },
     ],
     batches: [
-      { open: '2026-07-19T00:00:00+07:00', close: '2026-08-02T23:59:59+07:00' },
+      { open: '2026-07-19T00:00:00+07:00', close: '2026-08-10T00:00:00+07:00' },
       { open: '2026-08-10T00:00:00+07:00', close: '2026-08-24T23:59:59+07:00' },
     ],
     contacts: [
@@ -71,7 +71,7 @@ export const COMPETITIONS = [
       { place: '3rd', reward: 'Uang Pembinaan', extras: 'Sertifikat + Piala' },
     ],
     batches: [
-      { open: '2026-07-19T00:00:00+07:00', close: '2026-08-02T23:59:59+07:00' },
+      { open: '2026-07-19T00:00:00+07:00', close: '2026-08-10T00:00:00+07:00' },
       { open: '2026-08-10T00:00:00+07:00', close: '2026-08-24T23:59:59+07:00' },
     ],
     contacts: [
@@ -109,7 +109,7 @@ export const COMPETITIONS = [
       { place: '3rd', reward: 'Uang Pembinaan', extras: 'Sertifikat + Piala' },
     ],
     batches: [
-      { open: '2026-07-19T00:00:00+07:00', close: '2026-08-02T23:59:59+07:00' },
+      { open: '2026-07-19T00:00:00+07:00', close: '2026-08-10T00:00:00+07:00' },
       { open: '2026-08-10T00:00:00+07:00', close: '2026-08-24T23:59:59+07:00' },
     ],
     contacts: [

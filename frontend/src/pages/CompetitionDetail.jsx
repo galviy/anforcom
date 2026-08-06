@@ -1,7 +1,7 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState, useRef } from 'react';
 import { getCompetitionBySlug } from '../data/competitions';
-import { ArrowLeft, Download, Trophy, Users, Wallet, ChevronRight, Medal, Award, Clock, MessageCircle } from 'lucide-react';
+import { ArrowLeft, Download, Trophy, Users, Wallet, ChevronRight, Medal, Award, Clock, MessageCircle, Code2, TerminalSquare, Database, Cpu, Binary, BrainCircuit, BarChart3, Layers, Layout, Component, PenTool, Sparkles, Variable, Network, LineChart, FileSpreadsheet, MonitorSmartphone } from 'lucide-react';
 import heroBg from '../../assets/HERO_bg.jpg';
 import Footer from '../components/sections/Footer';
 
@@ -108,6 +108,96 @@ export default function CompetitionDetail() {
   }, [comp]);
 
 
+  /* ── ANFORCOM Signature: Ultra-Fast Zero-Re-render 3D Vortex Scroll Parallax (Desktop PC Only) ── */
+  const badgeContainerRef = useRef(null);
+  const svgLinesRef = useRef([]);
+
+  useEffect(() => {
+    let ticking = false;
+    let currentScrollY = 0;
+    let mouseX = 0;
+    let mouseY = 0;
+
+    const updateTransforms = () => {
+      if (window.innerWidth < 1024) return;
+
+      const scrollY = currentScrollY;
+      const opacity = Math.max(0, 1 - scrollY / 280);
+
+      if (badgeContainerRef.current) {
+        const container = badgeContainerRef.current;
+        const children = container.children;
+
+        // Skip computation if scrolled completely out of view
+        if (scrollY > 320) {
+          if (container.style.display !== 'none') container.style.display = 'none';
+          ticking = false;
+          return;
+        } else {
+          if (container.style.display !== 'block') container.style.display = 'block';
+        }
+
+        const currentBadges = competitionBadges[slug] || competitionBadges.duc;
+
+        // Update badge cards transform directly via DOM
+        currentBadges.forEach((b, idx) => {
+          const el = children[idx + 1]; // +1 because index 0 is SVG line overlay
+          const lineEl = svgLinesRef.current[idx];
+
+          if (el) {
+            const baseAngle = Math.atan2(b.dirY, b.dirX);
+            const spiralAngle = baseAngle + (scrollY * 0.0025 * (b.dirX > 0 ? 1 : -1));
+            const dist = Math.hypot(b.dirX, b.dirY) * (scrollY * 1.05);
+
+            const tx = Math.cos(spiralAngle) * dist + (mouseX * 20 * b.depth);
+            const ty = Math.sin(spiralAngle) * dist + (mouseY * 16 * b.depth);
+
+            const rotY = (mouseX * 16 * b.depth) + (scrollY * 0.1 * (b.dirX > 0 ? 1 : -1));
+            const rotX = (-mouseY * 12 * b.depth) + (scrollY * 0.07);
+            const rotZ = b.rot + (scrollY * 0.04 * (b.dirX > 0 ? 1 : -1));
+            const scale = Math.max(0.4, 1 - (scrollY * 0.0016));
+
+            el.style.transform = `translate3d(${tx}px, ${ty}px, 0) rotateX(${rotX}deg) rotateY(${rotY}deg) rotateZ(${rotZ}deg) scale(${scale})`;
+            el.style.opacity = opacity.toString();
+          }
+
+          if (lineEl) {
+            lineEl.style.opacity = (opacity * 0.45).toString();
+          }
+        });
+      }
+
+      ticking = false;
+    };
+
+    const handleScroll = () => {
+      currentScrollY = window.scrollY;
+      if (!ticking) {
+        window.requestAnimationFrame(updateTransforms);
+        ticking = true;
+      }
+    };
+
+    const handleMouseMove = (e) => {
+      // Only track mouse when near top of page
+      if (window.innerWidth < 1024 || window.scrollY > 300) return;
+      const { innerWidth, innerHeight } = window;
+      mouseX = (e.clientX - innerWidth / 2) / (innerWidth / 2);
+      mouseY = (e.clientY - innerHeight / 2) / (innerHeight / 2);
+      if (!ticking) {
+        window.requestAnimationFrame(updateTransforms);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [slug]);
+
   const pad = (n) => String(n).padStart(2, '0');
 
   if (!comp) {
@@ -124,6 +214,30 @@ export default function CompetitionDetail() {
 
   const Icon = comp.icon;
 
+  /* ── Badges per competition with 3D Depth & Orbit trajectories ── */
+  const competitionBadges = {
+    duc: [
+      { id: 1, image: '/badges/figma.png', text: 'Figma', color: 'from-[#F24E1E]/25 to-[#A259FF]/25', border: 'border-[#F24E1E]/50', top: '14%', left: '7%', dirX: -1.3, dirY: -0.8, rot: -10, depth: 1.2, floatDelay: '0s' },
+      { id: 2, image: '/badges/prototype.png', text: 'Prototype', color: 'from-[#0ACF83]/25 to-[#1ABCFE]/25', border: 'border-[#0ACF83]/50', top: '48%', left: '8%', dirX: -1.6, dirY: 0.4, rot: 8, depth: 0.9, floatDelay: '1.5s' },
+      { id: 3, image: '/badges/user-research.png', text: 'User Research', color: 'from-[#3B82F6]/25 to-[#6366F1]/25', border: 'border-[#3B82F6]/50', top: '15%', right: '7%', dirX: 1.4, dirY: -0.7, rot: 12, depth: 1.1, floatDelay: '1s' },
+      { id: 4, icon: PenTool, text: 'Design System', color: 'from-[#EC4899]/25 to-[#8B5CF6]/25', border: 'border-[#EC4899]/50', top: '50%', right: '8%', dirX: 1.6, dirY: 0.5, rot: -8, depth: 0.8, floatDelay: '2s' },
+    ],
+    dcpc: [
+      { id: 1, image: '/badges/cpp.png', text: 'C++', color: 'from-[#00599C]/25 to-[#283593]/25', border: 'border-[#00599C]/50', top: '14%', left: '7%', dirX: -1.3, dirY: -0.8, rot: -10, depth: 1.2, floatDelay: '0s' },
+      { id: 2, image: '/badges/python.png', text: 'Python', color: 'from-[#3776AB]/25 to-[#FFD43B]/25', border: 'border-[#3776AB]/50', top: '48%', left: '8%', dirX: -1.6, dirY: 0.4, rot: 8, depth: 0.9, floatDelay: '1.5s' },
+      { id: 3, image: '/badges/java.png', text: 'Java 21', color: 'from-[#EA2D2E]/25 to-[#F89820]/25', border: 'border-[#EA2D2E]/50', top: '15%', right: '7%', dirX: 1.4, dirY: -0.7, rot: 12, depth: 1.1, floatDelay: '1s' },
+      { id: 4, icon: Binary, text: 'Dynamic Prog', color: 'from-[#8B5CF6]/25 to-[#6366F1]/25', border: 'border-[#8B5CF6]/50', top: '50%', right: '8%', dirX: 1.6, dirY: 0.5, rot: -8, depth: 0.8, floatDelay: '2s' },
+    ],
+    dsdc: [
+      { id: 1, image: '/badges/figma.png', text: 'Figma', color: 'from-[#F24E1E]/25 to-[#A259FF]/25', border: 'border-[#F24E1E]/50', top: '14%', left: '7%', dirX: -1.3, dirY: -0.8, rot: -10, depth: 1.2, floatDelay: '0s' },
+      { id: 2, image: '/badges/github.svg', text: 'GitHub', color: 'from-[#6e5494]/25 to-[#24292e]/25', border: 'border-[#6e5494]/50', top: '48%', left: '8%', dirX: -1.6, dirY: 0.3, rot: 8, depth: 0.9, floatDelay: '1.5s' },
+      { id: 3, icon: MonitorSmartphone, text: 'Mobile App', color: 'from-[#10B981]/25 to-[#059669]/25', border: 'border-[#10B981]/50', top: '15%', right: '7%', dirX: 1.4, dirY: -0.7, rot: 12, depth: 1.1, floatDelay: '1s' },
+      { id: 4, image: '/badges/db.png', text: 'Database', color: 'from-[#336791]/25 to-[#EAB308]/25', border: 'border-[#336791]/50', top: '50%', right: '8%', dirX: 1.6, dirY: 0.5, rot: -8, depth: 0.8, floatDelay: '2s' },
+    ],
+  };
+
+  const badges = competitionBadges[slug] || competitionBadges.duc;
+
   return (
     <div className="min-h-screen bg-[#14532D] text-white select-none overflow-x-hidden">
 
@@ -139,11 +253,11 @@ export default function CompetitionDetail() {
       </div>
 
       {/* ══════════════════════════════════════════
-          HERO SECTION
+          HERO SECTION — ANFORCOM Signature 3D Vortex & Orbit Hero
       ══════════════════════════════════════════ */}
       <section
         ref={heroRef}
-        className="relative flex min-h-screen items-center overflow-hidden px-6 pt-32 pb-16"
+        className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 pt-36 pb-20 text-center [perspective:1000px]"
         style={{
           backgroundImage: `url(${heroBg})`,
           backgroundSize: 'cover',
@@ -155,7 +269,7 @@ export default function CompetitionDetail() {
 
         {/* Animated grid pattern */}
         <div
-          className="pointer-events-none absolute inset-0 opacity-[0.03]"
+          className="pointer-events-none absolute inset-0 opacity-[0.04]"
           style={{
             backgroundImage:
               'linear-gradient(rgba(255,255,255,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.4) 1px, transparent 1px)',
@@ -164,125 +278,240 @@ export default function CompetitionDetail() {
           }}
         />
 
-        {/* Gold glow top-left */}
-        <div className="pointer-events-none absolute -top-20 -left-20 w-[500px] h-[500px] bg-[#EAB308]/8 rounded-full blur-[150px]" />
-        {/* Green glow bottom-right */}
-        <div className="pointer-events-none absolute -bottom-32 -right-20 w-[600px] h-[600px] bg-[#166534]/30 rounded-full blur-[150px]" />
-        {/* Accent glow center */}
-        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-[#EAB308]/5 rounded-full blur-[120px]" />
+        {/* Ambient lighting glows */}
+        <div className="pointer-events-none absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#EAB308]/10 rounded-full blur-[160px]" />
+        <div className="pointer-events-none absolute bottom-10 left-10 w-[400px] h-[400px] bg-[#166534]/50 rounded-full blur-[140px]" />
+        <div className="pointer-events-none absolute top-20 right-10 w-[400px] h-[400px] bg-[#EAB308]/8 rounded-full blur-[140px]" />
 
-        <div className="relative z-10 mx-auto max-w-6xl w-full">
-          <div className="flex flex-col gap-16 lg:flex-row lg:items-center lg:justify-between">
-            {/* Left: Title + Description */}
-            <div className="max-w-2xl">
-              {/* Typed title */}
-              <h1 className="mb-8 text-4xl font-extrabold uppercase tracking-wide text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.12)] sm:text-5xl lg:text-6xl leading-[1.1]">
-                {typedName}
-                <span className="ml-1 inline-block animate-[blink_1s_step-end_infinite] text-[#EAB308]">▌</span>
-              </h1>
+        {/* ══════════════════════════════════════════
+            ANFORCOM SIGNATURE 3D VORTEX BADGES & CONSTELLATION SVG (Desktop PC Only)
+        ══════════════════════════════════════════ */}
+        <div
+          ref={badgeContainerRef}
+          className="pointer-events-none absolute inset-0 z-10 hidden lg:block overflow-hidden"
+        >
+          {/* SVG Constellation Laser Lines */}
+          <svg className="absolute inset-0 h-full w-full opacity-40">
+            <defs>
+              <linearGradient id="anforGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#EAB308" stopOpacity="0.6" />
+                <stop offset="100%" stopColor="#10B981" stopOpacity="0.1" />
+              </linearGradient>
+            </defs>
+            {badges.map((b, idx) => {
+              const isLeft = !!b.left;
+              const startX = '50%';
+              const startY = '40%';
+              const endX = isLeft ? b.left : `calc(100% - ${b.right})`;
+              const endY = b.top;
 
-              <p className="text-base leading-relaxed text-white/65 sm:text-lg max-w-xl">{comp.fullDesc}</p>
+              return (
+                <line
+                  key={`line-${idx}`}
+                  ref={(el) => (svgLinesRef.current[idx] = el)}
+                  x1={startX}
+                  y1={startY}
+                  x2={endX}
+                  y2={endY}
+                  stroke="url(#anforGlow)"
+                  strokeWidth="1.2"
+                  strokeDasharray="4 6"
+                  style={{ opacity: 0.45 }}
+                />
+              );
+            })}
+          </svg>
 
-              {/* Buttons */}
-              <div className="mt-10 flex flex-wrap gap-4">
-                {comp.guidebookFile && (
-                  <a
-                    href={comp.guidebookFile}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/5 px-7 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white/30 hover:bg-white/10 hover:shadow-lg hover:shadow-white/5"
-                  >
-                    <Download className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5" />
-                    Rulebook
-                  </a>
-                )}
-                <Link
-                  to="/register"
-                  className="group inline-flex items-center gap-2 rounded-full bg-[#EAB308] px-8 py-3.5 text-sm font-bold text-[#14532D] shadow-lg shadow-[#EAB308]/20 transition-all duration-300 hover:-translate-y-1 hover:bg-[#FACC15] hover:shadow-xl hover:shadow-[#EAB308]/30"
+          {/* Floating 3D Vortex Badges */}
+          {badges.map((b) => {
+            const BadgeIcon = b.icon || Icon;
+
+            return (
+              <div
+                key={b.id}
+                className="absolute transition-transform duration-75 ease-out [transform-style:preserve-3d] [will-change:transform,opacity]"
+                style={{
+                  top: b.top,
+                  left: b.left,
+                  right: b.right,
+                  transform: `translate3d(0px, 0px, 0) rotate(${b.rot}deg)`,
+                }}
+              >
+                <div
+                  className="group flex items-center gap-3.5 rounded-3xl bg-gradient-to-br from-white/20 via-white/10 to-white/[0.04] px-5.5 py-4 shadow-[inset_0_1.5px_1.5px_rgba(255,255,255,0.45),0_20px_40px_-15px_rgba(0,0,0,0.5)] backdrop-blur-2xl animate-[bounce_5s_easeInOut_infinite] hover:from-white/30 hover:to-white/15 hover:shadow-[inset_0_2px_3px_rgba(255,255,255,0.7),0_25px_50px_-10px_rgba(234,179,8,0.3)] hover:scale-105 transition-all duration-500"
+                  style={{ animationDelay: b.floatDelay }}
                 >
-                  Daftar Sekarang
-                  <ChevronRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5" />
-                </Link>
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-[#EAB308] shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.35)] backdrop-blur-md group-hover:scale-110 transition-transform duration-300">
+                    {b.image ? (
+                      <img src={b.image} alt={b.text} className="h-7.5 w-7.5 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]" />
+                    ) : (
+                      <BadgeIcon className="h-6 w-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]" />
+                    )}
+                  </div>
+                  <p className="text-sm font-extrabold text-white tracking-wide pr-1 sm:text-base drop-shadow-[0_2px_4px_rgba(0,0,0,0.4)]">{b.text}</p>
+                </div>
               </div>
-            </div>
+            );
+          })}
+        </div>
 
-            {/* Right: Countdown */}
-            <div className="flex flex-col items-center gap-8">
-              {/* Countdown box */}
-              <div className="rounded-[28px] border border-white/10 bg-white/[0.04] px-8 py-8 backdrop-blur-xl shadow-2xl shadow-black/30 sm:px-10">
-                {countdownState.status === 'countdown' ? (
-                  <>
-                    <p className="mb-2 text-center text-xs font-bold tracking-[0.25em] uppercase text-[#EAB308]">
-                      Batch {countdownState.batch} — Ditutup dalam
-                    </p>
-                    <div className="mb-5 flex items-center justify-center gap-1.5 text-white/50">
-                      <Clock className="h-3.5 w-3.5" />
-                      <span className="text-xs font-medium">
-                        {formatDeadlineDate(countdownState.closeDate)}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-2 sm:gap-3">
-                      {[
-                        { value: timeLeft.days, label: 'Hari' },
-                        { value: timeLeft.hours, label: 'Jam' },
-                        { value: timeLeft.minutes, label: 'Menit' },
-                        { value: timeLeft.seconds, label: 'Detik' },
-                      ].map((unit, i) => (
-                        <div key={unit.label} className="flex items-center gap-2 sm:gap-3">
-                          <div className="flex flex-col items-center">
-                            <div className="flex h-[64px] w-[64px] items-center justify-center rounded-2xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] sm:h-[76px] sm:w-[76px]">
-                              <span className="text-2xl font-black tabular-nums text-white drop-shadow-[0_0_8px_rgba(255,255,255,0.15)] sm:text-3xl">{pad(unit.value)}</span>
-                            </div>
-                            <span className="mt-2 text-[9px] font-semibold tracking-[0.15em] text-white/40 uppercase">{unit.label}</span>
-                          </div>
-                          {i < 3 && <span className="mb-6 text-xl font-black text-[#EAB308]/40">:</span>}
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                ) : countdownState.status === 'not_open' ? (
-                  <div className="text-center py-4">
-                    <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#EAB308] mb-3">
-                      ⏳ Pendaftaran Belum Dibuka
-                    </p>
-                    <div className="flex items-center justify-center gap-1.5 text-white/50">
-                      <Clock className="h-3.5 w-3.5" />
-                      <span className="text-xs font-medium">Dibuka {formatDeadlineDate(countdownState.openDate)}</span>
-                    </div>
+        {/* ══════════════════════════════════════════
+            HERO MAIN CONTENT
+        ══════════════════════════════════════════ */}
+        <div className="relative z-20 mx-auto max-w-4xl w-full flex flex-col items-center">
+
+          {/* Main Title (Structured 2 Lines with Division Highlight) */}
+          <h1 className="mb-6 text-3xl sm:text-5xl lg:text-6xl font-extrabold uppercase tracking-tight text-white drop-shadow-[0_0_35px_rgba(255,255,255,0.18)] leading-[1.08] max-w-5xl text-center">
+            {slug === 'dcpc' ? (
+              <>
+                <span className="block text-white/90 text-2xl sm:text-4xl lg:text-5xl font-semibold mb-1">Diponegoro</span>
+                <span className="block text-white">
+                  <span className="text-[#EAB308]">Competitive Programming</span> Competition
+                </span>
+              </>
+            ) : slug === 'duc' ? (
+              <>
+                <span className="block text-white/90 text-2xl sm:text-4xl lg:text-5xl font-semibold mb-1">Diponegoro</span>
+                <span className="block text-white">
+                  <span className="text-[#EAB308]">UI/UX Design</span> Competition
+                </span>
+              </>
+            ) : slug === 'dsdc' ? (
+              <>
+                <span className="block text-white/90 text-2xl sm:text-4xl lg:text-5xl font-semibold mb-1">Diponegoro</span>
+                <span className="block text-white">
+                  <span className="text-[#EAB308]">Software Development</span> Competition
+                </span>
+              </>
+            ) : (
+              typedName
+            )}
+          </h1>
+
+          {/* Description */}
+          <p className="mb-10 text-base leading-relaxed text-white/70 sm:text-lg max-w-2xl text-center">
+            {comp.fullDesc}
+          </p>
+
+          {/* Action Buttons */}
+          <div className="mb-14 flex flex-wrap items-center justify-center gap-4">
+            <Link
+              to="/register"
+              className="group inline-flex items-center gap-2.5 rounded-full bg-[#EAB308] px-9 py-4 text-base font-bold text-[#14532D] shadow-xl shadow-[#EAB308]/25 transition-all duration-300 hover:-translate-y-1 hover:bg-[#FACC15] hover:shadow-2xl hover:shadow-[#EAB308]/40"
+            >
+              Daftar Sekarang
+              <ChevronRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+            </Link>
+            {comp.guidebookFile && (
+              <a
+                href={comp.guidebookFile}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-2.5 rounded-full border border-white/20 bg-white/10 px-8 py-4 text-base font-semibold text-white backdrop-blur-md transition-all duration-300 hover:border-white/40 hover:bg-white/15 hover:shadow-xl hover:shadow-white/10"
+              >
+                <Download className="h-5 w-5 transition-transform duration-300 group-hover:-translate-y-0.5" />
+                Rulebook
+              </a>
+            )}
+          </div>
+
+          {/* Countdown Section — Minimal Horizontal Banner Format */}
+          <div className="w-full max-w-2xl py-6 px-4 rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-md shadow-2xl">
+            {countdownState.status === 'countdown' ? (
+              <div className="flex flex-col items-center justify-center text-center">
+                {/* Top Label */}
+                <p className="text-xs sm:text-sm font-black tracking-[0.3em] uppercase text-[#EAB308] mb-3">
+                  BATCH {countdownState.batch} — DITUTUP DALAM
+                </p>
+
+                {/* Inline Numbers & Colons */}
+                <div className="flex items-center justify-center gap-2 sm:gap-4 my-1">
+                  <div className="flex items-baseline justify-center min-w-[2.5rem] sm:min-w-[4rem]">
+                    <span className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight tabular-nums text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                      {pad(timeLeft.days)}
+                    </span>
                   </div>
-                ) : countdownState.status === 'between_batches' ? (
-                  <div className="text-center py-4">
-                    <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#EAB308] mb-3">
-                      Batch {countdownState.prevBatch} Telah Ditutup
-                    </p>
-                    <div className="flex items-center justify-center gap-1.5 text-white/50">
-                      <Clock className="h-3.5 w-3.5" />
-                      <span className="text-xs font-medium">Batch {countdownState.nextBatch} dibuka {formatDeadlineDate(countdownState.nextOpenDate)}</span>
-                    </div>
+                  <span className="text-2xl sm:text-4xl font-black text-[#EAB308] animate-pulse">:</span>
+
+                  <div className="flex items-baseline justify-center min-w-[2.5rem] sm:min-w-[4rem]">
+                    <span className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight tabular-nums text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                      {pad(timeLeft.hours)}
+                    </span>
                   </div>
-                ) : countdownState.status === 'closed' ? (
-                  <div className="text-center py-4">
-                    <p className="text-xs font-bold tracking-[0.25em] uppercase text-white/50">
-                      🔒 Pendaftaran Ditutup
-                    </p>
+                  <span className="text-2xl sm:text-4xl font-black text-[#EAB308] animate-pulse">:</span>
+
+                  <div className="flex items-baseline justify-center min-w-[2.5rem] sm:min-w-[4rem]">
+                    <span className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight tabular-nums text-white drop-shadow-[0_0_15px_rgba(255,255,255,0.3)]">
+                      {pad(timeLeft.minutes)}
+                    </span>
                   </div>
-                ) : countdownState.status === 'tba' ? (
-                  <div className="text-center py-4">
-                    <p className="text-xs font-bold tracking-[0.25em] uppercase text-[#EAB308] mb-2">
-                      📅 Jadwal Menyusul
-                    </p>
-                    <p className="text-xs text-white/40 font-medium">
-                      Soon to be announced!
-                    </p>
+                  <span className="text-2xl sm:text-4xl font-black text-[#EAB308] animate-pulse">:</span>
+
+                  <div className="flex items-baseline justify-center min-w-[2.5rem] sm:min-w-[4rem]">
+                    <span className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight tabular-nums text-[#EAB308] drop-shadow-[0_0_20px_rgba(234,179,8,0.4)]">
+                      {pad(timeLeft.seconds)}
+                    </span>
                   </div>
-                ) : null}
+                </div>
+
+                {/* Bottom Unit Labels */}
+                <div className="flex items-center justify-center gap-2 sm:gap-4 mt-2">
+                  <span className="min-w-[2.5rem] sm:min-w-[4rem] text-center text-[10px] sm:text-xs font-bold tracking-[0.25em] text-white/50 uppercase">
+                    HARI
+                  </span>
+                  <span className="text-[10px] sm:text-xs font-bold text-transparent">:</span>
+                  <span className="min-w-[2.5rem] sm:min-w-[4rem] text-center text-[10px] sm:text-xs font-bold tracking-[0.25em] text-white/50 uppercase">
+                    JAM
+                  </span>
+                  <span className="text-[10px] sm:text-xs font-bold text-transparent">:</span>
+                  <span className="min-w-[2.5rem] sm:min-w-[4rem] text-center text-[10px] sm:text-xs font-bold tracking-[0.25em] text-white/50 uppercase">
+                    MENIT
+                  </span>
+                  <span className="text-[10px] sm:text-xs font-bold text-transparent">:</span>
+                  <span className="min-w-[2.5rem] sm:min-w-[4rem] text-center text-[10px] sm:text-xs font-bold tracking-[0.25em] text-[#EAB308]/70 uppercase">
+                    DETIK
+                  </span>
+                </div>
               </div>
-            </div>
+            ) : countdownState.status === 'not_open' ? (
+              <div className="text-center py-2">
+                <p className="text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-[#EAB308] mb-2">
+                  ⏳ Pendaftaran Belum Dibuka
+                </p>
+                <div className="flex items-center justify-center gap-1.5 text-white/60 text-xs font-medium">
+                  <Clock className="h-3.5 w-3.5" />
+                  <span>Dibuka {formatDeadlineDate(countdownState.openDate)}</span>
+                </div>
+              </div>
+            ) : countdownState.status === 'between_batches' ? (
+              <div className="text-center py-2">
+                <p className="text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-[#EAB308] mb-2">
+                  Batch {countdownState.prevBatch} Telah Ditutup
+                </p>
+                <div className="flex items-center justify-center gap-1.5 text-white/60 text-xs font-medium">
+                  <Clock className="h-3.5 w-3.5" />
+                  <span>Batch {countdownState.nextBatch} dibuka {formatDeadlineDate(countdownState.nextOpenDate)}</span>
+                </div>
+              </div>
+            ) : countdownState.status === 'closed' ? (
+              <div className="text-center py-2">
+                <p className="text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-white/60">
+                  🔒 Pendaftaran Ditutup
+                </p>
+              </div>
+            ) : countdownState.status === 'tba' ? (
+              <div className="text-center py-2">
+                <p className="text-xs sm:text-sm font-bold tracking-[0.2em] uppercase text-[#EAB308] mb-1">
+                  📅 Jadwal Menyusul
+                </p>
+                <p className="text-xs text-white/50 font-medium">Soon to be announced!</p>
+              </div>
+            ) : null}
           </div>
         </div>
 
-        {/* Bottom gradient fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#14532D] to-transparent" />
+        {/* Bottom gradient fade to next section */}
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-[#14532D] to-transparent pointer-events-none" />
       </section>
 
       {/* ══════════════════════════════════════════
