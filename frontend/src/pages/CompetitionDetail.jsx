@@ -108,6 +108,8 @@ export default function CompetitionDetail() {
   }, [comp]);
 
 
+
+
   /* ── ANFORCOM Signature: Ultra-Fast Zero-Re-render 3D Vortex Scroll Parallax (Desktop PC Only) ── */
   const badgeContainerRef = useRef(null);
   const svgLinesRef = useRef([]);
@@ -179,7 +181,6 @@ export default function CompetitionDetail() {
     };
 
     const handleMouseMove = (e) => {
-      // Only track mouse when near top of page
       if (window.innerWidth < 1024 || window.scrollY > 300) return;
       const { innerWidth, innerHeight } = window;
       mouseX = (e.clientX - innerWidth / 2) / (innerWidth / 2);
@@ -238,6 +239,8 @@ export default function CompetitionDetail() {
 
   const badges = competitionBadges[slug] || competitionBadges.duc;
 
+
+
   return (
     <div className="min-h-screen bg-[#14532D] text-white select-none overflow-x-hidden">
 
@@ -282,6 +285,8 @@ export default function CompetitionDetail() {
         <div className="pointer-events-none absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#EAB308]/10 rounded-full blur-[160px]" />
         <div className="pointer-events-none absolute bottom-10 left-10 w-[400px] h-[400px] bg-[#166534]/50 rounded-full blur-[140px]" />
         <div className="pointer-events-none absolute top-20 right-10 w-[400px] h-[400px] bg-[#EAB308]/8 rounded-full blur-[140px]" />
+
+
 
         {/* ══════════════════════════════════════════
             ANFORCOM SIGNATURE 3D VORTEX BADGES & CONSTELLATION SVG (Desktop PC Only)
@@ -329,7 +334,7 @@ export default function CompetitionDetail() {
             return (
               <div
                 key={b.id}
-                className="absolute transition-transform duration-75 ease-out [transform-style:preserve-3d] [will-change:transform,opacity]"
+                className="absolute transition-transform duration-75 ease-out [transform-style:preserve-3d] transform-gpu [backface-visibility:hidden] [perspective:1000px] [will-change:transform,opacity]"
                 style={{
                   top: b.top,
                   left: b.left,
@@ -338,12 +343,12 @@ export default function CompetitionDetail() {
                 }}
               >
                 <div
-                  className="group flex items-center gap-3.5 rounded-3xl bg-gradient-to-br from-white/20 via-white/10 to-white/[0.04] px-5.5 py-4 shadow-[inset_0_1.5px_1.5px_rgba(255,255,255,0.45),0_20px_40px_-15px_rgba(0,0,0,0.5)] backdrop-blur-2xl animate-[bounce_5s_easeInOut_infinite] hover:from-white/30 hover:to-white/15 hover:shadow-[inset_0_2px_3px_rgba(255,255,255,0.7),0_25px_50px_-10px_rgba(234,179,8,0.3)] hover:scale-105 transition-all duration-500"
+                  className="group flex items-center gap-3.5 rounded-3xl bg-gradient-to-br from-white/20 via-white/10 to-white/[0.04] px-5.5 py-4 shadow-[inset_0_1.5px_1.5px_rgba(255,255,255,0.45),0_20px_40px_-15px_rgba(0,0,0,0.5)] backdrop-blur-2xl animate-[bounce_5s_easeInOut_infinite] hover:from-white/30 hover:to-white/15 hover:shadow-[inset_0_2px_3px_rgba(255,255,255,0.7),0_25px_50px_-10px_rgba(234,179,8,0.3)] hover:scale-105 transition-all duration-500 transform-gpu [backface-visibility:hidden]"
                   style={{ animationDelay: b.floatDelay }}
                 >
                   <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/15 text-[#EAB308] shadow-[inset_0_1px_1.5px_rgba(255,255,255,0.35)] backdrop-blur-md group-hover:scale-110 transition-transform duration-300">
                     {b.image ? (
-                      <img src={b.image} alt={b.text} className="h-7.5 w-7.5 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]" />
+                      <img src={b.image} alt={b.text} decoding="async" loading="eager" className="h-7.5 w-7.5 object-contain drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]" />
                     ) : (
                       <BadgeIcon className="h-6 w-6 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)]" />
                     )}
@@ -354,10 +359,6 @@ export default function CompetitionDetail() {
             );
           })}
         </div>
-
-        {/* ══════════════════════════════════════════
-            HERO MAIN CONTENT
-        ══════════════════════════════════════════ */}
         <div className="relative z-20 mx-auto max-w-4xl w-full flex flex-col items-center">
 
           {/* Main Title (Structured 2 Lines with Division Highlight) */}
