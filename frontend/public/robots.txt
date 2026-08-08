@@ -1,0 +1,10 @@
+# www.robotstxt.org/
+# ANFORCOM 2026 — Robots.txt Instruction for Search Engine Crawlers (Googlebot, Bingbot, etc.)
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+
+# Sitemap Location for Google Search Console
+Sitemap: https://app.anforcom.com/sitemap.xml
