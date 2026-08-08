@@ -926,7 +926,7 @@ export class TeamRepository{
     
     async bisaUpProposal(Idteam:number){
         const sql = `
-            select tim_lomba 
+            select tim_lomba,isVerified 
             from tim 
             where id = ?
         `;
@@ -935,6 +935,7 @@ export class TeamRepository{
              return { success: false, message: `Unable to find??` };
         } 
         if (result[0].tim_lomba != 1 && result[0].tim_lomba != 3) return { success: false, message: `Anda tidak perlu proposal untuk kategori tersebut?` };
+        if (!result[0].isVerified) return { success: false, message: `Tim anda belum diverifikasi, anda tidak bisa upload proposal!` };
         return  { success: true, message: `Valid` };
     }
 
