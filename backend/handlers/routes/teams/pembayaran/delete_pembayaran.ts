@@ -17,7 +17,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   let result = await authRepo.timIdCheck(json.userId,Number(tim_id));
   if (result.length == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 }) 
   let dah_verif = await authRepo.isVerifiedCek(Number(tim_id));
-  if(dah_verif) return Response.json({ success: false, error: "Akun anda telah diverifikasi,anda tidak bisa melakukan penghapusan akun" }, { status: 401 })
+  if(dah_verif) return Response.json({ success: false, error: "Akun anda telah diverifikasi,anda tidak bisa melakukan delete bukti" }, { status: 401 })
   
   let result2 = await authRepo.deletePembayaran(tim_id);
   
