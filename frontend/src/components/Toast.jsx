@@ -60,7 +60,7 @@ export default function ToastHost() {
   // Auto-dismiss
   useEffect(() => {
     if (!toast) return;
-    const timer = setTimeout(() => setToast(null), 3500);
+    const timer = setTimeout(() => setToast(null), 20000);
     return () => clearTimeout(timer);
   }, [toast]);
 
