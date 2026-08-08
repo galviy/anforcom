@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Users, CheckCircle, MonitorSmartphone, TerminalSquare, Code2 } from 'lucide-react';
 import { userAPI, teamAPI } from '../api/api';
+import { showToast } from '../components/Toast';
 
 // Backend TIDAK punya endpoint untuk mengambil daftar lomba, jadi daftar ini
 // didefinisikan statis di sini. Harus selalu sinkron dengan:
@@ -78,6 +79,7 @@ export default function CreateTeam() {
       }
 
       setSuccess(true);
+      showToast(response?.message || 'Tim berhasil dibuat!');
       setTimeout(() => {
         navigate('/dashboard?tab=teams');
       }, 1500);

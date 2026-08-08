@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { User, Users, Plus, LogOut, Settings, FileText, Trash2, Edit, X, AlertCircle, CheckCircle, Receipt, QrCode, Maximize2, Image as ImageIcon } from 'lucide-react';
+import { User, Users, Plus, LogOut, Settings, FileText, Trash2, Edit, X, AlertCircle, CheckCircle, Receipt, QrCode, Maximize2, Image as ImageIcon, MonitorSmartphone, TerminalSquare, Code2, Trophy, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { userAPI, teamAPI, authAPI } from '../api/api';
+import { showToast } from '../components/Toast';
 import PasswordInput from '../components/PasswordInput';
 
 const MAX_MEMBERS_PER_TEAM = 3;
 
-// tipe_lomba (kolom `tim_lomba` di DB) -> emoji & nama singkat, biar user
+// tipe_lomba (kolom `tim_lomba` di DB) -> ikon & nama singkat, biar user
 // langsung tau tim itu ikut bidang apa cuma dari sekilas lihat daftar tim.
-// Harus sinkron sama ALL_LOMBA di CreateTeam.jsx (id 1=DUC, 2=DCPC, 3=DSDC).
+// Ikon-nya HARUS sama dengan yang dipakai di ALL_LOMBA (CreateTeam.jsx) biar
+// konsisten di seluruh app (id 1=DUC, 2=DCPC, 3=DSDC).
 const LOMBA_INFO = {
-  1: { emoji: '🎨', label: 'DUC — UI/UX' },
-  2: { emoji: '💻', label: 'DCPC — Competitive Programming' },
-  3: { emoji: '🛠️', label: 'DSDC — Software Development' },
+  1: { icon: MonitorSmartphone, abbr: 'DUC', label: 'DUC — UI/UX' },
+  2: { icon: TerminalSquare, abbr: 'DCPC', label: 'DCPC — Competitive Programming' },
+  3: { icon: Code2, abbr: 'DSDC', label: 'DSDC — Software Development' },
 };
 
 function getGreeting() {
@@ -187,7 +189,7 @@ export default function Dashboard() {
     if (!window.confirm('Yakin ingin menghapus tim ini? Semua anggota juga akan dihapus.')) return;
     setActionError('');
     try {
-      await teamAPI.deleteTeam(timId);
+      const res = await teamAPI.deleteTeam(timId);
       if (expandedTeamId === timId) {
         setExpandedTeamId(null);
         setActivePanel(null);
@@ -195,6 +197,7 @@ export default function Dashboard() {
       }
       if (viewingProposalTeamId === timId) setViewingProposalTeamId(null);
       await refreshTeams();
+      showToast(res?.message || 'Tim berhasil dihapus.');
     } catch (err) {
       setActionError(err.message || 'Gagal menghapus tim.');
     }
@@ -204,9 +207,10 @@ export default function Dashboard() {
     if (!window.confirm('Yakin ingin mengeluarkan anggota ini dari tim?')) return;
     setActionError('');
     try {
-      await teamAPI.deleteUserTeam(timId, memberId);
-      const res = await teamAPI.getTeamMembers(timId);
-      setMembers(res?.data || []);
+      const res = await teamAPI.deleteUserTeam(timId, memberId);
+      const teamRes = await teamAPI.getTeamMembers(timId);
+      setMembers(teamRes?.data || []);
+      showToast(res?.message || 'Anggota berhasil dikeluarkan.');
     } catch (err) {
       setActionError(err.message || 'Gagal mengeluarkan anggota.');
     }
@@ -236,11 +240,12 @@ export default function Dashboard() {
 
     try {
       setTwibbonUploading(true);
-      await teamAPI.uploadTwibbon(memberId, twibbonFile);
-      const res = await teamAPI.getTeamMembers(timId);
-      setMembers(res?.data || []);
+      const res = await teamAPI.uploadTwibbon(memberId, twibbonFile);
+      const teamRes = await teamAPI.getTeamMembers(timId);
+      setMembers(teamRes?.data || []);
       setTwibbonFile(null);
       setViewingTwibbonMemberId(memberId);
+      showToast(res?.message || 'Twibbon berhasil diupload.');
     } catch (err) {
       setTwibbonError(err.message || 'Gagal upload twibbon.');
     } finally {
@@ -252,10 +257,11 @@ export default function Dashboard() {
     if (!window.confirm('Yakin ingin menghapus twibbon ini? Kamu perlu upload ulang setelahnya.')) return;
     setTwibbonError('');
     try {
-      await teamAPI.deleteTwibbon(memberId);
-      const res = await teamAPI.getTeamMembers(timId);
-      setMembers(res?.data || []);
+      const res = await teamAPI.deleteTwibbon(memberId);
+      const teamRes = await teamAPI.getTeamMembers(timId);
+      setMembers(teamRes?.data || []);
       setViewingTwibbonMemberId(null);
+      showToast(res?.message || 'Twibbon berhasil dihapus.');
     } catch (err) {
       setTwibbonError(err.message || 'Gagal menghapus twibbon.');
     }
@@ -292,7 +298,7 @@ export default function Dashboard() {
 
     try {
       setAddingLoading(true);
-      await teamAPI.addUserTeam({
+      const res = await teamAPI.addUserTeam({
         timId,
         namaLengkap: memberForm.nama_lengkap,
         asalInstansi: memberForm.asal_instansi,
@@ -300,8 +306,9 @@ export default function Dashboard() {
         photoFile: memberForm.photo,
       });
       setAddingToTeamId(null);
-      const res = await teamAPI.getTeamMembers(timId);
-      setMembers(res?.data || []);
+      const teamRes = await teamAPI.getTeamMembers(timId);
+      setMembers(teamRes?.data || []);
+      showToast(res?.message || 'Anggota berhasil ditambahkan.');
     } catch (err) {
       setAddingError(err.message || 'Gagal menambahkan anggota.');
     } finally {
@@ -369,6 +376,7 @@ export default function Dashboard() {
       setEditingMemberId(null);
       const res = await teamAPI.getTeamMembers(timId);
       setMembers(res?.data || []);
+      showToast('Data anggota berhasil diperbarui.');
     } catch (err) {
       setEditError(err.message || 'Gagal menyimpan perubahan anggota.');
     } finally {
@@ -409,6 +417,7 @@ export default function Dashboard() {
       const res = await userAPI.updatePassword(passwordForm.old_pass, passwordForm.new_pass);
       setPasswordSuccess(res?.message || 'Password berhasil diganti.');
       setPasswordForm({ old_pass: '', new_pass: '', confirm_pass: '' });
+      showToast(res?.message || 'Password berhasil diganti.');
     } catch (err) {
       // Pesan error persis dari backend, misal "Password anda salah"
       setPasswordError(err.message || 'Gagal mengganti password.');
@@ -433,10 +442,11 @@ export default function Dashboard() {
 
     try {
       setProposalUploading(true);
-      await teamAPI.addProposal(timId, proposalFile);
+      const res = await teamAPI.addProposal(timId, proposalFile);
       await refreshTeams();
       setProposalFile(null);
       setViewingProposalTeamId(timId);
+      showToast(res?.message || 'Proposal berhasil diupload.');
     } catch (err) {
       // Pesan persis dari backend, mis. alasan tim tidak eligible upload proposal
       setProposalError(err.message || 'Gagal upload proposal.');
@@ -449,9 +459,10 @@ export default function Dashboard() {
     if (!window.confirm('Yakin ingin menghapus proposal ini? Kamu perlu upload ulang setelahnya.')) return;
     setProposalError('');
     try {
-      await teamAPI.deleteProposal(timId);
+      const res = await teamAPI.deleteProposal(timId);
       await refreshTeams();
       setViewingProposalTeamId(null);
+      showToast(res?.message || 'Proposal berhasil dihapus.');
     } catch (err) {
       setProposalError(err.message || 'Gagal menghapus proposal.');
     }
@@ -474,10 +485,11 @@ export default function Dashboard() {
 
     try {
       setPaymentUploading(true);
-      await teamAPI.uploadPembayaran(timId, paymentFile);
+      const res = await teamAPI.uploadPembayaran(timId, paymentFile);
       await refreshTeams();
       setPaymentFile(null);
       setViewingPembayaranTeamId(timId);
+      showToast(res?.message || 'Bukti pembayaran berhasil diupload.');
     } catch (err) {
       // Pesan persis dari backend
       setPaymentError(err.message || 'Gagal upload bukti pembayaran.');
@@ -490,15 +502,34 @@ export default function Dashboard() {
     if (!window.confirm('Yakin ingin menghapus bukti pembayaran ini? Kamu perlu upload ulang setelahnya.')) return;
     setPaymentError('');
     try {
-      await teamAPI.deletePembayaran(timId);
+      const res = await teamAPI.deletePembayaran(timId);
       await refreshTeams();
       setViewingPembayaranTeamId(null);
+      showToast(res?.message || 'Bukti pembayaran berhasil dihapus.');
     } catch (err) {
       setPaymentError(err.message || 'Gagal menghapus bukti pembayaran.');
     }
   };
 
   const avatarInitial = (user?.username || 'U').trim().charAt(0).toUpperCase();
+
+  // Sidebar bisa disembunyikan, preferensinya diingat lewat localStorage biar
+  // gak balik ke default tiap refresh/buka lagi.
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    try {
+      return localStorage.getItem('anforcom_sidebar_open') !== 'false';
+    } catch {
+      return true;
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('anforcom_sidebar_open', String(sidebarOpen));
+    } catch {
+      // no-op
+    }
+  }, [sidebarOpen]);
 
   if (loading) {
     return (
@@ -553,14 +584,24 @@ export default function Dashboard() {
       <div className="sticky top-0 z-50 w-full px-4 pt-4 sm:px-6 sm:pt-5 pb-2">
         <nav className="relative mx-auto max-w-6xl rounded-[32px] border-l-4 border-[#EAB308] bg-[#14532D]/60 backdrop-blur-md shadow-lg shadow-black/15 transition-all duration-300">
           <div className="flex items-center justify-between px-5 py-3 sm:px-7 sm:py-3.5">
-            <Link
-              to="/"
-              className="flex shrink-0 items-center gap-2 text-[#F5F5DC] no-underline rounded-lg"
-            >
-              <span className="text-lg font-bold tracking-wide sm:text-xl">
-                ANFORCOM <span className="font-semibold text-[#EAB308]">2026</span>
-              </span>
-            </Link>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setSidebarOpen((v) => !v)}
+                title={sidebarOpen ? 'Sembunyikan sidebar' : 'Tampilkan sidebar'}
+                aria-label={sidebarOpen ? 'Sembunyikan sidebar' : 'Tampilkan sidebar'}
+                className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/[0.06] text-[#F5F5DC]/70 transition-all duration-200 hover:border-[#EAB308]/40 hover:text-[#EAB308]"
+              >
+                {sidebarOpen ? <PanelLeftClose className="h-4 w-4" /> : <PanelLeftOpen className="h-4 w-4" />}
+              </button>
+              <Link
+                to="/"
+                className="flex shrink-0 items-center gap-2 text-[#F5F5DC] no-underline rounded-lg"
+              >
+                <span className="text-lg font-bold tracking-wide sm:text-xl">
+                  ANFORCOM <span className="font-semibold text-[#EAB308]">2026</span>
+                </span>
+              </Link>
+            </div>
             <div
               className="inline-flex items-center gap-2.5 rounded-full border border-white/15 bg-white/[0.06] px-4 py-1.5 text-sm text-[#F5F5DC]/90"
             >
@@ -574,10 +615,13 @@ export default function Dashboard() {
       </div>
 
       {/* ── Dashboard body ── */}
-      <div className="relative z-10 mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:grid lg:grid-cols-[260px_1fr] lg:gap-6 lg:items-start">
+      <div className={`relative z-10 mx-auto max-w-6xl px-4 py-6 sm:px-6 lg:grid lg:gap-6 lg:items-start ${
+        sidebarOpen ? 'lg:grid-cols-[260px_1fr]' : 'lg:grid-cols-[1fr]'
+      }`}>
 
         {/* ── Sidebar ── */}
-        <aside className="mb-6 lg:mb-0 lg:sticky lg:top-[80px] rounded-[24px] border border-white/15 bg-[#F5F5DC]/[0.06] backdrop-blur-md p-6 flex flex-col items-center gap-5 shadow-xl shadow-black/10">
+        {sidebarOpen && (
+        <aside className="mb-6 lg:mb-0 lg:sticky lg:top-[80px] rounded-[24px] border border-white/15 bg-[#F5F5DC]/[0.06] backdrop-blur-md p-6 flex flex-col items-center gap-5 shadow-xl shadow-black/10 animate-toast-in">
           {/* Avatar */}
           <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#EAB308] to-[#65A30D] text-3xl font-bold text-[#14532D] shadow-lg shadow-[#EAB308]/20">
             {avatarInitial}
@@ -643,6 +687,7 @@ export default function Dashboard() {
             </button>
           </nav>
         </aside>
+        )}
 
         {/* ── Main content ── */}
         <main className="flex flex-col gap-6">
@@ -794,14 +839,22 @@ export default function Dashboard() {
                 {teams.map((t) => (
                   <li key={t.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
                     <div className="flex items-center justify-between flex-wrap gap-3">
-                      <span className="flex items-center gap-2 flex-wrap">
-                        <span
-                          className="text-lg leading-none"
-                          title={LOMBA_INFO[t.tipe_lomba]?.label || 'Cabang lomba tidak diketahui'}
-                          aria-label={LOMBA_INFO[t.tipe_lomba]?.label || 'Cabang lomba tidak diketahui'}
-                        >
-                          {LOMBA_INFO[t.tipe_lomba]?.emoji || '🏆'}
-                        </span>
+                      <span className="flex items-center gap-3 flex-wrap">
+                        {(() => {
+                          const LombaIcon = LOMBA_INFO[t.tipe_lomba]?.icon || Trophy;
+                          return (
+                            <span
+                              className="flex flex-col items-center gap-0.5"
+                              title={LOMBA_INFO[t.tipe_lomba]?.label || 'Cabang lomba tidak diketahui'}
+                              aria-label={LOMBA_INFO[t.tipe_lomba]?.label || 'Cabang lomba tidak diketahui'}
+                            >
+                              <LombaIcon className="h-5 w-5 text-[#EAB308]" />
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-[#F5F5DC]/50">
+                                {LOMBA_INFO[t.tipe_lomba]?.abbr || '—'}
+                              </span>
+                            </span>
+                          );
+                        })()}
                         <span className="font-semibold text-[#F5F5DC]">{t.nama_tim}</span>
                         <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
                           t.isVerified
@@ -957,7 +1010,7 @@ export default function Dashboard() {
                                     </button>
                                     <button
                                       className={`inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs font-semibold transition-all ${
-                                        m.twibbon
+                                        m.data_twibbon
                                           ? 'border-[#EAB308]/25 bg-[#EAB308]/10 text-[#EAB308] hover:bg-[#EAB308]/20'
                                           : 'border-white/15 bg-white/[0.06] text-[#F5F5DC]/80 hover:border-[#EAB308]/40 hover:text-[#EAB308]'
                                       }`}
@@ -984,7 +1037,7 @@ export default function Dashboard() {
                                     <form onSubmit={(e) => handleTwibbonSubmit(e, t.id, m.id)}>
                                       <div className="mb-3">
                                         <label className="mb-1.5 block text-xs font-semibold uppercase tracking-widest text-[#F5F5DC]/50">
-                                          {m.twibbon ? 'Ganti Foto Twibbon' : 'Upload Foto Twibbon'}
+                                          {m.data_twibbon ? 'Ganti Foto Twibbon' : 'Upload Foto Twibbon'}
                                         </label>
                                         <input
                                           type="file"
@@ -997,9 +1050,9 @@ export default function Dashboard() {
                                       </div>
                                       <div className="flex gap-2 flex-wrap">
                                         <button type="submit" className="rounded-full bg-[#EAB308] px-5 py-2 text-xs font-bold text-[#14532D] shadow-lg shadow-[#EAB308]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#FACC15] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0" disabled={twibbonUploading}>
-                                          {twibbonUploading ? 'Mengupload...' : m.twibbon ? 'Ganti Twibbon' : 'Upload Twibbon'}
+                                          {twibbonUploading ? 'Mengupload...' : m.data_twibbon ? 'Ganti Twibbon' : 'Upload Twibbon'}
                                         </button>
-                                        {m.twibbon && (
+                                        {m.data_twibbon && (
                                           <button
                                             type="button"
                                             className="rounded-full border border-white/15 bg-white/[0.06] px-4 py-2 text-xs font-semibold text-[#F5F5DC]/80 transition-all hover:border-[#EAB308]/40 hover:text-[#EAB308]"
@@ -1008,7 +1061,7 @@ export default function Dashboard() {
                                             {viewingTwibbonMemberId === m.id ? 'Sembunyikan Preview' : 'Lihat Twibbon'}
                                           </button>
                                         )}
-                                        {m.twibbon && (
+                                        {m.data_twibbon && (
                                           <button
                                             type="button"
                                             className="rounded-full border border-red-400/30 bg-red-500/10 px-4 py-2 text-xs font-semibold text-red-300 transition-all hover:border-red-400/60 hover:bg-red-500/20"
@@ -1020,17 +1073,17 @@ export default function Dashboard() {
                                       </div>
                                     </form>
 
-                                    {viewingTwibbonMemberId === m.id && m.twibbon && (
+                                    {viewingTwibbonMemberId === m.id && m.data_twibbon && (
                                       <div className="mt-4">
-                                        {m.twibbon.toLowerCase().endsWith('.pdf') ? (
+                                        {m.data_twibbon.toLowerCase().endsWith('.pdf') ? (
                                           <embed
-                                            src={teamAPI.getTwibbonUrl(m.twibbon)}
+                                            src={teamAPI.getTwibbonUrl(m.data_twibbon)}
                                             type="application/pdf"
                                             style={{ width: '100%', height: '480px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}
                                           />
                                         ) : (
                                           <img
-                                            src={teamAPI.getTwibbonUrl(m.twibbon)}
+                                            src={teamAPI.getTwibbonUrl(m.data_twibbon)}
                                             alt={`Twibbon ${m.nama_lengkap}`}
                                             className="max-h-[480px] w-auto rounded-xl border border-white/10"
                                           />
@@ -1187,7 +1240,10 @@ export default function Dashboard() {
                   <li key={t.id} className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
                     <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
                       <span className="flex items-center gap-2 flex-wrap">
-                        <span className="text-lg leading-none">{LOMBA_INFO[t.tipe_lomba]?.emoji || '🏆'}</span>
+                        {(() => {
+                          const LombaIcon = LOMBA_INFO[t.tipe_lomba]?.icon || Trophy;
+                          return <LombaIcon className="h-4 w-4 text-[#EAB308]" />;
+                        })()}
                         <span className="font-semibold text-[#F5F5DC]">{t.nama_tim}</span>
                       </span>
                       {/* Status pembayaran */}

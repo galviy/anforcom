@@ -9,10 +9,14 @@ import ResetPassword from './pages/ResetPassword';
 import CompetitionDetail from './pages/CompetitionDetail'; // <==============
 import VerifySuccess from './pages/VerifySuccess';
 import RequireAuth from './components/RequireAuth';
+import ToastHost from './components/Toast';
+import SessionHeartbeat from './components/SessionHeartbeat';
 
 function App() {
   return (
     <BrowserRouter>
+      <ToastHost />
+      <SessionHeartbeat />
       <Routes>
         <Route path="/" element={<Landing />} />
         <Route path="/competition/:slug" element={<CompetitionDetail />} /> {/*// <============== */}
