@@ -69,7 +69,7 @@ CREATE TABLE `data_pembayaran` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_tim` (`id_tim`),
   CONSTRAINT `data_pembayaran_tim_FK` FOREIGN KEY (`id_tim`) REFERENCES `tim` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -127,7 +127,7 @@ CREATE TABLE `data_proposal` (
   PRIMARY KEY (`id`),
   KEY `data_proposal_tim_FK` (`id_tim`),
   CONSTRAINT `data_proposal_tim_FK` FOREIGN KEY (`id_tim`) REFERENCES `tim` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -138,6 +138,35 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `data_proposal` WRITE;
 /*!40000 ALTER TABLE `data_proposal` DISABLE KEYS */;
 /*!40000 ALTER TABLE `data_proposal` ENABLE KEYS */;
+UNLOCK TABLES;
+COMMIT;
+SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
+
+--
+-- Table structure for table `data_twibbon`
+--
+
+DROP TABLE IF EXISTS `data_twibbon`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8mb4 */;
+CREATE TABLE `data_twibbon` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `isi_tim_data_twibbon` int(11) NOT NULL,
+  `foto_twibbon` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `data_twibbon_isi_tim_FK` (`isi_tim_data_twibbon`),
+  CONSTRAINT `data_twibbon_isi_tim_FK` FOREIGN KEY (`isi_tim_data_twibbon`) REFERENCES `isi_tim` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `data_twibbon`
+--
+
+SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
+LOCK TABLES `data_twibbon` WRITE;
+/*!40000 ALTER TABLE `data_twibbon` DISABLE KEYS */;
+/*!40000 ALTER TABLE `data_twibbon` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
 SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
@@ -164,7 +193,7 @@ CREATE TABLE `dummy_user` (
   PRIMARY KEY (`id`),
   KEY `user_tingkat_pendidikan_FK` (`tingkat_pendidikan_id`),
   KEY `user_role_FK` (`role_user`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -203,7 +232,7 @@ CREATE TABLE `isi_tim` (
   PRIMARY KEY (`id`),
   KEY `isi_tim_tim_FK` (`tim_id`),
   CONSTRAINT `isi_tim_tim_FK` FOREIGN KEY (`tim_id`) REFERENCES `tim` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -213,9 +242,6 @@ CREATE TABLE `isi_tim` (
 SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `isi_tim` WRITE;
 /*!40000 ALTER TABLE `isi_tim` DISABLE KEYS */;
-INSERT INTO `isi_tim` VALUES
-(24,'GALVIN SHALAHUDIN','UNDIP',429,'24060124140162','51244d81-adb6-466a-ae04-464abf929fe9.jpg'),
-(25,'GALVIN SHALAHUDIN  M','UNDIP',429,'24060124140165','a3b00c6f-97d0-4dea-8a10-e3fe693800d5.jpg');
 /*!40000 ALTER TABLE `isi_tim` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -296,7 +322,7 @@ CREATE TABLE `tim` (
   UNIQUE KEY `tim_unique` (`nama_tim`),
   KEY `tim_lomba_FK` (`tim_lomba`),
   CONSTRAINT `tim_lomba_FK` FOREIGN KEY (`tim_lomba`) REFERENCES `lomba` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=430 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=437 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -308,7 +334,7 @@ LOCK TABLES `tim` WRITE;
 /*!40000 ALTER TABLE `tim` DISABLE KEYS */;
 INSERT INTO `tim` VALUES
 ('\"><script>alert(1)</script>',425,1,0),
-('dwa',429,1,0);
+('cp ni boss',436,2,0);
 /*!40000 ALTER TABLE `tim` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -365,7 +391,7 @@ CREATE TABLE `user` (
   KEY `user_role_FK` (`role_user`),
   CONSTRAINT `user_role_FK` FOREIGN KEY (`role_user`) REFERENCES `role` (`id`),
   CONSTRAINT `user_tingkat_pendidikan_FK` FOREIGN KEY (`tingkat_pendidikan_id`) REFERENCES `tingkat_pendidikan` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -382,7 +408,8 @@ INSERT INTO `user` VALUES
 (10,'galvin123','$2b$10$j7CxzycN0e2OLC6WgqTGe.cbopqpraaEYoLY7bsvNAYTDAP.OHg1a','galvin123@gmail.com','085892297871',1,1),
 (11,'v33n','$2b$10$8rZ5DJU0FzuZQlw7KzoK7.Hfad9R7IQMc/IvBE1GVn6gXrBrnsg42','123@gmail.com','081610218',1,1),
 (17,'galvin','$2b$10$AytAsAcVERvWtEQiK0mi4eIeySMhgrGmcgmJWIolF8/CjDkcnIlTm','galvindoser@gmail.com','21212112',1,1),
-(18,'galvingalvin','$2b$10$oczO2RxeQS6rjBudwD11SuSC.Mk9yUBcny2VrID91x394orWY.hDG','galvinchan0997@gmail.com','081291221',2,1);
+(18,'galvingalvin','$2b$10$oczO2RxeQS6rjBudwD11SuSC.Mk9yUBcny2VrID91x394orWY.hDG','galvinchan0997@gmail.com','081291221',2,1),
+(19,'galvinchan0997@gmail.com','$2b$10$KKL2MNFfkarkWhOaHXYCnemV4HUVPPgPdjIOi6ZseFkJIQEB0bJvS','galvinalber@gmail.com','088912812',2,1);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -413,8 +440,8 @@ SET @OLD_AUTOCOMMIT=@@AUTOCOMMIT, @@AUTOCOMMIT=0;
 LOCK TABLES `user_tim` WRITE;
 /*!40000 ALTER TABLE `user_tim` DISABLE KEYS */;
 INSERT INTO `user_tim` VALUES
-(429,17),
-(425,18);
+(425,18),
+(436,19);
 /*!40000 ALTER TABLE `user_tim` ENABLE KEYS */;
 UNLOCK TABLES;
 COMMIT;
@@ -429,4 +456,4 @@ SET AUTOCOMMIT=@OLD_AUTOCOMMIT;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*M!100616 SET NOTE_VERBOSITY=@OLD_NOTE_VERBOSITY */;
 
--- Dump completed on 2026-07-23 17:01:44
+-- Dump completed on 2026-08-08 12:24:56
