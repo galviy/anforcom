@@ -18,6 +18,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   if (!result[0] || result.length == 0|| result[0].total == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 });
 
   let result2 = await authRepo.deleteTwibbon(user_id);
+  if(!result2.success) return Response.json(result2, { status: 404 })
   
   return Response.json(result2, { status: 200 })
 
