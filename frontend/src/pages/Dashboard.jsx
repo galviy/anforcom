@@ -216,7 +216,7 @@ export default function Dashboard() {
     }
   };
 
-  const ALLOWED_TWIBBON_TYPES = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'];
+  const ALLOWED_TWIBBON_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
   const openTwibbonPanel = (memberId) => {
     setTwibbonError('');
@@ -234,7 +234,7 @@ export default function Dashboard() {
       return;
     }
     if (!ALLOWED_TWIBBON_TYPES.includes(twibbonFile.type)) {
-      setTwibbonError('File harus berformat PDF, JPG, PNG, atau WEBP.');
+      setTwibbonError('File harus berformat JPG, PNG, atau WEBP.');
       return;
     }
 
@@ -1041,12 +1041,12 @@ export default function Dashboard() {
                                         </label>
                                         <input
                                           type="file"
-                                          accept="application/pdf,image/jpeg,image/png,image/webp"
+                                          accept="image/jpeg,image/png,image/webp"
                                           onChange={(e) => setTwibbonFile(e.target.files?.[0] || null)}
                                           required
                                           className="w-full text-sm text-[#F5F5DC]/70 file:mr-3 file:rounded-full file:border file:border-white/15 file:bg-white/[0.06] file:px-4 file:py-2 file:text-xs file:font-semibold file:text-[#F5F5DC]/80 file:transition-all hover:file:border-[#EAB308]/40 hover:file:text-[#EAB308] file:cursor-pointer"
                                         />
-                                        <small className="text-xs text-[#F5F5DC]/40 mt-1 block">Format PDF/JPG/PNG/WEBP, maks 10MB.</small>
+                                        <small className="text-xs text-[#F5F5DC]/40 mt-1 block">Format JPG/PNG/WEBP, maks 10MB.</small>
                                       </div>
                                       <div className="flex gap-2 flex-wrap">
                                         <button type="submit" className="rounded-full bg-[#EAB308] px-5 py-2 text-xs font-bold text-[#14532D] shadow-lg shadow-[#EAB308]/20 transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#FACC15] disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0" disabled={twibbonUploading}>
@@ -1075,19 +1075,11 @@ export default function Dashboard() {
 
                                     {viewingTwibbonMemberId === m.id && m.data_twibbon && (
                                       <div className="mt-4">
-                                        {m.data_twibbon.toLowerCase().endsWith('.pdf') ? (
-                                          <embed
-                                            src={teamAPI.getTwibbonUrl(m.data_twibbon)}
-                                            type="application/pdf"
-                                            style={{ width: '100%', height: '480px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.1)' }}
-                                          />
-                                        ) : (
-                                          <img
-                                            src={teamAPI.getTwibbonUrl(m.data_twibbon)}
-                                            alt={`Twibbon ${m.nama_lengkap}`}
-                                            className="max-h-[480px] w-auto rounded-xl border border-white/10"
-                                          />
-                                        )}
+                                        <img
+                                          src={teamAPI.getTwibbonUrl(m.data_twibbon)}
+                                          alt={`Twibbon ${m.nama_lengkap}`}
+                                          className="max-h-[480px] w-auto rounded-xl border border-white/10"
+                                        />
                                       </div>
                                     )}
                                   </div>
