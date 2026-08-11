@@ -566,10 +566,18 @@ export default function CompetitionDetail() {
                     <Wallet className="h-6 w-6 text-[#EAB308]" />
                   </div>
 
-
-                  <p className="text-xs text-white/40 mb-1 font-bold">IDR</p>
-                  <p className="text-4xl font-black text-white">{comp.summary.biaya.replace('Rp. ', '').replace('Rp ', '')}</p>
-                  <p className="text-[10px] text-white/40 mt-1 uppercase font-bold">/ {comp.summary.biayaNote}</p>
+                  {(() => {
+                    const isBatch2 = countdownState.batch === 2 || (comp?.batches?.[1] && new Date() >= new Date(comp.batches[1].open));
+                    const displayBiaya = isBatch2 ? (comp.summary.biayaBatch2 || 'Rp. 95.000') : (comp.summary.biayaBatch1 || 'Rp. 80.000');
+                    const displayNote = isBatch2 ? 'per tim (Batch 2)' : 'per tim (Batch 1)';
+                    return (
+                      <>
+                        <p className="text-xs text-white/40 mb-1 font-bold">IDR</p>
+                        <p className="text-4xl font-black text-white">{displayBiaya.replace('Rp. ', '').replace('Rp ', '')}</p>
+                        <p className="text-[10px] text-white/40 mt-1 uppercase font-bold">/ {displayNote}</p>
+                      </>
+                    );
+                  })()}
                 </div>
               </div>
             </div>
