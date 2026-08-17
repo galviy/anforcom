@@ -71,7 +71,7 @@ export class administrator{
     async cek_data_tim(tim_id:number){
         const rows = await db.query(`
             SELECT 
-                t.id AS tim_id,
+                it.id,t.id AS tim_id,
                 t.nama_tim,
                 l.nama_lomba AS tipe_lomba,
                 CASE 
