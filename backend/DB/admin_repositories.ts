@@ -152,6 +152,16 @@ export class administrator{
         return rows;
     }
 
+    async show_data_twibbon(id: string,isi_tim_id: string){
+        const rows = await db.query(`
+            select nomor_induk,nama_lengkap,asal_instansi,foto_twibbon 
+            from isi_tim it 
+            join data_twibbon dt on it.id = dt.isi_tim_data_twibbon 
+            where it.tim_id = ? and it.id = ?;
+        `,[id,isi_tim_id]);
+        return rows;
+    }
+
 
     async show_bukti_pembayaran(){
         const rows = await db.query(`

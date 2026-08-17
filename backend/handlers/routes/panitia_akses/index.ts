@@ -93,6 +93,23 @@ export async function handler(req: Request): Promise<Response> {
                  return new Response(file);
         } break;
 
+        case "twibbon":{
+            const id_twibbon = url.searchParams.get("it_id");
+            if(!tim_id || !id_twibbon) return Response.json({ success: false, message: "Butuh id twibbon sm tim_id??" }, { status: 404 });
+
+            const cari = await adminRepo.show_data_twibbon(tim_id.toLocaleString(),id_twibbon);
+            if (!cari || cari.length === 0) return Response.json({ success: false, message: "Data Twibbon tidak ditemukan" },{ status: 404 });
+            let data_image = cari[0].foto_twibbon;
+            if(!data_image) return Response.json({ success: false, message: "Tidak ketemu??" }, { status: 404 });
+            const filepath = path.join(import.meta.dir, "../../../../data_twibbon/");
+            const file = Bun.file(filepath + `/${data_image}`);
+
+            if (!(await file.exists())) {
+                return Response.json({ success: false, message: "Tidak ketemu??" }, { status: 404 });
+            }
+            return new Response(file);
+        } break;
+
         default: {
             return Response.json({ success: false, error: "unavailable file_type??" }, { status: 401 });
         }
