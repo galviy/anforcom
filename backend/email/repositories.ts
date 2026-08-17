@@ -38,6 +38,152 @@ export class emailRepositories{
       });
   }
 
+  async sendEmailVerifikasiGagal(emailName: string, tipeLomba: string, reason: string) {
+    const p = await email.send({to:emailName,subject: `Pendaftaran ${tipeLomba} Gagal Diverifikasi`,
+        html: `
+          <!DOCTYPE html>
+          <html lang="id">
+          <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Verifikasi Gagal</title>
+          </head>
+          <body style="margin:0;padding:0;background:#280b0b;font-family:Arial,Helvetica,sans-serif;">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="padding:40px 16px;">
+          <tr>
+          <td align="center">
+          <table role="presentation" width="620" cellpadding="0" cellspacing="0"
+          style="max-width:620px;background:#531414;border-radius:20px;overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.06);">
+
+          <!-- HEADER -->
+          <tr>
+          <td align="center" style="background:linear-gradient(180deg,#3f1818 0%,#531414 100%);padding:40px 30px 30px;border-bottom:1px solid rgba(255,255,255,.08);">
+          <table role="presentation" cellpadding="0" cellspacing="0">
+          <tr>
+          <td style="font-size:13px;letter-spacing:2px;color:#EAB308;font-weight:bold;text-transform:uppercase;padding-bottom:14px;">
+          ANFORCOM <span style="color:#ffffff;">2026</span>
+          </td>
+          </tr>
+          </table>
+          <img
+          src="https://app.anforcom.com/assets/HERO_mascot-CBwIzS76.PNG"
+          alt="ANFORCOM Mascot"
+          width="140"
+          style="display:block;margin:0 auto 20px;filter:drop-shadow(0 0 18px rgba(234,179,8,.35));">
+          <h1 style="margin:0 0 8px;font-size:28px;color:#ffffff;font-weight:bold;">
+          Verifikasi <span style="color:#F87171;">Gagal</span>
+          </h1>
+          <p style="margin:0;font-size:15px;color:#FECACA;">
+          Ada beberapa hal yang perlu diperbaiki
+          </p>
+          </td>
+          </tr>
+
+          <!-- CONTENT -->
+          <tr>
+          <td style="padding:36px 40px 8px;background:#3f0f0f;">
+          <p style="margin:0;font-size:16px;color:#F5E5E5;">
+          Halo <strong style="color:#ffffff;">${emailName}</strong>,
+          </p>
+          <p style="margin-top:16px;font-size:15px;line-height:1.8;color:#D9B7B7;">
+          Mohon maaf, proses verifikasi administrasi tim Anda untuk lomba
+          <strong style="color:#F87171;">${tipeLomba}</strong> pada
+          <strong style="color:#ffffff;">ANFORCOM 2026</strong> belum dapat kami setujui.
+          </p>
+
+          <!-- REASON CARD -->
+          <table width="100%" cellpadding="0" cellspacing="0"
+          style="margin:26px 0;background:rgba(255,255,255,.04);border:1px solid rgba(248,113,113,.25);border-radius:14px;">
+          <tr>
+          <td style="padding:22px 24px;">
+          <h3 style="margin:0 0 14px;color:#F87171;font-size:14px;letter-spacing:.5px;text-transform:uppercase;">
+          Alasan Penolakan
+          </h3>
+          <p style="margin:0;font-size:15px;color:#F5E5E5;line-height:1.8;">
+          ${reason}
+          </p>
+          </td>
+          </tr>
+          </table>
+
+          <!-- ALERT: KELENGKAPAN DOKUMEN -->
+          <table width="100%" cellpadding="0" cellspacing="0"
+          style="background:rgba(234,179,8,.10);border-left:4px solid #EAB308;border-radius:10px;margin-bottom:26px;">
+          <tr>
+          <td style="padding:18px 20px;">
+          <p style="margin:0;font-size:15px;font-weight:bold;color:#EAB308;">
+          Perhatian!!
+          </p>
+          <p style="margin:10px 0 0;color:#E3D5A3;line-height:1.8;font-size:14px;">
+          Mohon pastikan Anda telah melengkapi dan mengunggah ulang seluruh dokumen berikut dengan benar melalui dashboard peserta:
+          </p>
+          <p style="margin:10px 0 0;color:#E3D5A3;line-height:1.8;font-size:14px;">
+          <strong style="color:#ffffff;">✓ Twibbon</strong><br>
+          <strong style="color:#ffffff;">✓ Kartu Tanda Mahasiswa/Siswa (KTM)</strong><br>
+          <strong style="color:#ffffff;">✓ Bukti Pembayaran</strong>
+          </p>
+          </td>
+          </tr>
+          </table>
+
+          <!-- BUTTON -->
+          <table width="100%" cellpadding="0" cellspacing="0">
+          <tr>
+          <td align="center" style="padding-bottom:8px;">
+          <a href="${FRONTEND_URL}"
+          style="
+          display:inline-block;
+          background:#EAB308;
+          color:#3f0f0f;
+          text-decoration:none;
+          padding:15px 40px;
+          font-size:16px;
+          font-weight:bold;
+          border-radius:10px;
+          box-shadow:0 8px 20px rgba(234,179,8,.25);
+          ">
+          Perbaiki Sekarang →
+          </a>
+          </td>
+          </tr>
+          </table>
+
+          <p style="
+          margin-top:32px;
+          font-size:14px;
+          line-height:1.8;
+          color:#C29999;
+          ">
+          Jika ada pertanyaan terkait alasan penolakan di atas, silakan hubungi panitia
+          <strong style="color:#EAB308;">ANFORCOM 2026</strong> melalui kontak resmi yang tersedia.
+          </p>
+          </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+          <td align="center"
+          style="background:#280b0b;padding:26px;border-top:1px solid rgba(255,255,255,.06);">
+          <p style="margin:0;font-size:13px;color:#A97F7F;">
+          Email ini dikirim secara otomatis oleh sistem <strong style="color:#FECACA;">ANFORCOM 2026</strong>.
+          </p>
+          <p style="margin-top:6px;font-size:12px;color:#7A5555;">
+          Mohon tidak membalas email ini.
+          </p>
+          </td>
+          </tr>
+
+          </table>
+          </td>
+          </tr>
+          </table>
+          </body>
+          </html>
+      `,
+      
+    });
+    return p
+  }
   async sendEmailVerifikasiBerhasil(emailName: string,tipeLomba: string) {
     const p = await email.send({to:emailName,subject: `Pendaftaran ${tipeLomba} Berhasil Diverifikasi`,
         html: `

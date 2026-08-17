@@ -11,10 +11,18 @@ export class TeamRepository{
     private folder_upload_pernyataan: string = path.join(import.meta.dir, "../../data_persetujuan")
     private folder_upload_twibbon: string = path.join(import.meta.dir, "../../data_twibbon")
 
-     async verify_team(timId:number){
+    async verify_team(timId:number){
         const rows = await db.query(`
             UPDATE tim 
             SET isVerified = 1
+            WHERE id = ?;
+        `, [timId])
+        return rows;
+    }
+    async cancel_verification_team(timId:number){
+         const rows = await db.query(`
+            UPDATE tim 
+            SET isVerified = 0
             WHERE id = ?;
         `, [timId])
         return rows;
