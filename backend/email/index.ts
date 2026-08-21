@@ -16,13 +16,23 @@ class EmailService {
     if (!user || !pass) {
       throw new Error("Email/password tidak boleh kosong");
     }
-
+    this.transporter = nodemailer.createTransport({
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      auth: { user, pass },
+      pool: true,           
+     // maxConnections: 5,    
+     // maxMessages: 100,      
+    });
+/*
     this.transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 587,
       secure: false,
       auth: { user, pass },
     });
+    */
 
     this.defaultFrom = user;
   }
