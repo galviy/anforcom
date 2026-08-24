@@ -603,9 +603,9 @@ export default function CompetitionDetail() {
               {/* Inner Cards for Juara */}
               <div className="grid gap-6 sm:grid-cols-3">
                 {[
-                  { title: 'JUARA 1', reward: comp.prizes[0].reward, extras: comp.prizes[0].extras, color: 'text-[#EAB308]' },
-                  { title: 'JUARA 2', reward: comp.prizes[1].reward, extras: comp.prizes[1].extras, color: 'text-gray-300' },
-                  { title: 'JUARA 3', reward: comp.prizes[2].reward, extras: comp.prizes[2].extras, color: 'text-amber-500' }
+                  { title: 'JUARA 1', reward: comp.prizes[0]?.reward || 'Uang Pembinaan', extras: comp.prizes[0]?.extras || 'Sertifikat + Piala', color: 'text-[#EAB308]' },
+                  { title: 'JUARA 2', reward: comp.prizes[1]?.reward || 'Uang Pembinaan', extras: comp.prizes[1]?.extras || 'Sertifikat + Piala', color: 'text-gray-300' },
+                  { title: 'JUARA 3', reward: comp.prizes[2]?.reward || 'Uang Pembinaan', extras: comp.prizes[2]?.extras || 'Sertifikat + Piala', color: 'text-amber-500' }
                 ].map((juara) => (
                   <div key={juara.title} className="rounded-xl bg-black/25 border border-white/10 p-6 flex flex-col gap-4 shadow-inner transition-colors hover:bg-black/40">
                     <div className="flex items-center gap-3">
@@ -615,7 +615,7 @@ export default function CompetitionDetail() {
                     <div className="flex flex-col gap-3 mt-2">
                       <div className="flex items-center gap-3 text-sm text-white/80">
                         <Wallet className="h-4 w-4 text-[#EAB308]/70" />
-                        <span>Uang Pembinaan</span>
+                        <span>{juara.reward}</span>
                       </div>
                       <div className="flex items-center gap-3 text-sm text-white/80">
                         <Award className="h-4 w-4 text-[#EAB308]/70" />
