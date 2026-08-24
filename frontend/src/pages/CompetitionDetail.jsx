@@ -396,13 +396,22 @@ export default function CompetitionDetail() {
 
           {/* Action Buttons */}
           <div className="mb-14 flex flex-wrap items-center justify-center gap-4">
-            <Link
-              to="/register"
-              className="group inline-flex items-center gap-2.5 rounded-full bg-[#EAB308] px-9 py-4 text-base font-bold text-[#14532D] shadow-xl shadow-[#EAB308]/25 transition-all duration-300 hover:-translate-y-1 hover:bg-[#FACC15] hover:shadow-2xl hover:shadow-[#EAB308]/40"
-            >
-              Daftar Sekarang
-              <ChevronRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
+            {countdownState.status === 'closed' ? (
+              <button
+                disabled
+                className="inline-flex cursor-not-allowed items-center gap-2.5 rounded-full bg-white/20 px-9 py-4 text-base font-bold text-white/50 backdrop-blur-md shadow-lg"
+              >
+                Pendaftaran Ditutup
+              </button>
+            ) : (
+              <Link
+                to="/register"
+                className="group inline-flex items-center gap-2.5 rounded-full bg-[#EAB308] px-9 py-4 text-base font-bold text-[#14532D] shadow-xl shadow-[#EAB308]/25 transition-all duration-300 hover:-translate-y-1 hover:bg-[#FACC15] hover:shadow-2xl hover:shadow-[#EAB308]/40"
+              >
+                Daftar Sekarang
+                <ChevronRight className="h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            )}
             {comp.guidebookFile && (
               <a
                 href={comp.guidebookFile}
@@ -800,13 +809,22 @@ export default function CompetitionDetail() {
                     </a>
                   </div>
                 )}
-                <Link
-                  to="/register"
-                  className="group w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FACC15] to-[#EAB308] px-10 py-4 text-sm font-bold tracking-widest text-[#14532D] shadow-[0_0_20px_rgba(234,179,8,0.4)] transition-all hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(234,179,8,0.6)]"
-                >
-                  DAFTAR SEKARANG
-                  <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
-                </Link>
+                {countdownState.status === 'closed' ? (
+                  <button
+                    disabled
+                    className="w-full inline-flex cursor-not-allowed items-center justify-center gap-2 rounded-xl bg-white/20 px-10 py-4 text-sm font-bold tracking-widest text-white/50 backdrop-blur-md shadow-lg"
+                  >
+                    PENDAFTARAN DITUTUP
+                  </button>
+                ) : (
+                  <Link
+                    to="/register"
+                    className="group w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FACC15] to-[#EAB308] px-10 py-4 text-sm font-bold tracking-widest text-[#14532D] shadow-[0_0_20px_rgba(234,179,8,0.4)] transition-all hover:scale-[1.02] hover:shadow-[0_0_35px_rgba(234,179,8,0.6)]"
+                  >
+                    DAFTAR SEKARANG
+                    <ChevronRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+                  </Link>
+                )}
               </div>
             </div>
           </div>

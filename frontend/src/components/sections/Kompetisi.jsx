@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
-import { ChevronLeft, ChevronRight, MonitorSmartphone, TerminalSquare, Code2 } from 'lucide-react';
+import { ChevronLeft, ChevronRight, MonitorSmartphone, TerminalSquare, Code2, Users, GraduationCap } from 'lucide-react';
 
 const TITLE_PART_1 = 'Pick Your ';
 const TITLE_PART_2 = 'Challenge!';
@@ -9,13 +10,21 @@ const TITLE_PART_2 = 'Challenge!';
 const COMPETITIONS = [
   {
     code: 'DUC',
+    slug: 'duc',
     name: 'Diponegoro UI/UX Competition',
-    desc: 'Rancang alur dan tampilan produk digital yang menyelesaikan masalah nyata pengguna — dari riset singkat sampai purwarupa antarmuka yang bisa dicoba langsung.',
+    shortName: 'DUC',
+    peserta: 'SMA/SMK & Mahasiswa',
+    anggota: '2-3 Orang / Tim',
+    desc: 'Rancang alur dan tampilan produk digital yang menyelesaikan masalah nyata pengguna dari riset singkat sampai purwarupa antarmuka yang bisa dicoba langsung.',
     icon: MonitorSmartphone,
   },
   {
     code: 'DCPC',
-    name: 'Diponegoro Competitive Programming',
+    slug: 'dcpc',
+    name: 'Diponegoro Competitive Programming Competition',
+    shortName: 'DCPC',
+    peserta: 'SMA/SMK Sederajat',
+    anggota: '1-3 Orang / Tim',
     desc: 'Adu strategi dan logika lewat rangkaian studi kasus pemrograman kompetitif, dari babak penyisihan online sampai final di bawah tekanan waktu.',
     icon: TerminalSquare,
   },
@@ -23,7 +32,10 @@ const COMPETITIONS = [
     code: 'DSDC',
     slug: 'dsdc',
     name: 'Diponegoro Software Development Competition',
-    desc: 'Bangun perangkat lunak inovatif berbasis website atau mobile yang menjawab tantangan nyata kota berkelanjutan — dari pengelolaan sampah, mobilitas hijau, hingga kesehatan lingkungan perkotaan.',
+    shortName: 'DSDC',
+    peserta: 'SMA/SMK & Mahasiswa',
+    anggota: '2-3 Orang / Tim',
+    desc: 'Bangun perangkat lunak inovatif berbasis website atau mobile yang menjawab tantangan nyata kota berkelanjutan dari pengelolaan sampah, mobilitas hijau, hingga kesehatan lingkungan perkotaan.',
     icon: Code2,
   },
 ];
@@ -69,7 +81,7 @@ export default function Kompetisi() {
     }
     let i = 0;
     const totalLength = TITLE_PART_1.length + TITLE_PART_2.length;
-    
+
     const id = setInterval(() => {
       i += 1;
       if (i <= TITLE_PART_1.length) {
@@ -77,10 +89,10 @@ export default function Kompetisi() {
       } else {
         setTypedPart2(TITLE_PART_2.slice(0, i - TITLE_PART_1.length));
       }
-      
+
       if (i >= totalLength) clearInterval(id);
     }, 70);
-    
+
     return () => clearInterval(id);
   }, []);
 
@@ -114,17 +126,42 @@ export default function Kompetisi() {
                   >
                     <div
                       className={`
-                        h-full flex flex-col items-center rounded-3xl border border-white/20 
-                        bg-[#F5F5DC]/10 p-8 text-center backdrop-blur-md transition-all duration-500
+                        h-full flex flex-col items-start rounded-3xl border border-white/20 
+                        bg-[#F5F5DC]/10 p-7 sm:p-8 text-left backdrop-blur-md transition-all duration-500
                         ${isActive ? 'scale-105 shadow-[0_0_30px_rgba(255,255,255,0.15)] opacity-100' : 'scale-95 opacity-50 hover:opacity-100'}
                       `}
                     >
-                      <div className="mb-8 flex h-32 w-32 items-center justify-center rounded-2xl bg-gradient-to-br from-white/10 to-white/20 shadow-lg rotate-12 transition-transform duration-500 group-hover:rotate-0">
-                        <comp.icon className="h-14 w-14 -rotate-12 text-[#EAB308] transition-transform duration-500 group-hover:rotate-0" />
+                      <div className="mb-6 flex h-20 w-20 sm:h-24 sm:w-24 items-center justify-center rounded-2xl bg-gradient-to-br from-white/10 to-white/20 shadow-lg transition-transform duration-500 hover:scale-105">
+                        <comp.icon className="h-10 w-10 sm:h-12 sm:w-12 text-[#EAB308]" />
                       </div>
-                      
-                      <h3 className="mb-4 text-2xl font-bold text-white">{comp.name}</h3>
-                      <p className="text-sm leading-relaxed text-white/80">{comp.desc}</p>
+
+                      <h3 className="text-xl sm:text-2xl font-bold text-white leading-snug">{comp.name}</h3>
+                      <p className="mt-1 mb-3 text-xs font-black tracking-widest text-[#EAB308] uppercase">
+                        ({comp.shortName})
+                      </p>
+
+                      <p className="mb-6 text-sm leading-relaxed text-white/80 flex-1">{comp.desc}</p>
+
+                      {/* Meta info: Anggota & Kategori Peserta */}
+                      <div className="w-full pt-4 border-t border-white/10 flex flex-wrap gap-2 mb-6">
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur-sm border border-white/10">
+                          <Users className="h-3.5 w-3.5 text-[#EAB308]" />
+                          {comp.anggota}
+                        </span>
+                        <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1 text-xs font-medium text-white/90 backdrop-blur-sm border border-white/10">
+                          <GraduationCap className="h-3.5 w-3.5 text-[#EAB308]" />
+                          {comp.peserta}
+                        </span>
+                      </div>
+
+                      {/* Link to detail page */}
+                      <Link
+                        to={`/competition/${comp.slug}`}
+                        className="group inline-flex items-center gap-2 text-sm font-bold text-[#EAB308] hover:text-[#FACC15] transition-colors"
+                      >
+                        Detail Kompetisi
+                        <ChevronRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                      </Link>
                     </div>
                   </div>
                 );
@@ -136,18 +173,18 @@ export default function Kompetisi() {
             <button
               onClick={scrollPrev}
               className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/20 text-white backdrop-blur hover:bg-white/30 transition-colors"
+              aria-label="Previous slide"
             >
               <ChevronLeft className="h-6 w-6" />
             </button>
-            
+
             <div className="flex items-center gap-3">
               {scrollSnaps.map((_, index) => (
                 <button
                   key={index}
                   onClick={() => scrollTo(index)}
-                  className={`h-3 rounded-full transition-all duration-300 ${
-                    index === selectedIndex ? 'w-8 bg-white' : 'w-3 bg-white/40'
-                  }`}
+                  className={`h-3 rounded-full transition-all duration-300 ${index === selectedIndex ? 'w-8 bg-white' : 'w-3 bg-white/40'
+                    }`}
                   aria-label={`Go to slide ${index + 1}`}
                 />
               ))}
@@ -156,6 +193,7 @@ export default function Kompetisi() {
             <button
               onClick={scrollNext}
               className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/20 text-white backdrop-blur hover:bg-white/30 transition-colors"
+              aria-label="Next slide"
             >
               <ChevronRight className="h-6 w-6" />
             </button>

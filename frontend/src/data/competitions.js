@@ -21,7 +21,7 @@ export const COMPETITIONS = [
     guidebookFile: '/Rulebook-duc-final.pdf',
     timeline: [
       { label: 'Pendaftaran Gelombang 1', window: '19 Jul - 2 Agu 2026' },
-      { label: 'Pendaftaran Gelombang 2', window: '10 Agu - 24 Agu 2026' },
+      { label: 'Pendaftaran Gelombang 2', window: '10 Agu - 31 Agu 2026' },
       { label: 'Batas Akhir Pengumpulan Proposal', window: '31 Agu 2026' },
       { label: 'Pengumuman Finalis', window: '16 Sep 2026' },
       { label: 'Technical Meeting Finalis', window: '22 Sep 2026' },
@@ -34,7 +34,7 @@ export const COMPETITIONS = [
     ],
     batches: [
       { open: '2026-07-19T00:00:00+07:00', close: '2026-08-10T00:00:00+07:00' },
-      { open: '2026-08-10T00:00:00+07:00', close: '2026-08-24T23:59:59+07:00' },
+      { open: '2026-08-10T00:00:00+07:00', close: '2026-08-31T23:59:59+07:00' },
     ],
     contacts: [
       { name: 'Ruth Septriana Sipangkar', phone: '6285261971077' },
@@ -61,7 +61,7 @@ export const COMPETITIONS = [
     guidebookFile: '/Rulebook-dcpc-final.pdf',
     timeline: [
       { label: 'Open Registration Batch 1', window: '19 Jul - 2 Agu 2026' },
-      { label: 'Open Registration Batch 2', window: '10 Agu - 24 Agu 2026' },
+      { label: 'Open Registration Batch 2', window: '10 Agu - 31 Agu 2026' },
       { label: 'Technical Meeting Penyisihan', window: '9 Sep 2026' },
       { label: 'Warmup Babak Penyisihan', window: '11 Sep 2026' },
       { label: 'Penyisihan', window: '12 Sep 2026' },
@@ -76,7 +76,7 @@ export const COMPETITIONS = [
     ],
     batches: [
       { open: '2026-07-19T00:00:00+07:00', close: '2026-08-10T00:00:00+07:00' },
-      { open: '2026-08-10T00:00:00+07:00', close: '2026-08-24T23:59:59+07:00' },
+      { open: '2026-08-10T00:00:00+07:00', close: '2026-08-31T23:59:59+07:00' },
     ],
     contacts: [
       { name: 'Izzat', phone: '62895388522598' },
@@ -103,7 +103,7 @@ export const COMPETITIONS = [
     guidebookFile: '/Rulebook-dsdc-final.pdf',
     timeline: [
       { label: 'Pendaftaran Gelombang 1', window: '19 Jul - 2 Agu 2026' },
-      { label: 'Pendaftaran Gelombang 2', window: '10 Agu - 24 Agu 2026' },
+      { label: 'Pendaftaran Gelombang 2', window: '10 Agu - 31 Agu 2026' },
       { label: 'Batas Akhir Pengumpulan Proposal', window: '31 Agu 2026' },
       { label: 'Pengumuman Finalis', window: '16 Sep 2026' },
       { label: 'Technical Meeting Finalis', window: '22 Sep 2026' },
@@ -116,7 +116,7 @@ export const COMPETITIONS = [
     ],
     batches: [
       { open: '2026-07-19T00:00:00+07:00', close: '2026-08-10T00:00:00+07:00' },
-      { open: '2026-08-10T00:00:00+07:00', close: '2026-08-24T23:59:59+07:00' },
+      { open: '2026-08-10T00:00:00+07:00', close: '2026-08-31T23:59:59+07:00' },
     ],
     contacts: [
       { name: 'Arya Fathdillah Adi Saputra', phone: '6281469735184' },

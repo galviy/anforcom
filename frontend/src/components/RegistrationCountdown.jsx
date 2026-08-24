@@ -8,7 +8,7 @@ const REG_CLOSE_BATCH1 = new Date('2026-08-02T23:59:59+07:00');
 const REG_OPEN_EXT_BATCH1 = new Date('2026-08-03T00:00:00+07:00');
 const REG_CLOSE_EXT_BATCH1 = new Date('2026-08-09T23:59:59+07:00');
 const REG_OPEN_BATCH2 = new Date('2026-08-10T00:00:00+07:00');
-const REG_CLOSE_BATCH2 = new Date('2026-08-24T23:59:59+07:00');
+const REG_CLOSE_BATCH2 = new Date('2026-08-31T23:59:59+07:00');
 
 function getRegistrationState(now) {
   if (now < REG_OPEN_BATCH1) {
