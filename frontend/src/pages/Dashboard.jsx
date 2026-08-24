@@ -695,7 +695,7 @@ export default function Dashboard() {
           {/* ── Welcome message ── */}
           <div className="px-1">
             <h1 className="text-2xl font-bold text-[#F5F5DC] sm:text-3xl">
-              {getGreeting()}, <span className="text-[#EAB308]">{user?.username || 'Sobat Anforcom'}</span> 👋
+              {getGreeting()}, <span className="text-[#EAB308]">{user?.username || 'Sobat Anforcom'}</span> 
             </h1>
             <p className="mt-1 text-sm text-[#F5F5DC]/50">
               {teams.length === 0
