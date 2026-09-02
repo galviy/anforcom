@@ -12,6 +12,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   }
   
   const { tim_id } = JSON.parse(text)
+    return Response.json({ success: false, error: "Maaf fitur ini sudah didisable mohon untuk contact support untuk informasi lebih lanjut, terima kasih untuk antusiasnya" }, { status: 401 })
 
   if (!tim_id ) return Response.json({ success: false, error: "Invalid data struct??" }, { status: 401 })
   if(Number(tim_id) > 10000) return Response.json({ success: false, error: "Gk salah kah itu??" }, { status: 400 })

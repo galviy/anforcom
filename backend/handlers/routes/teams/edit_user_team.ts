@@ -16,6 +16,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   }
 
   const text = await req.text();
+    return Response.json({ success: false, error: "Maaf fitur ini sudah didisable mohon untuk contact support untuk informasi lebih lanjut, terima kasih untuk antusiasnya" }, { status: 401 })
 
   if (!text) {
     return Response.json(

@@ -18,7 +18,8 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   if (result.length == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 }) 
   let dah_verif = await authRepo.isVerifiedCek(Number(tim_id));
   if(dah_verif) return Response.json({ success: false, error: "Akun anda telah diverifikasi,anda tidak bisa melakukan delete bukti" }, { status: 401 })
-  
+    return Response.json({ success: false, error: "Maaf fitur ini sudah didisable mohon untuk contact support untuk informasi lebih lanjut, terima kasih untuk antusiasnya" }, { status: 401 })
+
   let result2 = await authRepo.deletePembayaran(tim_id);
   
   return Response.json(result2, { status: 200 })

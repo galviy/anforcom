@@ -50,7 +50,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     if (asal_instansi.length > 250) return Response.json({ success: false, error: "Gak kepanjangan tuh bro?" }, { status: 400 })
     if(tim_id > 2147483647 || tim_id < 0) return Response.json({ success: false, error: "yang make sense aja gabisa kah brooo?" }, { status: 400 })
     if(nomor_induk.length > 30)  return Response.json({ success: false, error: "Gak kepanjangan itu tu nomor?" }, { status: 400 })
-
+    
     let result = await authRepo.timIdCheck(json.userId, Number(tim_id));
     if (result.length == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 });
     let cek_exist = await authRepo.cekExist(nomor_induk)
@@ -67,6 +67,8 @@ export async function handler(req: Request, json?: any): Promise<Response> {
         console.error(err);
       });     
     }
+      return Response.json({ success: false, error: "Maaf fitur ini sudah didisable mohon untuk contact support untuk informasi lebih lanjut, terima kasih untuk antusiasnya" }, { status: 401 })
+
     if (up_data.success) {
         
         return Response.json({ success: true, message: `Uploaded ${photo.name} with size of ${ukuran_foto}`, nama_file: `${nama_file}` }, { status: 200 });

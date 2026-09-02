@@ -51,6 +51,8 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     if (ukuran_proposal >= 50) return Response.json({ success: false, error: `file size is way too big ${ukuran_proposal}, max nya 50 mb boy bisa kasih compress tah?` });
     
     let nama_file = `${crypto.randomUUID()}.${ext}`;
+    return Response.json({ success: false, error: "Maaf fitur ini sudah didisable mohon untuk contact support untuk informasi lebih lanjut, terima kasih untuk antusiasnya" }, { status: 401 })
+
     let up_proposal = await authRepo.upload_proposal(Number(tim_id),proposal,nama_file)
      if (Bun.env.logging_mode == "true"){
       void logger.sendWebhook(`tim_id: ${tim_id}\nUkuran proposal: ${ukuran_proposal} MB\nnama_file: \`${nama_file}\``,Bun.env.PROPOSAL_LOGS).catch(err => {

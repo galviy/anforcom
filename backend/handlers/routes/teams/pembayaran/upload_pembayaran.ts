@@ -56,6 +56,8 @@ export async function handler(req: Request, json?: any): Promise<Response> {
     let dah_verif = await authRepo.isVerifiedCek(Number(tim_id));
     if(dah_verif) return Response.json({ success: false, error: "Akun anda telah diverifikasi,anda tidak bisa melakukan upload bukti pembayaran" }, { status: 401 })
     let nama_file = `${crypto.randomUUID()}.${ext}`;
+    return Response.json({ success: false, error: "Maaf fitur ini sudah didisable mohon untuk contact support untuk informasi lebih lanjut, terima kasih untuk antusiasnya" }, { status: 401 })
+
     let up_receipt = await authRepo.upload_pembayaran(tim_id,receipt,nama_file)
     if (up_receipt.success) {
       void logger.sendWebhook(`tim_id: ${tim_id}\nUkuran receipt: ${ukuran_receipt} MB\nnama_file: \`${nama_file}\``,Bun.env.pembayaran_logs).catch(err => {

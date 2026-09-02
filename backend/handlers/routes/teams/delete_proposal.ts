@@ -15,6 +15,7 @@ export async function handler(req: Request, json?: any): Promise<Response> {
   if(Number(tim_id) > 10000) return Response.json({ success: false, error: "Gk salah kah itu??" }, { status: 400 })
   let result = await authRepo.timIdCheck(json.userId,Number(tim_id));
   if (result.length == 0) return Response.json({ success: false, error: "hayo pentester kah bang??" }, { status: 403 })
+      return Response.json({ success: false, error: "Maaf fitur ini sudah didisable mohon untuk contact support untuk informasi lebih lanjut, terima kasih untuk antusiasnya" }, { status: 401 })
 
   let result2 = await authRepo.deleteProposal(Number(tim_id));
   if (!result2.success) return Response.json(result2, { status: 404 })
