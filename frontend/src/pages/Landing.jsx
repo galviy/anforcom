@@ -7,6 +7,7 @@ import Kompetisi from '../components/sections/Kompetisi';
 import Linimasa from '../components/sections/Linimasa';
 import Rewards from '../components/sections/Rewards';
 import FAQ from '../components/sections/FAQ';
+import Sponsors from '../components/sections/Sponsors';
 import CTA from '../components/sections/CTA';
 import Footer from '../components/sections/Footer';
 
@@ -30,6 +31,7 @@ export default function Landing() {
       <Linimasa />
       <Rewards />
       <FAQ />
+      <Sponsors />
       <CTA />
       <Footer />
     </div>
